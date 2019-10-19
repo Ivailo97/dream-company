@@ -130,7 +130,22 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public List<TaskServiceModel> findNotFinishedAssignedToUser(String userId) {
 
-        return taskRepository.findAllByEmployeeIdAndStatus(userId,Status.IN_PROGRESS)
+        return taskRepository.findAllByEmployeeIdAndStatus(userId, Status.IN_PROGRESS)
+                .stream()
+                .map(t -> modelMapper.map(t, TaskServiceModel.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<TaskServiceModel> findAllByProjectIdAndStatus(String projectId, String status) {
+
+        if (status.equals("all")){
+            return  taskRepository.findAllByProjectId(projectId).stream()
+                    .map(t -> modelMapper.map(t, TaskServiceModel.class))
+                    .collect(Collectors.toList());
+        }
+
+        return taskRepository.findAllByProjectIdAndStatus(projectId, Status.valueOf(status.toUpperCase()))
                 .stream()
                 .map(t -> modelMapper.map(t, TaskServiceModel.class))
                 .collect(Collectors.toList());

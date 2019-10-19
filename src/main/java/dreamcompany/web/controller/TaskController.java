@@ -1,12 +1,15 @@
 package dreamcompany.web.controller;
 
 import dreamcompany.domain.entity.Position;
+import dreamcompany.domain.entity.Status;
 import dreamcompany.domain.model.binding.TaskCreateBindingModel;
 import dreamcompany.domain.model.binding.TaskEditBindingModel;
 import dreamcompany.domain.model.service.TaskServiceModel;
 import dreamcompany.domain.model.view.TaskAllViewModel;
 import dreamcompany.domain.model.view.TaskDeleteViewModel;
 import dreamcompany.domain.model.view.TaskDetailsViewModel;
+import dreamcompany.domain.model.view.TaskFetchViewModel;
+import dreamcompany.service.interfaces.ProjectService;
 import dreamcompany.service.interfaces.TaskService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,16 +74,16 @@ public class TaskController extends BaseController {
     }
 
     @GetMapping("/details/{id}")
-    public ModelAndView details(@PathVariable String id,ModelAndView modelAndView){
+    public ModelAndView details(@PathVariable String id, ModelAndView modelAndView) {
 
         TaskServiceModel taskServiceModel = taskService.findById(id);
 
-        TaskDetailsViewModel taskDetailsViewModel = modelMapper.map(taskServiceModel,TaskDetailsViewModel.class);
+        TaskDetailsViewModel taskDetailsViewModel = modelMapper.map(taskServiceModel, TaskDetailsViewModel.class);
         taskDetailsViewModel.setProject(taskDetailsViewModel.getProject());
 
-        modelAndView.addObject("model",taskDetailsViewModel);
+        modelAndView.addObject("model", taskDetailsViewModel);
 
-        return view("/task/details",modelAndView);
+        return view("/task/details", modelAndView);
     }
 
     @GetMapping("/edit/{id}")
@@ -130,11 +133,11 @@ public class TaskController extends BaseController {
     }
 
     @GetMapping("/loading/{id}")
-    public ModelAndView loading(@PathVariable String id,ModelAndView modelAndView){
+    public ModelAndView loading(@PathVariable String id, ModelAndView modelAndView) {
 
         modelAndView.addObject("minutes", taskService.findById(id).getMinutesNeeded());
 
-        return view("task/loading",modelAndView);
+        return view("task/loading", modelAndView);
     }
 
     @GetMapping("/fetchPositions")
@@ -144,6 +147,15 @@ public class TaskController extends BaseController {
 
         return Arrays.stream(Position.values())
                 .map(Enum::name)
+                .collect(Collectors.toList());
+    }
+
+    @GetMapping("/fetch/{projectId}/{status}")
+    @ResponseBody
+    public List<TaskFetchViewModel> fetch(@PathVariable String projectId, @PathVariable String status) {
+
+        return taskService.findAllByProjectIdAndStatus(projectId, status)
+                .stream().map(t -> modelMapper.map(t, TaskFetchViewModel.class))
                 .collect(Collectors.toList());
     }
 }

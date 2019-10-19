@@ -1,6 +1,7 @@
 package dreamcompany.service.interfaces;
 
 import dreamcompany.domain.entity.Position;
+import dreamcompany.domain.entity.Status;
 import dreamcompany.domain.model.service.TaskServiceModel;
 
 import java.util.List;
@@ -24,4 +25,6 @@ public interface TaskService {
     String findTeamId(String taskId);
 
     List<TaskServiceModel> findNotFinishedAssignedToUser(String userId);
+
+    List<TaskServiceModel> findAllByProjectIdAndStatus(String projectId, String status);
 }

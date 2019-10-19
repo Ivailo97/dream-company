@@ -81,6 +81,7 @@ public class ProjectController extends BaseController {
 
         viewModel.setTasks(projectServiceModel.getTasks().stream().map(TaskServiceModel::getName).collect(Collectors.toSet()));
 
+        modelAndView.addObject("statuses", Status.values());
         modelAndView.addObject("model", viewModel);
 
         return view("/project/details", modelAndView);

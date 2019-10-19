@@ -2,32 +2,141 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="/fragments/head"></head>
-<body>
+<body id="project-details-body">
 
 <header>
     <nav th:replace="/fragments/navbar"></nav>
 </header>
 
-<main class="mt-3">
-    <div class="jumbotron bg-secondary" th:object="${model}">
+<main>
+    <div th:object="${model}">
         <div class="row">
-            <div class="col col-md-12 text-center">
+            <div class="col col-md-12 text-right">
                 <h4 th:text="${'Description: ' + model.description}"></h4>
             </div>
         </div>
         <div class="row">
-            <div class="col col-md-12 text-center">
+            <div class="col col-md-12 text-right">
                 <h4 th:text="${'Reward: $'   + model.reward}"></h4>
             </div>
         </div>
+
+
         <div class="row">
-            <div class="col col-md-12 text-center">
-                <h4 th:text="${'Tasks: '   + #strings.listJoin(model.tasks,', ')}"></h4>
+            <div class="col-md-5">
+
+                <div class="radio-box">
+                    <p>Tasks</p>
+                    <label>
+                        <input type="radio" id="allRadio" name="selection" value="all">
+                        <span class="yes">All</span>
+                    </label>
+
+                    <th:block th:each="status : ${statuses}">
+
+                        <label>
+                            <input type="radio" th:id="${status}" name="selection" th:value="${status}">
+                            <span class="yes" th:for="${status}" th:text="${status}"></span>
+                        </label>
+
+                    </th:block>
+
+                </div>
+
             </div>
         </div>
+
+        <div class="row">
+            <div class="col-md-6 mt-5">
+                <div class="project-tasks-container">
+
+                    <div id="tasks-data" class="row">
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
     </div>
+
+
 </main>
 
 <footer th:replace="/fragments/footer"></footer>
 </body>
+<script th:inline="javascript">
+
+    $.fn.commentCards = function () {
+
+        return this.each(function () {
+
+            let $this = $(this),
+                $cards = $this.find('.project-task-card'),
+                $current = $cards.filter('.card--current'),
+                $next;
+
+            $cards.on('click', function () {
+                if (!$current.is(this)) {
+                    $cards.removeClass('card--current card--out card--next');
+                    $current.addClass('card--out');
+                    $current = $(this).addClass('card--current');
+                    $next = $current.next();
+                    $next = $next.length ? $next : $cards.first();
+                    $next.addClass('card--next');
+                }
+            });
+
+            if (!$current.length) {
+                $current = $cards.last();
+                $cards.first().trigger('click');
+            }
+
+            $this.addClass('cards--active');
+
+        })
+    };
+
+    $('.project-tasks-cards').commentCards();
+
+    function formatTask(task,gridSize) {
+        return `<div class="col-md-${gridSize} mt-5">`
+            + '<div class="project-task-box">'
+            + `<div class="imgBx">`
+            + `<img src="/img/illustration-document-icon_53876-28510.jpg" alt="">`
+            + `</div>`
+            + `<div class="task-content">`
+            + `<h3>${task.name}</h3>`
+            + `<p>${task.description}</p>`
+            + `</div>`
+            + '</div>'
+            + `</div>`
+    }
+
+    $('input[type=radio][name=selection]').change(function () {
+
+        let status = $(this).val();
+
+        let projectId = [[${model.id}]];
+
+        fetch('http://localhost:8000/tasks/fetch/' + projectId + '/' + status)
+            .then((response) => response.json())
+            .then((json) => {
+                $('#tasks-data').empty();
+
+                if (json.length === 0) {
+                    $('#tasks-data').append(`<h1 class="text-center font-weight-bold mt-5">There are no tasks with the ${status} status.</h1>`)
+                } else {
+                    for (let i = 0; i < json.length; i++) {
+
+                        if (json.length % 2 === 0){
+                            $('#tasks-data').append(formatTask(json[i],6));
+                        }else {
+                            $('#tasks-data').append(formatTask(json[i],3));
+                        }
+                    }
+                }
+            })
+    });
+</script>
 </html>

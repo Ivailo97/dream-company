@@ -5,6 +5,8 @@ import java.util.Set;
 
 public class ProjectDetailsViewModel {
 
+    private String id;
+
     private String description;
 
     private BigDecimal reward;
@@ -33,5 +35,13 @@ public class ProjectDetailsViewModel {
 
     public void setTasks(Set<String> tasks) {
         this.tasks = tasks;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }
