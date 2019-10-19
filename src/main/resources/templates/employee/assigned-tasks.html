@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="/fragments/head"></head>
+<body id="assigned-tasks-body">
+
+
+<header>
+    <nav th:replace="/fragments/navbar"></nav>
+</header>
+
+<div class="assigned-tasks-wrapper">
+
+    <th:block th:if="${#lists.isEmpty(tasks)}">
+        <div class="header">
+            <h1 class="header__title">No tasks assigned</h1>
+            <h2 class="header__subtitle">You completed it all , you animal</h2>
+        </div>
+    </th:block>
+
+    <th:block th:if="${!#lists.isEmpty(tasks)}">
+        <div class="header">
+            <h1 class="header__title">Assigned Tasks</h1>
+            <h2 class="header__subtitle">Go ahead do your work</h2>
+        </div>
+    </th:block>
+
+
+    <div class="assigned-tasks-cards">
+
+        <th:block th:each="task : ${tasks}">
+            <div class="assigned-tasks-card [ is-collapsed ] ">
+                <div class="card__inner [ js-expander ]">
+                    <span>Task</span>
+                    <i class="fa fa-folder-o"></i>
+                </div>
+                <div class="card__expander text-center">
+                    <i class="fa fa-close [ js-collapser ]"></i>
+                    <p th:text="${task.description}"></p>
+                    <p th:text="${'Credits: ' +  task.credits}"></p>
+
+                    <form th:action="@{/users/complete-task/{id}(id=${task.id})}" method="post">
+                        <button id="complete" class="btn btn-success">Complete The Task</button>
+                    </form>
+
+                </div>
+            </div>
+
+        </th:block>
+
+    </div>
+
+</div>
+
+
+<footer th:replace="/fragments/footer"></footer>
+</body>
+<script th:inline="javascript">
+    let $cell = $('.assigned-tasks-card');
+
+    //open and close card when clicked on card
+    $cell.find('.js-expander').click(function () {
+
+        let $thisCell = $(this).closest('.assigned-tasks-card');
+
+        if ($thisCell.hasClass('is-collapsed')) {
+            $cell.not($thisCell).removeClass('is-expanded').addClass('is-collapsed').addClass('is-inactive');
+            $thisCell.removeClass('is-collapsed').addClass('is-expanded');
+
+            if ($cell.not($thisCell).hasClass('is-inactive')) {
+                //do nothing
+            } else {
+                $cell.not($thisCell).addClass('is-inactive');
+            }
+
+        } else {
+            $thisCell.removeClass('is-expanded').addClass('is-collapsed');
+            $cell.not($thisCell).removeClass('is-inactive');
+        }
+    });
+
+    //close card when click on cross
+    $cell.find('.js-collapser').click(function () {
+
+        let $thisCell = $(this).closest('.assigned-tasks-card');
+
+        $thisCell.removeClass('is-expanded').addClass('is-collapsed');
+        $cell.not($thisCell).removeClass('is-inactive');
+
+    });
+
+    $('#complete').on('click', function () {
+
+        let millisecondsNeeded = $('#minutes').val() * 60000;
+        let taskId = $('#taskId').val();
+
+        $.post("/users/complete-task",
+            {
+                id: taskId,
+            },
+            function(status){
+                alert("Status: " + status);
+            });
+    })
+
+
+</script>
+</html>

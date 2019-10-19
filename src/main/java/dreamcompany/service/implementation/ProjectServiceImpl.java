@@ -1,0 +1,142 @@
+package dreamcompany.service.implementation;
+
+import dreamcompany.domain.entity.Project;
+import dreamcompany.domain.entity.Status;
+import dreamcompany.domain.entity.Task;
+import dreamcompany.domain.entity.Team;
+import dreamcompany.domain.model.service.ProjectServiceModel;
+import dreamcompany.repository.ProjectRepository;
+import dreamcompany.repository.TaskRepository;
+import dreamcompany.repository.TeamRepository;
+import dreamcompany.service.interfaces.ProjectService;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+@Service
+public class ProjectServiceImpl implements ProjectService {
+
+    private final ProjectRepository projectRepository;
+
+    private final TeamRepository teamRepository;
+
+    private final TaskRepository taskRepository;
+
+    private final ModelMapper modelMapper;
+
+    @Autowired
+    public ProjectServiceImpl(ProjectRepository projectRepository, TeamRepository teamRepository, TaskRepository taskRepository, ModelMapper modelMapper) {
+        this.projectRepository = projectRepository;
+        this.teamRepository = teamRepository;
+        this.taskRepository = taskRepository;
+        this.modelMapper = modelMapper;
+    }
+
+    @Override
+    public ProjectServiceModel create(ProjectServiceModel projectServiceModel) {
+
+        projectServiceModel.setStatus(Status.PENDING);
+        Project project = modelMapper.map(projectServiceModel, Project.class);
+        project = projectRepository.save(project);
+        return modelMapper.map(project, ProjectServiceModel.class);
+    }
+
+    @Override
+    public ProjectServiceModel edit(String id, ProjectServiceModel projectServiceModel) {
+
+        Project project = projectRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid project id"));
+
+        project.setName(projectServiceModel.getName());
+        project.setDescription(projectServiceModel.getDescription());
+        project.setReward(projectServiceModel.getReward());
+
+        project = projectRepository.save(project);
+
+        return modelMapper.map(project, ProjectServiceModel.class);
+    }
+
+    @Override
+    public ProjectServiceModel delete(String id) {
+
+        Project project = projectRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid project id"));
+
+        ProjectServiceModel projectServiceModel = modelMapper.map(project, ProjectServiceModel.class);
+
+        projectRepository.delete(project);
+
+        return projectServiceModel;
+    }
+
+    @Override
+    public List<ProjectServiceModel> findAll() {
+        return projectRepository.findAll().stream()
+                .map(x -> modelMapper.map(x, ProjectServiceModel.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ProjectServiceModel> findAllByStatus(String status) {
+
+        if (status.equals("all")){
+            return projectRepository.findAll().stream()
+                    .map(p -> modelMapper.map(p, ProjectServiceModel.class))
+                    .collect(Collectors.toList());
+        }
+
+
+        return projectRepository.findAllByStatus(Status.valueOf(status.toUpperCase()))
+                .stream()
+                .map(p -> modelMapper.map(p, ProjectServiceModel.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public ProjectServiceModel findById(String id) {
+
+        Project project = projectRepository
+                .findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid project id"));
+
+        return modelMapper.map(project, ProjectServiceModel.class);
+    }
+
+    @Override
+    public boolean projectIsCompleted(String id) {
+
+        Set<Task> allTasks = projectRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid project id"))
+                .getTasks();
+
+        long completedTasks = taskRepository.countAllByStatusAndProjectId(Status.FINISHED, id);
+
+        return allTasks.size() == completedTasks;
+    }
+
+    @Override
+    public void complete(String id) {
+
+        if (projectIsCompleted(id)) {
+
+            Project project = projectRepository.findById(id)
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid project id"));
+
+            project.setStatus(Status.FINISHED);
+
+            projectRepository.save(project);
+
+            Team assignedTeam = project.getTeam();
+
+            assignedTeam.setProfit(assignedTeam.getProfit().add(project.getReward()));
+
+            assignedTeam.setProject(null);
+
+            teamRepository.save(assignedTeam);
+        }
+    }
+}

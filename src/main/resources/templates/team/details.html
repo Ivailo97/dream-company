@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="/fragments/head"></head>
+<body>
+
+<header>
+    <nav th:replace="/fragments/navbar"></nav>
+</header>
+
+<section id="team" class="pb-5">
+    <div class="container">
+        <h5 class="section-title h1">THE TEAM</h5>
+        <div class="row">
+
+            <th:block th:each="employee : ${model.employees}">
+
+                <div class="col-xs-12 col-sm-6 col-md-4">
+                    <div class="image-flip" ontouchstart="this.classList.toggle('hover');">
+                        <div class="mainflip">
+                            <div class="frontside">
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        <p>
+                                            <img class="img-fluid" alt="Team Cards Flipper" th:src="${(employee.imageUrl != null && !#strings.isEmpty(employee.imageUrl)) ? employee.imageUrl : 'https://res.cloudinary.com/rado-cloud/image/upload/v1553353764/manager-512.png'}" /></p>
+                                        <h4 class="card-title" th:text="${employee.position}"></h4>
+                                        <p class="card-text" th:text="${employee.fullName}"></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="backside">
+                                <div class="card">
+                                    <div class="card-body text-center mt-4">
+                                        <h4 class="card-title" th:text="${employee.position}"></h4>
+                                        <p class="card-text">This employee is in the company since <span th:text="${employee.hiredOn}"></span></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </th:block>
+
+        </div>
+
+        <h5 class="section-title h3" th:text="'Office: ' + ${model.officeAddress}"></h5>
+    </div>
+</section>
+
+<footer th:replace="/fragments/footer"></footer>
+</body>
+</html>

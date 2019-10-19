@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="/fragments/head"></head>
+<body id="tasks">
+
+<h1 class="text-center">Choose a task</h1>
+
+<div class="tasks-container">
+
+    <th:block th:each="task : ${tasks}">
+
+        <a class="item-link" th:href="@{/users/assign-task/{id}(id=${task.id})}">
+            <div class="items">
+                <div class="icon-wrapper">
+                    <i class="fa fa-th-list"></i>
+                </div>
+                <div class="project-name">
+                    <p th:text="${task.name}"></p>
+                </div>
+                <div class="project-name">
+                    <p th:text="${'Required Position: ' + task.requiredPosition}"></p>
+                </div>
+
+            </div>
+        </a>
+
+    </th:block>
+
+</div>
+
+</body>
+</html>

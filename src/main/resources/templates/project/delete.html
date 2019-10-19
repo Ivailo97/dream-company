@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="/fragments/head"></head>
+<body>
+
+<header>
+    <nav th:replace="/fragments/navbar"></nav>
+</header>
+
+<main class="text-center">
+    <h1 class="text-center text-dark">Delete Project</h1>
+    <hr class="hr-2 bg-dark w-25">
+    <form class="form w-25 mx-auto m-5" th:action="@{/projects/delete/{id}(id=${model.id})}" th:method="post"
+          th:object="${model}">
+        <input type="hidden" name="_csrf" value="c95ccb2b-1afa-47bd-bf7b-a5b72739470b">
+        <div class="form-group">
+            <label for="name" class="font-weight-bold">Name</label>
+            <input type="text" class="form-control" id="name" th:value="*{name}" disabled>
+        </div>
+        <div class="form-group">
+            <label for="description" class="font-weight-bold">Description</label>
+            <textarea class="form-control" id="description" th:text="*{description}" disabled></textarea>
+        </div>
+        <div class="form-group">
+            <label for="status" class="font-weight-bold">Status</label>
+            <input type="text" class="form-control" id="status" th:value="*{status}" disabled>
+        </div>
+        <div class="form-group">
+            <label for="reward" class="font-weight-bold">Reward</label>
+            <input type="number" class="form-control" id="reward" th:value="*{reward}" disabled>
+        </div>
+
+
+        <div class="form-group">
+            <label for="tasks" class="font-weight-bold">Tasks</label>
+            <select id="tasks" class="form-control" multiple>
+
+                <th:block th:each="task : ${model.tasks}">
+                    <option th:text="${task}" disabled></option>
+                </th:block>
+
+            </select>
+        </div>
+
+        <hr class="hr-2 bg-dark">
+        <div class="button-holder d-flex justify-content-center">
+            <button type="submit" class="btn btn-dark">Delete</button>
+        </div>
+    </form>
+</main>
+
+<footer th:replace="/fragments/footer"></footer>
+</body>
+</html>

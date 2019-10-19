@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="/fragments/head"></head>
+<body id="home">
+
+<header>
+    <nav th:replace="/fragments/navbar"></nav>
+</header>
+
+<main>
+    <div class="jumbotron text-center">
+
+        <h1 class="ml-5">Welcome, <span th:text="${user}"></span></h1>
+
+        <th:block th:if="${isLeaderWithAssignedProject}">
+
+            <h1>Your team project</h1>
+
+            <div class="project-card mx-auto">
+                <div class="card__image-container">
+                    <img class="card__image" src="../static/img/newrobot.jpg" th:src="@{/img/newrobot.jpg}" alt="">
+                </div>
+
+                <svg class="card__svg" viewBox="0 0 800 500">
+
+                    <path d="M 0 100 Q 50 200 100 250 Q 250 400 350 300 C 400 250 550 150 650 300 Q 750 450 800 400 L 800 500 L 0 500"
+                          stroke="transparent" fill="#333"/>
+                    <path class="card__line"
+                          d="M 0 100 Q 50 200 100 250 Q 250 400 350 300 C 400 250 550 150 650 300 Q 750 450 800 400"
+                          stroke="pink" stroke-width="3" fill="transparent"/>
+                </svg>
+
+                <div class="card__content">
+                    <h1 class="card__title" th:text="${project.name}"></h1>
+                    <p th:text="${project.description}"></p>
+                    <a id="cool-link" th:href="@{/projects/project-tasks/{id}(id=${project.id})}">Project Tasks</a>
+                    <th:block th:if="${projectIsCompleted}">
+                        <form th:action="@{/projects/complete/{id}(id=${project.id})}" method="post">
+                            <button id="complete" class="btn btn-success">Complete The Project</button>
+                        </form>
+                    </th:block>
+                </div>
+            </div>
+
+        </th:block>
+
+        <th:block sec:authorize="hasRole('ROLE_ROOT')">
+
+            <div class="row">
+                <div class="col-md-5">
+
+                    <div class="radio-box">
+                        <p>Projects</p>
+                        <label>
+                            <input type="radio" id="allRadio" name="selection" value="all" >
+                            <span class="yes">All</span>
+                        </label>
+
+                        <th:block th:each="status : ${statuses}">
+
+                            <label>
+                                <input type="radio" th:id="${status}" name="selection" th:value="${status}" >
+                                <span class="yes" th:for="${status}" th:text="${status}"></span>
+                            </label>
+
+                        </th:block>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mt-5">
+                    <div id="projects-data" class="projects-container">
+
+                    </div>
+                </div>
+            </div>
+
+        </th:block>
+
+    </div>
+</main>
+
+<footer th:replace="/fragments/footer"></footer>
+</body>
+<script>
+
+    function formatProject(project) {
+        return '<div class="home-card">'
+            + `<h3 class="title">${project.name}</h3>`
+            + `<div class="bar">`
+            + `<div class="emptybar"></div>`
+            + `<div class="filledbar"></div>`
+            + `</div>`
+            + `<div class="home-circle">`
+            + `<svg class="svg" version="1.1" xmlns="http://www.w3.org/2000/svg">`
+            + `<circle class="stroke" cx="60" cy="60" r="50"/>`
+            + `</svg>`
+            + `</div>`
+            + '</div>'
+    }
+
+    $('input[type=radio][name=selection]').change(function () {
+
+        let status = $(this).val();
+
+        fetch('http://localhost:8000/projects/fetch/' + status)
+            .then((response) => response.json())
+            .then((json) => {
+                $('#projects-data').empty();
+
+                if (json.length === 0) {
+                    $('#projects-data').append(`<h1 class="text-center font-weight-bold">There are no project with the ${status} status.</h1>`)
+                } else {
+                    for (let i = 0; i < json.length; i++) {
+                        $('#projects-data').append('<div class="project-row row d-flex justify-content-around">');
+                        $('#projects-data .project-row:last-child').append(formatProject(json[i]));
+                    }
+                }
+            })
+    });
+
+
+</script>
+</html>

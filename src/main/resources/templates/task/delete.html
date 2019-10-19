@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="/fragments/head"></head>
+<body>
+
+<header>
+    <nav th:replace="/fragments/navbar"></nav>
+</header>
+
+<main class="mt-3 text-center">
+    <h1 class="text-center text-dark">Delete Task</h1>
+    <hr class="hr-2 bg-dark w-25">
+    <form class="form w-25 mx-auto " th:action="@{/tasks/delete/{id}(id=${model.id})}" th:method="post"
+          th:object="${model}">
+        <input type="hidden" name="_csrf" value="c95ccb2b-1afa-47bd-bf7b-a5b72739470b">
+        <div class="form-group">
+            <label for="name" class="font-weight-bold">Name</label>
+            <input type="text" disabled class="form-control" id="name" th:value="${model.name}" th:field="*{name}">
+        </div>
+        <div class="form-group">
+            <label for="description" class="font-weight-bold">Description</label>
+            <textarea class="form-control" disabled id="description" th:value="${model.description}"
+                      th:field="*{description}"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="add-task-position" class="font-weight-bold">Required Position</label>
+            <select disabled class="form-control" id="add-task-position" th:field="*{requiredPosition}">
+                <option value="default" selected="" disabled>--- Select Position ---</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="add-task-project" class="font-weight-bold">Project</label>
+            <select class="form-control" disabled id="add-task-project" th:field="*{project}">
+                <option value="default" selected="" disabled>--- Select Project ---</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="credits" class="font-weight-bold">Credits</label>
+            <input type="number" disabled class="form-control" id="credits" th:value="${model.credits}" th:field="*{credits}">
+        </div>
+        <hr class="hr-2 bg-dark">
+        <div class="button-holder d-flex justify-content-center">
+            <button type="submit" class="btn btn-dark">Delete</button>
+        </div>
+    </form>
+</main>
+
+<footer th:replace="/fragments/footer"></footer>
+</body>
+<script th:inline="javascript">
+
+    let requiredPosition = [[${model.requiredPosition}]];
+    let assignedProject = [[${model.project}]];
+
+    console.log(assignedProject);
+
+
+    fetch('/tasks/fetchPositions')
+        .then((response) => response.json())
+        .then((json) => {
+            json.forEach(
+                (position) => $('#add-task-position').append(position === requiredPosition ?
+                    `<option disabled selected="selected" value="${position}">${position}</option>` :
+                    `<option disabled value="${position}">${position}</option>`)
+            );
+        })
+        .catch((err) => console.log(err));
+
+    fetch('/projects/fetch')
+        .then((response) => response.json())
+        .then((json) => {
+            json.forEach((project) => $('#add-task-project').append(project.name === assignedProject ?
+                `<option disabled  selected="selected" value="${project.id}">${project.name}</option>`
+                : `<option  disabled value="${project.id}">${project.name}</option>`));
+        })
+        .catch((err) => console.log(err));
+</script>
+</html>

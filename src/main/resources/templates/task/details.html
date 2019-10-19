@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="/fragments/head"></head>
+<body>
+
+<header>
+    <nav th:replace="/fragments/navbar"></nav>
+</header>
+
+<main class="mt-3">
+    <div class="jumbotron bg-secondary" th:object="${model}">
+        <div class="row">
+            <div class="col col-md-12 text-center">
+                <h4 th:text="${'Description: ' + model.description}"></h4>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col col-md-12 text-center">
+                <h4 th:text="${'Credits: '   + model.credits}"></h4>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col col-md-12 text-center">
+                <h4 th:text="${'Minutes Needed: '   + model.minutesNeeded}"></h4>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col col-md-12 text-center">
+                <h4 th:text="${'Required Position: '   + model.requiredPosition}"></h4>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col col-md-12 text-center">
+                <h4 th:text="${'Assigned to Project: '   + model.project}"></h4>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="/fragments/footer"></footer>
+</body>
+</html>

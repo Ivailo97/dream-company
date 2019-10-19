@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="/fragments/head">
+
+</head>
+
+<body id="loading">
+
+<header>
+    <nav th:replace="/fragments/navbar"></nav>
+</header>
+
+
+<div id='progressbar1'></div>
+
+<div id="ten-countdown"></div>
+
+
+<footer th:replace="/fragments/footer"></footer>
+</body>
+
+<script th:inline="javascript">
+
+    let minutes = [[${minutes}]];
+
+    /*
+  *  Creates a progressbar.
+  *  @param id the id of the div we want to transform in a progressbar
+  *  @param duration the duration of the timer example: '10s'
+  *  @param callback, optional function which is called when the progressbar reaches 0.
+  */
+    function createProgressbar(id, duration, callback) {
+        // We select the div that we want to turn into a progressbar
+        let progressbar = document.getElementById(id);
+        progressbar.className = 'progressbar';
+
+        // We create the div that changes width to show progress
+        let progressbarinner = document.createElement('div');
+        progressbarinner.className = 'inner';
+
+        // Now we set the animation parameters
+        progressbarinner.style.animationDuration = duration;
+
+        // Eventually couple a callback
+        if (typeof (callback) === 'function') {
+            progressbarinner.addEventListener('animationend', callback);
+        }
+
+        // Append the progressbar to the main progressbardiv
+        progressbar.appendChild(progressbarinner);
+
+        // When everything is set up we start the animation
+        progressbarinner.style.animationPlayState = 'running';
+    }
+
+    let seconds = minutes * 60 + 's';
+
+    addEventListener('load', function () {
+        createProgressbar('progressbar1', seconds, function () {
+            window.location.href = "/users/my-tasks"
+        });
+    });
+
+    function countdown(elementName, minutes, seconds) {
+        let element, endTime, hours, mins, msLeft, time;
+
+        function twoDigits(n) {
+            return (n <= 9 ? "0" + n : n);
+        }
+
+        function updateTimer() {
+            msLeft = endTime - (+new Date);
+            if (msLeft < 1000) {
+                element.innerHTML = "Time is up!";
+            } else {
+                time = new Date(msLeft);
+                hours = time.getUTCHours();
+                mins = time.getUTCMinutes();
+                element.innerHTML = (hours ? hours + ':' + twoDigits(mins) : mins) + ':' + twoDigits(time.getUTCSeconds());
+                setTimeout(updateTimer, time.getUTCMilliseconds() + 500);
+            }
+        }
+
+        element = document.getElementById(elementName);
+        endTime = (+new Date) + 1000 * (60 * minutes + seconds) + 500;
+        updateTimer();
+    }
+
+    countdown("ten-countdown", minutes, 0);
+
+</script>
+
+</html>

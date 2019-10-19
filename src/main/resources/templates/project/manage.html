@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="/fragments/head"></head>
+<body id="manage">
+
+<th:block th:each="project,iter : ${models}">
+
+    <div class="container">
+        <div class="box">
+            <div class="content">
+                <h2 th:text="${iter.index + 1}"></h2>
+                <h3 th:text="${project.name}"></h3>
+                <p th:text="${project.description}"></p>
+                <a th:href="@{/teams/assign-project/{id}(id=${project.id})}">Assign to a team</a>
+            </div>
+        </div>
+    </div>
+
+</th:block>
+
+</body>
+</html>

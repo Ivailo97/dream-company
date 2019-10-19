@@ -1,0 +1,100 @@
+<th:block xmlns:th="http://www.w3.org/1999/xhtml">
+    <th:block sec:authorize="isAnonymous()">
+        <nav class="navbar navbar-expand-md bg-dark navbar-dark sticky-top">
+            <a class="navbar-brand" th:href="@{/}">Dream Company</a>
+            <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navb" aria-expanded="true">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div id="navb" class="navbar-collapse collapse hide">
+                <ul class="nav navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/offices/our}">Contact us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/users/register}"><span class="fas fa-user"></span> Register</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/users/login}"><span class="fas fa-sign-in-alt"></span> Login</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </th:block>
+    <th:block sec:authorize="isAuthenticated()">
+        <nav class="navbar navbar-expand-md bg-dark navbar-dark sticky-top">
+            <a class="navbar-brand" th:href="@{/home}">Dream Company</a>
+            <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navb" aria-expanded="true">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div id="navb1" class="navbar-collapse collapse hide">
+
+                <ul class="nav navbar-nav ml-auto">
+                    <th:block sec:authorize="hasRole('ROLE_ROOT')">
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/projects/manage}">Manage Projects</a>
+                        </li>
+                    </th:block>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/offices/our}">Contact us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/home}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/users/profile}">Profile</a>
+                    </li>
+
+                    <th:block sec:authorize="!hasRole('ROLE_ROOT')">
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/users/my-tasks}">My tasks</a>
+                        </li>
+                    </th:block>
+
+                    <th:block sec:authorize="hasRole('ROLE_ADMIN')">
+                        <li class="nav-item">
+                            <div class="dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" id="adminDropdown"
+                                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Admin
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="adminDropdown">
+                                    <a class="dropdown-item" th:href="@{/users/all}">All Users</a>
+                                </div>
+                            </div>
+                        </li>
+                    </th:block>
+                    <th:block sec:authorize="hasRole('ROLE_MODERATOR')">
+                        <li class="nav-item">
+                            <div class="dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" id="moderatorDropdown"
+                                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Moderator
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="moderatorDropdown">
+                                    <a class="dropdown-item" th:href="@{/offices/create}">Create Office</a>
+                                    <a class="dropdown-item" th:href="@{/projects/create}">Create Project</a>
+                                    <a class="dropdown-item" th:href="@{/tasks/create}">Create Task</a>
+                                    <a class="dropdown-item" th:href="@{/teams/create}">Create Team</a>
+
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" th:href="@{/offices/all}">All Offices</a>
+                                    <a class="dropdown-item" th:href="@{/projects/all}">All Projects</a>
+                                    <a class="dropdown-item" th:href="@{/tasks/all}">All Tasks</a>
+                                    <a class="dropdown-item" th:href="@{/teams/all}">All Teams</a>
+                                </div>
+
+                            </div>
+                        </li>
+                    </th:block>
+                    <li class="nav-item">
+                        <a class="nav-link" id="logout" th:href="@{/users/logout?login}">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </th:block>
+</th:block>
+

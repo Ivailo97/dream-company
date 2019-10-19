@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="/fragments/head"></head>
+<body id="index">
+
+
+<header>
+    <nav th:replace="/fragments/navbar"></nav>
+</header>
+<main class>
+    <div class="jumbotron text-center">
+        <h1 class="display-1 font-italic">Dream Company</h1>
+        <hr>
+        <p>
+            This is the biggest task manager application! <a th:href="@{/users/login}">Login</a>, if you don't have an
+            account,
+            don't
+            hesitate - <a th:href="@{/users/register}">Register</a>
+        </p>
+    </div>
+</main>
+
+
+<footer th:replace="/fragments/footer"></footer>
+</body>
+</html>
