@@ -3,12 +3,12 @@ package dreamcompany.web.controller;
 import dreamcompany.domain.entity.Position;
 import dreamcompany.domain.model.binding.UserEditBindingModel;
 import dreamcompany.domain.model.binding.UserRegisterBindingModel;
-import dreamcompany.domain.model.service.TaskServiceModel;
 import dreamcompany.domain.model.service.UserServiceModel;
 import dreamcompany.domain.model.view.*;
 import dreamcompany.service.interfaces.CloudinaryService;
 import dreamcompany.service.interfaces.TaskService;
 import dreamcompany.service.interfaces.UserService;
+import org.dom4j.rule.Mode;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -198,13 +198,57 @@ public class UserController extends BaseController {
         return view("/employee/assigned-tasks", modelAndView);
     }
 
+    @GetMapping("/promote")
+    @PreAuthorize("hasRole('ROLE_ROOT')")
+    public ModelAndView promotion(ModelAndView modelAndView) {
+
+        List<UserPositionChangeViewModel> viewModels = userService.findAllForPromotion()
+                .stream()
+                .map(u -> modelMapper.map(u, UserPositionChangeViewModel.class))
+                .collect(Collectors.toList());
+
+        modelAndView.addObject("models", viewModels);
+
+        return view("/employee/candidates-for-promotion", modelAndView);
+    }
+
+    @PostMapping("/promote/{id}")
+    @PreAuthorize("hasRole('ROLE_ROOT')")
+    public ModelAndView promotionConfirm(@PathVariable String id) {
+
+        userService.promote(id);
+        return redirect("/users/promote");
+    }
+
+    @GetMapping("/demote")
+    @PreAuthorize("hasRole('ROLE_ROOT')")
+    public ModelAndView demotion(ModelAndView modelAndView) {
+
+        List<UserPositionChangeViewModel> viewModels = userService.findAllForDemotion()
+                .stream()
+                .map(u -> modelMapper.map(u, UserPositionChangeViewModel.class))
+                .collect(Collectors.toList());
+
+        modelAndView.addObject("models", viewModels);
+
+        return view("/employee/candidates-for-demotion", modelAndView);
+    }
+
+    @PostMapping("/demote/{id}")
+    @PreAuthorize("hasRole('ROLE_ROOT')")
+    public ModelAndView demotionConfirm(@PathVariable String id) {
+
+        userService.demote(id);
+        return redirect("/users/demote");
+    }
+
     @PostMapping("/complete-task/{id}")
     @PreAuthorize("isAuthenticated()")
-    public ModelAndView completeTask(@PathVariable String id,Principal principal){
+    public ModelAndView completeTask(@PathVariable String id, Principal principal) {
 
         UserServiceModel loggedUser = userService.findByUsername(principal.getName());
 
-        userService.completeTask(loggedUser.getId(),id);
+        userService.completeTask(loggedUser.getId(), id);
 
         return redirect("/tasks/loading/" + id);
     }

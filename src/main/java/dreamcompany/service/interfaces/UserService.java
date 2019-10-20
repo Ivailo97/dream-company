@@ -26,6 +26,10 @@ public interface UserService extends UserDetailsService {
 
     List<UserServiceModel> findAllInTeamWithPosition(String teamId,Position position);
 
+    List<UserServiceModel> findAllForPromotion();
+
+    List<UserServiceModel> findAllForDemotion();
+
     boolean isLeaderWithAssignedProject(String username);
 
     void assignTask(String userId, String taskId);

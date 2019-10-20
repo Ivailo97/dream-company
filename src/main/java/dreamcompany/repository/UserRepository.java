@@ -28,4 +28,6 @@ public interface UserRepository extends JpaRepository<User, String> {
     List<User> findAllByPositionNotIn(Position... positions);
 
     //
+
+    List<User> findAllByCreditsGreaterThanAndPositionNotIn(Integer credits, Position... positions);
 }

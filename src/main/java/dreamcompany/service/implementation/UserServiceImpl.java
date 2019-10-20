@@ -148,6 +148,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<UserServiceModel> findAllForPromotion() {
+        return userRepository.findAllByCreditsGreaterThanAndPositionNotIn(GlobalConstraints.MAX_CREDITS - 1, Position.SENIOR, Position.PROJECT_MANAGER, Position.TEAM_LEADER)
+                .stream().map(u -> modelMapper.map(u, UserServiceModel.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<UserServiceModel> findAllForDemotion() {
+        return userRepository.findAllByPositionNotIn(Position.PROJECT_MANAGER, Position.TEAM_LEADER, Position.INTERN)
+                .stream().map(u -> modelMapper.map(u, UserServiceModel.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public boolean isLeaderWithAssignedProject(String username) {
 
         UserServiceModel userServiceModel = findByUsername(username);
@@ -231,6 +245,7 @@ public class UserServiceImpl implements UserService {
 
         Position nextPosition = Position.values()[nextPositionIndex];
         user.setPosition(nextPosition);
+        user.setCredits(user.getCredits() - GlobalConstraints.MAX_CREDITS);
         user.setSalary(nextPosition.getSalary());
 
         userRepository.save(user);
@@ -246,6 +261,7 @@ public class UserServiceImpl implements UserService {
 
         Position nextPosition = Position.values()[nextPositionIndex];
         user.setPosition(nextPosition);
+        user.setCredits(GlobalConstraints.STARTING_CREDITS);
         user.setSalary(nextPosition.getSalary());
 
         userRepository.save(user);
@@ -289,6 +305,5 @@ public class UserServiceImpl implements UserService {
         task.setStatus(Status.FINISHED);
 
         taskRepository.save(task);
-
     }
 }
