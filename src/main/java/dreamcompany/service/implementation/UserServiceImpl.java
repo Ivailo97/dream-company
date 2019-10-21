@@ -4,6 +4,9 @@ import dreamcompany.GlobalConstraints;
 import dreamcompany.domain.entity.Position;
 import dreamcompany.domain.entity.Status;
 import dreamcompany.domain.entity.Task;
+import dreamcompany.error.duplicates.EmailAlreadyExistException;
+import dreamcompany.error.duplicates.UsernameAlreadyExistException;
+import dreamcompany.error.WrongOldPasswordException;
 import dreamcompany.repository.TaskRepository;
 import dreamcompany.service.interfaces.CloudinaryService;
 import dreamcompany.service.interfaces.RoleService;
@@ -21,14 +24,11 @@ import dreamcompany.repository.UserRepository;
 
 import javax.management.relation.RoleNotFoundException;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -59,6 +59,19 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserServiceModel register(UserServiceModel userServiceModel) throws RoleNotFoundException {
 
+        User userInDb = userRepository.findByUsername(userServiceModel.getUsername()).orElse(null);
+
+        if (userInDb != null) {
+            throw new UsernameAlreadyExistException(GlobalConstraints.DUPLICATE_USER_USERNAME_MESSAGE);
+        }
+
+        User userInDbWithSameEmail = userRepository.findByEmail(userServiceModel.getEmail()).orElse(null);
+
+        if (userInDbWithSameEmail != null) {
+
+            throw new EmailAlreadyExistException(GlobalConstraints.DUPLICATE_USER_EMAIL_MESSAGE);
+        }
+
         defineUserRolesAndPosition(userServiceModel);
         userServiceModel.setHiredOn(LocalDateTime.now());
         userServiceModel.setPassword(encoder.encode(userServiceModel.getPassword()));
@@ -84,7 +97,16 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found!"));
 
         if (!encoder.matches(oldPassword, user.getPassword())) {
-            throw new IllegalArgumentException("Incorrect password!");
+            throw new WrongOldPasswordException(GlobalConstraints.WRONG_OLD_PASSWORD_MESSAGE);
+        }
+
+        if (!user.getEmail().equals(userServiceModel.getEmail())) {
+
+            User userInDbWithSameEmail = userRepository.findByEmail(userServiceModel.getEmail()).orElse(null);
+
+            if (userInDbWithSameEmail != null) {
+                throw new EmailAlreadyExistException(GlobalConstraints.DUPLICATE_USER_EMAIL_MESSAGE);
+            }
         }
 
         if (user.getImageUrl() != null) {

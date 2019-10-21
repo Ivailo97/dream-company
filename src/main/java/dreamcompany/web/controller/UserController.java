@@ -60,7 +60,9 @@ public class UserController extends BaseController {
         }
 
         UserServiceModel userServiceModel = modelMapper.map(user, UserServiceModel.class);
+
         userService.register(userServiceModel);
+
         return redirect("/users/login");
     }
 

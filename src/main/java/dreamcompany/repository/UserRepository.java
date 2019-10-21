@@ -30,4 +30,6 @@ public interface UserRepository extends JpaRepository<User, String> {
     //
 
     List<User> findAllByCreditsGreaterThanAndPositionNotIn(Integer credits, Position... positions);
+
+    Optional<User> findByEmail(String email);
 }

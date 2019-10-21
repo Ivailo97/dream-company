@@ -1,10 +1,12 @@
 package dreamcompany.service.implementation;
 
+import dreamcompany.GlobalConstraints;
 import dreamcompany.domain.entity.Project;
 import dreamcompany.domain.entity.Status;
 import dreamcompany.domain.entity.Task;
 import dreamcompany.domain.entity.Team;
 import dreamcompany.domain.model.service.ProjectServiceModel;
+import dreamcompany.error.duplicates.ProjectNameAlreadyExistException;
 import dreamcompany.repository.ProjectRepository;
 import dreamcompany.repository.TaskRepository;
 import dreamcompany.repository.TeamRepository;
@@ -39,6 +41,12 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public ProjectServiceModel create(ProjectServiceModel projectServiceModel) {
 
+        Project projectInDb = projectRepository.findByName(projectServiceModel.getName()).orElse(null);
+
+        if (projectInDb != null){
+            throw new ProjectNameAlreadyExistException(GlobalConstraints.DUPLICATE_PROJECT_MESSAGE);
+        }
+
         projectServiceModel.setStatus(Status.PENDING);
         Project project = modelMapper.map(projectServiceModel, Project.class);
         project = projectRepository.save(project);
@@ -50,6 +58,15 @@ public class ProjectServiceImpl implements ProjectService {
 
         Project project = projectRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid project id"));
+
+        if (!project.getName().equals(projectServiceModel.getName())){
+
+            Project projectWithSameNameInDb = projectRepository.findByName(projectServiceModel.getName()).orElse(null);
+
+            if (projectWithSameNameInDb != null){
+                throw new ProjectNameAlreadyExistException(GlobalConstraints.DUPLICATE_PROJECT_MESSAGE);
+            }
+        }
 
         project.setName(projectServiceModel.getName());
         project.setDescription(projectServiceModel.getDescription());

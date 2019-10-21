@@ -1,8 +1,10 @@
 package dreamcompany.service.implementation;
 
+import dreamcompany.GlobalConstraints;
 import dreamcompany.domain.entity.*;
 import dreamcompany.domain.model.service.TeamServiceModel;
 import dreamcompany.domain.model.service.UserServiceModel;
+import dreamcompany.error.duplicates.TeamNameAlreadyExistException;
 import dreamcompany.repository.OfficeRepository;
 import dreamcompany.repository.ProjectRepository;
 import dreamcompany.repository.TeamRepository;
@@ -41,6 +43,8 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     public TeamServiceModel create(TeamServiceModel teamServiceModel) {
+
+        throwIfDuplicate(teamServiceModel);
 
         Team team = modelMapper.map(teamServiceModel, Team.class);
 
@@ -83,11 +87,24 @@ public class TeamServiceImpl implements TeamService {
         return modelMapper.map(team, TeamServiceModel.class);
     }
 
+    private void throwIfDuplicate(TeamServiceModel teamServiceModel) {
+
+        Team teamInDb = teamRepository.findByName(teamServiceModel.getName()).orElse(null);
+
+        if (teamInDb != null) {
+            throw new TeamNameAlreadyExistException(GlobalConstraints.DUPLICATE_TEAM_MESSAGE);
+        }
+    }
+
     @Override
     public TeamServiceModel edit(String id, TeamServiceModel teamServiceModel) {
 
         Team team = this.teamRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid team id"));
+
+        if (!teamServiceModel.getName().equals(team.getName())) {
+            throwIfDuplicate(teamServiceModel);
+        }
 
         team.setName(teamServiceModel.getName());
 
@@ -193,7 +210,7 @@ public class TeamServiceImpl implements TeamService {
         Team team = teamRepository.findById(teamId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid team id"));
 
-        if (team.getEmployees().size() > 2){
+        if (team.getEmployees().size() > 2) {
 
             User employee = userRepository.findById(userId)
                     .orElseThrow(() -> new IllegalArgumentException("Invalid user id"));

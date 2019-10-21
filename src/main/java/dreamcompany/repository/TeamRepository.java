@@ -10,7 +10,9 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface TeamRepository extends JpaRepository<Team,String> {
+public interface TeamRepository extends JpaRepository<Team, String> {
 
     List<Team> findAllByProjectNull();
+
+    Optional<Team> findByName(String name);
 }

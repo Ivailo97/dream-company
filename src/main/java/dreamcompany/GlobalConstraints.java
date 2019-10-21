@@ -12,4 +12,20 @@ public final class GlobalConstraints {
 
     public static final Integer MAX_CREDITS = 100;
     public static final Integer STARTING_CREDITS = 0;
+
+
+    // error handler
+    public static final String GLOBAL_EXCEPTION_VIEW_NAME = "/error/error";
+    public static final String ERROR_PAGE_STATUS_CODE_ATTRIBUTE_NAME = "statusCode";
+    public static final String ERROR_PAGE_MESSAGE_ATTRIBUTE_NAME = "message";
+
+
+    //exception messages
+    public static final String DUPLICATE_PROJECT_MESSAGE = "Project with that name already exist";
+    public static final String DUPLICATE_USER_USERNAME_MESSAGE = "User with the same username already exist";
+    public static final String DUPLICATE_USER_EMAIL_MESSAGE = "User with the same email already exist";
+    public static final String WRONG_OLD_PASSWORD_MESSAGE = "Wrong old password";
+    public static final String DUPLICATE_TASK_MESSAGE = "Task with that name already exist";
+    public static final String DUPLICATE_TEAM_MESSAGE = "Team with that name already exist";
+
 }

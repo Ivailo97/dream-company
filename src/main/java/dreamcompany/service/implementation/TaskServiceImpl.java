@@ -1,10 +1,12 @@
 package dreamcompany.service.implementation;
 
+import dreamcompany.GlobalConstraints;
 import dreamcompany.domain.entity.Position;
 import dreamcompany.domain.entity.Project;
 import dreamcompany.domain.entity.Status;
 import dreamcompany.domain.entity.Task;
 import dreamcompany.domain.model.service.TaskServiceModel;
+import dreamcompany.error.duplicates.TaskNameAlreadyExistException;
 import dreamcompany.repository.ProjectRepository;
 import dreamcompany.repository.TaskRepository;
 import dreamcompany.service.interfaces.TaskService;
@@ -35,6 +37,8 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public TaskServiceModel create(TaskServiceModel taskServiceModel) {
 
+        throwIfDuplicate(taskServiceModel);
+
         Task task = modelMapper.map(taskServiceModel, Task.class);
 
         Project project = projectRepository.findById(taskServiceModel.getProject())
@@ -57,6 +61,11 @@ public class TaskServiceImpl implements TaskService {
 
         Project project = projectRepository.findById(taskServiceModel.getProject())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid project id"));
+
+        if (!taskServiceModel.getName().equals(task.getName())){
+
+            throwIfDuplicate(taskServiceModel);
+        }
 
         task.setProject(project);
         task.setDescription(taskServiceModel.getDescription());
@@ -139,8 +148,8 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public List<TaskServiceModel> findAllByProjectIdAndStatus(String projectId, String status) {
 
-        if (status.equals("all")){
-            return  taskRepository.findAllByProjectId(projectId).stream()
+        if (status.equals("all")) {
+            return taskRepository.findAllByProjectId(projectId).stream()
                     .map(t -> modelMapper.map(t, TaskServiceModel.class))
                     .collect(Collectors.toList());
         }
@@ -149,5 +158,13 @@ public class TaskServiceImpl implements TaskService {
                 .stream()
                 .map(t -> modelMapper.map(t, TaskServiceModel.class))
                 .collect(Collectors.toList());
+    }
+
+    private void throwIfDuplicate(TaskServiceModel taskServiceModel){
+        Task taskInDb = taskRepository.findByName(taskServiceModel.getName()).orElse(null);
+
+        if (taskInDb != null) {
+            throw new TaskNameAlreadyExistException(GlobalConstraints.DUPLICATE_TASK_MESSAGE);
+        }
     }
 }
