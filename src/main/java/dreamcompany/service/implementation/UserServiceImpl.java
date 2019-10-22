@@ -50,7 +50,6 @@ public class UserServiceImpl implements UserService {
 
     private final BCryptPasswordEncoder encoder;
 
-
     @Autowired
     public UserServiceImpl(UserRepository userRepository, TaskRepository taskRepository, CloudinaryService cloudinaryService, LogService logService, RoleService roleService, ModelMapper modelMapper, BCryptPasswordEncoder encoder) {
         this.userRepository = userRepository;
@@ -65,20 +64,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserServiceModel register(UserServiceModel userServiceModel) throws RoleNotFoundException {
 
-        User userInDb = userRepository.findByUsername(userServiceModel.getUsername()).orElse(null);
+        String username = userServiceModel.getUsername();
 
-        if (userInDb != null) {
-            throw new UsernameAlreadyExistException(GlobalConstraints.DUPLICATE_USER_USERNAME_MESSAGE);
-        }
-
-        User userInDbWithSameEmail = userRepository.findByEmail(userServiceModel.getEmail()).orElse(null);
-
-        if (userInDbWithSameEmail != null) {
-
-            throw new EmailAlreadyExistException(GlobalConstraints.DUPLICATE_USER_EMAIL_MESSAGE);
-        }
+        throwIfUserExist(username, userServiceModel.getEmail());
 
         defineUserRolesAndPosition(userServiceModel);
+
         userServiceModel.setHiredOn(LocalDateTime.now());
         userServiceModel.setPassword(encoder.encode(userServiceModel.getPassword()));
 
@@ -86,14 +77,37 @@ public class UserServiceImpl implements UserService {
 
         entity = userRepository.save(entity);
 
-        LogServiceModel logServiceModel = new LogServiceModel();
-        logServiceModel.setUsername(entity.getUsername());
-        logServiceModel.setCreatedOn(LocalDateTime.now());
-        logServiceModel.setDescription(String.format(GlobalConstraints.REGISTERED_SUCCESSFULLY, entity.getUsername(), entity.getId()));
+        String logMessage = String.format(GlobalConstraints.REGISTERED_SUCCESSFULLY, username, entity.getId());
 
-        logService.create(logServiceModel);
+        logAction(entity.getUsername(), logMessage);
 
         return modelMapper.map(entity, UserServiceModel.class);
+    }
+
+    private void logAction(String username, String description) {
+
+        LogServiceModel logServiceModel = new LogServiceModel();
+        logServiceModel.setUsername(username);
+        logServiceModel.setCreatedOn(LocalDateTime.now());
+        logServiceModel.setDescription(description);
+
+        logService.create(logServiceModel);
+    }
+
+    private void throwIfUserExist(String username, String email) {
+
+        User userInDb = userRepository.findByUsername(username).orElse(null);
+
+        if (userInDb != null) {
+            throw new UsernameAlreadyExistException(GlobalConstraints.DUPLICATE_USER_USERNAME_MESSAGE);
+        }
+
+        User userInDbWithSameEmail = userRepository.findByEmail(email).orElse(null);
+
+        if (userInDbWithSameEmail != null) {
+
+            throw new EmailAlreadyExistException(GlobalConstraints.DUPLICATE_USER_EMAIL_MESSAGE);
+        }
     }
 
     @Override
@@ -104,40 +118,98 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserServiceModel edit(UserServiceModel userServiceModel, String oldPassword) throws IOException {
+    public UserServiceModel edit(UserServiceModel edited, String oldPassword) throws IOException {
 
-        User user = userRepository.findByUsername(userServiceModel.getUsername())
-                .orElseThrow(() -> new UsernameNotFoundException("User not found!"));
+        User user = userRepository.findByUsername(edited.getUsername())
+                .orElseThrow(() -> new UsernameNotFoundException("Username not found!"));
 
-        if (!encoder.matches(oldPassword, user.getPassword())) {
-            throw new WrongOldPasswordException(GlobalConstraints.WRONG_OLD_PASSWORD_MESSAGE);
+        throwIfWrongOldPassword(oldPassword, user.getPassword());
+
+        throwIfUpdatedWithTakenEmail(user.getEmail(), edited.getEmail());
+
+        boolean imageIsUpdated = updateImage(user, edited);
+
+        String logMessage = buildUpdatedEntityLogMessage(user, edited,imageIsUpdated);
+
+        user.setPassword(encoder.encode(edited.getPassword()));
+        user.setEmail(edited.getEmail());
+        user.setFirstName(edited.getFirstName());
+        user.setLastName(edited.getLastName());
+
+        logAction(user.getUsername(), logMessage);
+
+        return modelMapper.map(userRepository.saveAndFlush(user), UserServiceModel.class);
+    }
+
+    private String buildUpdatedEntityLogMessage(User user, UserServiceModel edited,boolean imageIsUpdated) {
+
+        StringBuilder message = new StringBuilder();
+
+        message.append(GlobalConstraints.UPDATED_SUCCESSFULLY)
+                .append(System.lineSeparator());
+
+        if (!user.getEmail().equals(edited.getEmail())) {
+            message.append(GlobalConstraints.UPDATED_EMAIL)
+                    .append(System.lineSeparator());
         }
 
-        if (!user.getEmail().equals(userServiceModel.getEmail())) {
+        if (!encoder.matches(edited.getPassword(), user.getPassword())) {
+            message.append(GlobalConstraints.UPDATED_PASSWORD)
+                    .append(System.lineSeparator());
+        }
 
-            User userInDbWithSameEmail = userRepository.findByEmail(userServiceModel.getEmail()).orElse(null);
+        if (!user.getFirstName().equals(edited.getFirstName())) {
+            message.append(GlobalConstraints.UPDATED_FIRST_NAME)
+                    .append(System.lineSeparator());
+        }
+
+        if (!user.getLastName().equals(edited.getLastName())) {
+            message.append(GlobalConstraints.UPDATED_LAST_NAME)
+                    .append(System.lineSeparator());
+        }
+
+        if (imageIsUpdated) {
+            message.append(GlobalConstraints.UPDATED_IMAGE)
+                    .append(System.lineSeparator());
+        }
+
+        return message.toString();
+    }
+
+    private boolean updateImage(User user, UserServiceModel edited) throws IOException {
+
+        if (edited.getImageUrl() != null) {
+
+            if (user.getImageUrl() != null) {
+                cloudinaryService.deleteImage(user.getImageId());
+            }
+
+            user.setImageUrl(edited.getImageUrl());
+            user.setImageId(edited.getImageId());
+
+            return true;
+        }
+
+        return false;
+    }
+
+    private void throwIfWrongOldPassword(String oldPassword, String password) {
+
+        if (!encoder.matches(oldPassword, password)) {
+            throw new WrongOldPasswordException(GlobalConstraints.WRONG_OLD_PASSWORD_MESSAGE);
+        }
+    }
+
+    private void throwIfUpdatedWithTakenEmail(String oldEmail, String newEmail) {
+
+        if (!oldEmail.equals(newEmail)) {
+
+            User userInDbWithSameEmail = userRepository.findByEmail(newEmail).orElse(null);
 
             if (userInDbWithSameEmail != null) {
                 throw new EmailAlreadyExistException(GlobalConstraints.DUPLICATE_USER_EMAIL_MESSAGE);
             }
         }
-
-        if (user.getImageUrl() != null) {
-            cloudinaryService.deleteImage(user.getImageId());
-        }
-
-        user.setUsername(userServiceModel.getUsername());
-        user.setPassword(encoder.encode(userServiceModel.getPassword()));
-        user.setEmail(userServiceModel.getEmail());
-        user.setFirstName(userServiceModel.getFirstName());
-        user.setLastName(userServiceModel.getLastName());
-
-        if (userServiceModel.getImageUrl() != null) {
-            user.setImageUrl(userServiceModel.getImageUrl());
-            user.setImageId(userServiceModel.getImageId());
-        }
-
-        return modelMapper.map(userRepository.saveAndFlush(user), UserServiceModel.class);
     }
 
     @Override

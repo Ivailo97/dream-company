@@ -33,5 +33,11 @@ public final class GlobalConstraints {
 
     //Log messages
     public static final String REGISTERED_SUCCESSFULLY = "Registered successfully %s with generated id:%s";
+    public static final String UPDATED_PASSWORD = "Updated password";
+    public static final String UPDATED_IMAGE = "Updated image";
+    public static final String UPDATED_EMAIL = "Updated email";
+    public static final String UPDATED_FIRST_NAME = "Updated first name";
+    public static final String UPDATED_LAST_NAME = "Updated last name";
+    public static final String UPDATED_SUCCESSFULLY = "Updated successfully profile:";
 
 }
