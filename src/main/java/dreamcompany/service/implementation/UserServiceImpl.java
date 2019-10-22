@@ -4,11 +4,13 @@ import dreamcompany.GlobalConstraints;
 import dreamcompany.domain.entity.Position;
 import dreamcompany.domain.entity.Status;
 import dreamcompany.domain.entity.Task;
+import dreamcompany.domain.model.service.LogServiceModel;
 import dreamcompany.error.duplicates.EmailAlreadyExistException;
 import dreamcompany.error.duplicates.UsernameAlreadyExistException;
 import dreamcompany.error.WrongOldPasswordException;
 import dreamcompany.repository.TaskRepository;
 import dreamcompany.service.interfaces.CloudinaryService;
+import dreamcompany.service.interfaces.LogService;
 import dreamcompany.service.interfaces.RoleService;
 import dreamcompany.service.interfaces.UserService;
 import dreamcompany.util.MyThread;
@@ -40,16 +42,20 @@ public class UserServiceImpl implements UserService {
 
     private final CloudinaryService cloudinaryService;
 
+    private final LogService logService;
+
     private final RoleService roleService;
 
     private final ModelMapper modelMapper;
 
     private final BCryptPasswordEncoder encoder;
 
+
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, TaskRepository taskRepository, CloudinaryService cloudinaryService, RoleService roleService, ModelMapper modelMapper, BCryptPasswordEncoder encoder) {
+    public UserServiceImpl(UserRepository userRepository, TaskRepository taskRepository, CloudinaryService cloudinaryService, LogService logService, RoleService roleService, ModelMapper modelMapper, BCryptPasswordEncoder encoder) {
         this.userRepository = userRepository;
         this.taskRepository = taskRepository;
+        this.logService = logService;
         this.roleService = roleService;
         this.cloudinaryService = cloudinaryService;
         this.modelMapper = modelMapper;
@@ -79,6 +85,13 @@ public class UserServiceImpl implements UserService {
         User entity = modelMapper.map(userServiceModel, User.class);
 
         entity = userRepository.save(entity);
+
+        LogServiceModel logServiceModel = new LogServiceModel();
+        logServiceModel.setUsername(entity.getUsername());
+        logServiceModel.setCreatedOn(LocalDateTime.now());
+        logServiceModel.setDescription(String.format(GlobalConstraints.REGISTERED_SUCCESSFULLY, entity.getUsername(), entity.getId()));
+
+        logService.create(logServiceModel);
 
         return modelMapper.map(entity, UserServiceModel.class);
     }

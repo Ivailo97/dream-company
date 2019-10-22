@@ -1,5 +1,6 @@
 package dreamcompany.web.controller;
 
+import dreamcompany.GlobalConstraints;
 import dreamcompany.domain.entity.Position;
 import dreamcompany.domain.model.binding.UserEditBindingModel;
 import dreamcompany.domain.model.binding.UserRegisterBindingModel;
@@ -8,7 +9,6 @@ import dreamcompany.domain.model.view.*;
 import dreamcompany.service.interfaces.CloudinaryService;
 import dreamcompany.service.interfaces.TaskService;
 import dreamcompany.service.interfaces.UserService;
-import org.dom4j.rule.Mode;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;

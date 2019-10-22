@@ -78,7 +78,6 @@
             <artifactId>cloudinary</artifactId>
             <version>1.0.14</version>
         </dependency>
-
     </dependencies>
 
     <build>

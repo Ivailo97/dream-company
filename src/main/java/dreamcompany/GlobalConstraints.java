@@ -28,4 +28,10 @@ public final class GlobalConstraints {
     public static final String DUPLICATE_TASK_MESSAGE = "Task with that name already exist";
     public static final String DUPLICATE_TEAM_MESSAGE = "Team with that name already exist";
 
+    //LocalDateTime format pattern
+    public static final String DATE_PATTERN = "yyyy-MM-dd HH:mm:ss";
+
+    //Log messages
+    public static final String REGISTERED_SUCCESSFULLY = "Registered successfully %s with generated id:%s";
+
 }
