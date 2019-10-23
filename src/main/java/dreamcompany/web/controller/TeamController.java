@@ -2,12 +2,11 @@ package dreamcompany.web.controller;
 
 import dreamcompany.domain.model.binding.TeamCreateBindingModel;
 import dreamcompany.domain.model.binding.TeamEditBindingModel;
-import dreamcompany.domain.model.service.OfficeServiceModel;
 import dreamcompany.domain.model.service.TeamServiceModel;
-import dreamcompany.domain.model.service.UserServiceModel;
 import dreamcompany.domain.model.view.*;
 import dreamcompany.service.interfaces.TeamService;
 import dreamcompany.service.interfaces.UserService;
+import dreamcompany.util.MappingConverter;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,7 +17,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/teams")
@@ -31,17 +29,19 @@ public class TeamController extends BaseController {
 
     private final ModelMapper modelMapper;
 
+    private final MappingConverter mappingConverter;
+
     @Autowired
-    public TeamController(TeamService teamService, UserService userService, ModelMapper modelMapper) {
+    public TeamController(TeamService teamService, UserService userService, ModelMapper modelMapper, MappingConverter mappingConverter) {
         this.teamService = teamService;
         this.userService = userService;
         this.modelMapper = modelMapper;
+        this.mappingConverter = mappingConverter;
     }
 
     @GetMapping("/create")
     @PreAuthorize("hasRole('ROLE_MODERATOR')")
     public ModelAndView create(@ModelAttribute(name = "model") TeamCreateBindingModel model) {
-
         return view("/team/create");
     }
 
@@ -54,24 +54,8 @@ public class TeamController extends BaseController {
             return view("/team/create");
         }
 
-        TeamServiceModel teamServiceModel = modelMapper.map(model, TeamServiceModel.class);
-
-        //set office
-        OfficeServiceModel officeServiceModel = new OfficeServiceModel();
-        officeServiceModel.setId(model.getOffice());
-        teamServiceModel.setOffice(officeServiceModel);
-
-        //setEmployees
-        Set<UserServiceModel> employees = new LinkedHashSet<>();
-        model.getEmployees().forEach(e -> {
-            UserServiceModel employee = new UserServiceModel();
-            employee.setId(e);
-            employees.add(employee);
-        });
-        teamServiceModel.setEmployees(employees);
-
+        TeamServiceModel teamServiceModel = mappingConverter.convertToTeamServiceModel(model);
         teamService.create(teamServiceModel);
-
         return redirect("/home");
     }
 
@@ -80,13 +64,9 @@ public class TeamController extends BaseController {
     public ModelAndView edit(@PathVariable String id, ModelAndView modelAndView) {
 
         TeamServiceModel teamServiceModel = teamService.findById(id);
-
         TeamEditBindingModel teamEditBindingModel = modelMapper.map(teamServiceModel, TeamEditBindingModel.class);
-
         teamEditBindingModel.setOffice(teamServiceModel.getOffice().getId());
-
         modelAndView.addObject("model", teamEditBindingModel);
-
         return view("/team/edit", modelAndView);
     }
 
@@ -100,15 +80,8 @@ public class TeamController extends BaseController {
             return view("/team/edit");
         }
 
-        TeamServiceModel teamServiceModel = modelMapper.map(model, TeamServiceModel.class);
-
-        //set office
-        OfficeServiceModel officeServiceModel = new OfficeServiceModel();
-        officeServiceModel.setId(model.getOffice());
-        teamServiceModel.setOffice(officeServiceModel);
-
+        TeamServiceModel teamServiceModel = mappingConverter.convertToTeamServiceModel(model);
         teamService.edit(id, teamServiceModel);
-
         return redirect("/home");
     }
 
@@ -116,11 +89,7 @@ public class TeamController extends BaseController {
     @PreAuthorize("hasRole('ROLE_MODERATOR')")
     public ModelAndView addEmployee(@PathVariable String id, ModelAndView modelAndView) {
 
-        List<UserAddRemoveFromTeamViewModel> viewModels = userService.findAllWithoutTeam()
-                .stream()
-                .map(u -> modelMapper.map(u, UserAddRemoveFromTeamViewModel.class))
-                .collect(Collectors.toList());
-
+        List<UserAddRemoveFromTeamViewModel> viewModels = mappingConverter.convertToUserAddRemoveFromTeamViewModels(userService.findAllWithoutTeam());
         modelAndView.addObject("teamId", id);
         modelAndView.addObject("models", viewModels);
         return view("add-employee", modelAndView);
@@ -138,14 +107,9 @@ public class TeamController extends BaseController {
     @PreAuthorize("hasRole('ROLE_MODERATOR')")
     public ModelAndView removeEmployee(@PathVariable String id, ModelAndView modelAndView) {
 
-        List<UserAddRemoveFromTeamViewModel> viewModels = userService.findAllInTeam(id)
-                .stream()
-                .map(u -> modelMapper.map(u, UserAddRemoveFromTeamViewModel.class))
-                .collect(Collectors.toList());
-
+        List<UserAddRemoveFromTeamViewModel> viewModels = mappingConverter.convertToUserAddRemoveFromTeamViewModels(userService.findAllInTeam(id));
         modelAndView.addObject("teamId", id);
         modelAndView.addObject("models", viewModels);
-
         return view("remove-employee", modelAndView);
     }
 
@@ -161,13 +125,8 @@ public class TeamController extends BaseController {
     @PreAuthorize("hasRole('ROLE_MODERATOR')")
     public ModelAndView all(ModelAndView modelAndView) {
 
-        List<TeamAllViewModel> viewModels = teamService.findAll()
-                .stream()
-                .map(t -> modelMapper.map(t, TeamAllViewModel.class))
-                .collect(Collectors.toList());
-
+        List<TeamAllViewModel> viewModels = mappingConverter.convertToTeamAllViewModels(teamService.findAll());
         modelAndView.addObject("models", viewModels);
-
         return view("/team/all", modelAndView);
     }
 
@@ -176,22 +135,8 @@ public class TeamController extends BaseController {
     public ModelAndView details(@PathVariable String id, ModelAndView modelAndView) {
 
         TeamServiceModel teamServiceModel = teamService.findById(id);
-
-        TeamDetailsViewModel viewModel = modelMapper.map(teamServiceModel, TeamDetailsViewModel.class);
-
-        Set<UserInTeamDetailsViewModel> employees = new HashSet<>();
-
-        teamServiceModel.getEmployees()
-                .forEach(e -> {
-                    UserInTeamDetailsViewModel userViewModel = modelMapper.map(e,UserInTeamDetailsViewModel.class);
-                    userViewModel.setFullName(String.format("%s %s",e.getFirstName(),e.getLastName()));
-                    employees.add(userViewModel);
-                });
-
-        viewModel.setEmployees(employees);
-
+        TeamDetailsViewModel viewModel = mappingConverter.convertToTeamDetailsViewModel(teamServiceModel);
         modelAndView.addObject("model", viewModel);
-
         return view("/team/details", modelAndView);
     }
 
@@ -200,16 +145,8 @@ public class TeamController extends BaseController {
     public ModelAndView delete(@PathVariable String id, ModelAndView modelAndView) {
 
         TeamServiceModel teamServiceModel = teamService.findById(id);
-
-        TeamDeleteViewModel teamDeleteViewModel = modelMapper.map(teamServiceModel, TeamDeleteViewModel.class);
-
-        teamDeleteViewModel.setOffice(teamServiceModel.getOffice().getAddress());
-        teamDeleteViewModel.setEmployees(teamServiceModel.getEmployees().stream()
-                .map(e -> String.format("%s %s", e.getFirstName(), e.getLastName()))
-                .collect(Collectors.toSet()));
-
+        TeamDeleteViewModel teamDeleteViewModel = mappingConverter.convertToTeamDeleteViewModel(teamServiceModel);
         modelAndView.addObject("model", teamDeleteViewModel);
-
         return view("/team/delete", modelAndView);
     }
 
@@ -218,7 +155,6 @@ public class TeamController extends BaseController {
     public ModelAndView deleteConfirm(@PathVariable String id) {
 
         teamService.delete(id);
-
         return redirect("/teams/all");
     }
 
@@ -226,11 +162,7 @@ public class TeamController extends BaseController {
     @PreAuthorize("hasRole('ROLE_ROOT')")
     public ModelAndView assignProject(@PathVariable String id, ModelAndView modelAndView) {
 
-        List<TeamAllViewModel> viewModels = teamService.findAllWithoutProject()
-                .stream()
-                .map(t -> modelMapper.map(t, TeamAllViewModel.class))
-                .collect(Collectors.toList());
-
+        List<TeamAllViewModel> viewModels = mappingConverter.convertToTeamAllViewModels(teamService.findAllWithoutProject());
         modelAndView.addObject("chosenProjectId", id);
         modelAndView.addObject("teams", viewModels);
         return view("/team/choose", modelAndView);
@@ -241,7 +173,6 @@ public class TeamController extends BaseController {
     public ModelAndView assignProjectConfirm(@PathVariable String projectId, @PathVariable String teamId) {
 
         teamService.assignProject(projectId, teamId);
-
         return redirect("/projects/manage");
     }
 }

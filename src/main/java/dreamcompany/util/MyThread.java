@@ -12,7 +12,6 @@ public class MyThread extends Thread {
         this.method = method;
     }
 
-
     @Override
     public void run() {
 
