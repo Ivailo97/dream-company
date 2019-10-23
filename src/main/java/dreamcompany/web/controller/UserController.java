@@ -87,22 +87,22 @@ public class UserController extends BaseController {
 
     @PostMapping("/set-admin/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ModelAndView setAdminRole(@PathVariable(name = "id") String id) throws RoleNotFoundException {
-        userService.changeRoles(id, "admin");
+    public ModelAndView setAdminRole(@PathVariable(name = "id") String id, Principal principal) throws RoleNotFoundException {
+        userService.changeRoles(id, "admin", principal.getName());
         return redirect("/users/all");
     }
 
     @PostMapping("/set-moderator/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ModelAndView setModeratorRole(@PathVariable(name = "id") String id) throws RoleNotFoundException {
-        userService.changeRoles(id, "moderator");
+    public ModelAndView setModeratorRole(@PathVariable(name = "id") String id, Principal principal) throws RoleNotFoundException {
+        userService.changeRoles(id, "moderator", principal.getName());
         return redirect("/users/all");
     }
 
     @PostMapping("/set-user/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ModelAndView setUserRole(@PathVariable(name = "id") String id) throws RoleNotFoundException {
-        userService.changeRoles(id, "user");
+    public ModelAndView setUserRole(@PathVariable(name = "id") String id, Principal principal) throws RoleNotFoundException {
+        userService.changeRoles(id, "user", principal.getName());
         return redirect("/users/all");
     }
 
@@ -216,9 +216,9 @@ public class UserController extends BaseController {
 
     @PostMapping("/promote/{id}")
     @PreAuthorize("hasRole('ROLE_ROOT')")
-    public ModelAndView promotionConfirm(@PathVariable String id) {
+    public ModelAndView promotionConfirm(@PathVariable String id,Principal principal) {
 
-        userService.promote(id);
+        userService.promote(id,principal.getName());
         return redirect("/users/promote");
     }
 
@@ -238,9 +238,9 @@ public class UserController extends BaseController {
 
     @PostMapping("/demote/{id}")
     @PreAuthorize("hasRole('ROLE_ROOT')")
-    public ModelAndView demotionConfirm(@PathVariable String id) {
+    public ModelAndView demotionConfirm(@PathVariable String id,Principal principal) {
 
-        userService.demote(id);
+        userService.demote(id,principal.getName());
         return redirect("/users/demote");
     }
 

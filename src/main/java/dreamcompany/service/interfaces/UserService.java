@@ -36,9 +36,9 @@ public interface UserService extends UserDetailsService {
 
     void completeTask(String userId,String taskId);
 
-    void changeRoles(String userId, String authority) throws RoleNotFoundException;
+    void changeRoles(String userId, String authority,String adminUsername) throws RoleNotFoundException;
 
-    void promote(String userId);
+    void promote(String userId,String rootUsername);
 
-    void demote(String userId);
+    void demote(String userId,String rootUsername);
 }

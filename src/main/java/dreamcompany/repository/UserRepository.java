@@ -3,6 +3,7 @@ package dreamcompany.repository;
 import dreamcompany.domain.entity.Position;
 import dreamcompany.domain.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.Arrays;
@@ -32,4 +33,5 @@ public interface UserRepository extends JpaRepository<User, String> {
     List<User> findAllByCreditsGreaterThanAndPositionNotIn(Integer credits, Position... positions);
 
     Optional<User> findByEmail(String email);
+
 }

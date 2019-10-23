@@ -33,6 +33,8 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import static dreamcompany.GlobalConstraints.*;
+
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -77,7 +79,7 @@ public class UserServiceImpl implements UserService {
 
         entity = userRepository.save(entity);
 
-        String logMessage = String.format(GlobalConstraints.REGISTERED_SUCCESSFULLY, username, entity.getId());
+        String logMessage = String.format(GlobalConstraints.REGISTERED_USER_SUCCESSFULLY, username, entity.getId());
 
         logAction(entity.getUsername(), logMessage);
 
@@ -129,7 +131,7 @@ public class UserServiceImpl implements UserService {
 
         boolean imageIsUpdated = updateImage(user, edited);
 
-        String logMessage = buildUpdatedEntityLogMessage(user, edited,imageIsUpdated);
+        String logMessage = buildUpdatedEntityLogMessage(user, edited, imageIsUpdated);
 
         user.setPassword(encoder.encode(edited.getPassword()));
         user.setEmail(edited.getEmail());
@@ -141,35 +143,35 @@ public class UserServiceImpl implements UserService {
         return modelMapper.map(userRepository.saveAndFlush(user), UserServiceModel.class);
     }
 
-    private String buildUpdatedEntityLogMessage(User user, UserServiceModel edited,boolean imageIsUpdated) {
+    private String buildUpdatedEntityLogMessage(User user, UserServiceModel edited, boolean imageIsUpdated) {
 
         StringBuilder message = new StringBuilder();
 
-        message.append(GlobalConstraints.UPDATED_SUCCESSFULLY)
+        message.append(GlobalConstraints.UPDATED_USER_SUCCESSFULLY)
                 .append(System.lineSeparator());
 
         if (!user.getEmail().equals(edited.getEmail())) {
-            message.append(GlobalConstraints.UPDATED_EMAIL)
+            message.append(GlobalConstraints.UPDATED_USER_EMAIL)
                     .append(System.lineSeparator());
         }
 
         if (!encoder.matches(edited.getPassword(), user.getPassword())) {
-            message.append(GlobalConstraints.UPDATED_PASSWORD)
+            message.append(GlobalConstraints.UPDATED_USER_PASSWORD)
                     .append(System.lineSeparator());
         }
 
         if (!user.getFirstName().equals(edited.getFirstName())) {
-            message.append(GlobalConstraints.UPDATED_FIRST_NAME)
+            message.append(GlobalConstraints.UPDATED_USER_FIRST_NAME)
                     .append(System.lineSeparator());
         }
 
         if (!user.getLastName().equals(edited.getLastName())) {
-            message.append(GlobalConstraints.UPDATED_LAST_NAME)
+            message.append(GlobalConstraints.UPDATED_USER_LAST_NAME)
                     .append(System.lineSeparator());
         }
 
         if (imageIsUpdated) {
-            message.append(GlobalConstraints.UPDATED_IMAGE)
+            message.append(GlobalConstraints.UPDATED_USER_IMAGE)
                     .append(System.lineSeparator());
         }
 
@@ -294,6 +296,17 @@ public class UserServiceImpl implements UserService {
         task.setEmployee(user);
         task.setStatus(Status.IN_PROGRESS);
 
+        String teamLeaderUsername = user.getTeam()
+                .getEmployees()
+                .stream()
+                .filter(u -> u.getPosition() == Position.TEAM_LEADER)
+                .map(User::getUsername)
+                .findFirst().orElse(null);
+
+        String logMessage = String.format(GlobalConstraints.ASSIGNED_TASK_SUCCESSFULLY, task.getName(), user.getUsername());
+
+        logAction(teamLeaderUsername, logMessage);
+
         taskRepository.save(task);
     }
 
@@ -311,10 +324,14 @@ public class UserServiceImpl implements UserService {
         Thread thread = new MyThread(milliseconds, () -> actualTaskComplete(user, task));
 
         thread.start();
+
+        String logMessage = String.format(GlobalConstraints.COMPLETED_TASK_SUCCESSFULLY, user.getUsername(), task.getName());
+
+        logAction(user.getUsername(), logMessage);
     }
 
     @Override
-    public void changeRoles(String userId, String role) throws RoleNotFoundException {
+    public void changeRoles(String userId, String role, String adminUsername) throws RoleNotFoundException {
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found! Wrong user id!"));
@@ -322,28 +339,39 @@ public class UserServiceImpl implements UserService {
         UserServiceModel userServiceModel = modelMapper.map(user, UserServiceModel.class);
 
         userServiceModel.getAuthorities().clear();
+        String username = user.getUsername();
+
+        String logMessage;
 
         switch (role) {
 
             case "user":
-                userServiceModel.getAuthorities().add(roleService.findByAuthority("ROLE_USER"));
+                userServiceModel.getAuthorities().add(roleService.findByAuthority(ROLE_USER));
+                logMessage = String.format(CHANGED_ROLE_SUCCESSFULLY, username, ROLE_USER);
                 break;
             case "moderator":
-                userServiceModel.getAuthorities().add(roleService.findByAuthority("ROLE_USER"));
-                userServiceModel.getAuthorities().add(roleService.findByAuthority("ROLE_MODERATOR"));
+                userServiceModel.getAuthorities().add(roleService.findByAuthority(ROLE_USER));
+                userServiceModel.getAuthorities().add(roleService.findByAuthority(ROLE_MODERATOR));
+                logMessage = String.format(CHANGED_ROLE_SUCCESSFULLY, username, ROLE_MODERATOR);
                 break;
             case "admin":
-                userServiceModel.getAuthorities().add(roleService.findByAuthority("ROLE_USER"));
-                userServiceModel.getAuthorities().add(roleService.findByAuthority("ROLE_MODERATOR"));
-                userServiceModel.getAuthorities().add(roleService.findByAuthority("ROLE_ADMIN"));
+                userServiceModel.getAuthorities().add(roleService.findByAuthority(ROLE_USER));
+                userServiceModel.getAuthorities().add(roleService.findByAuthority(ROLE_MODERATOR));
+                userServiceModel.getAuthorities().add(roleService.findByAuthority(ROLE_ADMIN));
+                logMessage = String.format(CHANGED_ROLE_SUCCESSFULLY, username, ROLE_ADMIN);
+                break;
+            default:
+                logMessage = String.format(CHANGED_ROLE_SUCCESSFULLY, username, ROLE_USER);
                 break;
         }
 
-        userRepository.saveAndFlush(modelMapper.map(userServiceModel, User.class));
+        userRepository.save(modelMapper.map(userServiceModel, User.class));
+
+        logAction(adminUsername, logMessage);
     }
 
     @Override
-    public void promote(String userId) {
+    public void promote(String userId, String rootUsername) {
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid id"));
@@ -356,10 +384,14 @@ public class UserServiceImpl implements UserService {
         user.setSalary(nextPosition.getSalary());
 
         userRepository.save(user);
+
+        String logMessage = String.format(PROMOTED_SUCCESSFULLY, user.getUsername(), nextPosition.name());
+
+        logAction(rootUsername, logMessage);
     }
 
     @Override
-    public void demote(String userId) {
+    public void demote(String userId, String rootUsername) {
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid id"));
@@ -372,6 +404,10 @@ public class UserServiceImpl implements UserService {
         user.setSalary(nextPosition.getSalary());
 
         userRepository.save(user);
+
+        String logMessage = String.format(DEMOTED_SUCCESSFULLY,user.getUsername(),nextPosition.name());
+
+        logAction(rootUsername,logMessage);
     }
 
     @Override

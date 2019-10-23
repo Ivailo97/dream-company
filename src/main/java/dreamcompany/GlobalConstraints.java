@@ -13,6 +13,12 @@ public final class GlobalConstraints {
     public static final Integer MAX_CREDITS = 100;
     public static final Integer STARTING_CREDITS = 0;
 
+    //roles
+    public static final String ROLE_USER = "ROLE_USER";
+    public static final String ROLE_MODERATOR = "ROLE_MODERATOR";
+    public static final String ROLE_ADMIN = "ROLE_ADMIN";
+    public static final String ROLE_ROOT = "ROLE_ROOT";
+
 
     // error handler
     public static final String GLOBAL_EXCEPTION_VIEW_NAME = "/error/error";
@@ -32,12 +38,18 @@ public final class GlobalConstraints {
     public static final String DATE_PATTERN = "yyyy-MM-dd HH:mm:ss";
 
     //Log messages
-    public static final String REGISTERED_SUCCESSFULLY = "Registered successfully %s with generated id:%s";
-    public static final String UPDATED_PASSWORD = "Updated password";
-    public static final String UPDATED_IMAGE = "Updated image";
-    public static final String UPDATED_EMAIL = "Updated email";
-    public static final String UPDATED_FIRST_NAME = "Updated first name";
-    public static final String UPDATED_LAST_NAME = "Updated last name";
-    public static final String UPDATED_SUCCESSFULLY = "Updated successfully profile:";
 
+    // user
+    public static final String REGISTERED_USER_SUCCESSFULLY = "Registered successfully %s with generated id:%s";
+    public static final String UPDATED_USER_PASSWORD = "Updated password";
+    public static final String UPDATED_USER_IMAGE = "Updated image";
+    public static final String UPDATED_USER_EMAIL = "Updated email";
+    public static final String UPDATED_USER_FIRST_NAME = "Updated first name";
+    public static final String UPDATED_USER_LAST_NAME = "Updated last name";
+    public static final String UPDATED_USER_SUCCESSFULLY = "Updated successfully profile:";
+    public static final String ASSIGNED_TASK_SUCCESSFULLY = "Assigned task with name: %s  to user with username: %s successfully";
+    public static final String COMPLETED_TASK_SUCCESSFULLY = "User with username %s completed task with name %s successfully";
+    public static final String CHANGED_ROLE_SUCCESSFULLY = "Role of user with username %s was changed to %s successfully";
+    public static final String PROMOTED_SUCCESSFULLY = "Promoted user with username %s to %s successfully";
+    public static final String DEMOTED_SUCCESSFULLY = "Demoted user with username %s to %s successfully";
 }
