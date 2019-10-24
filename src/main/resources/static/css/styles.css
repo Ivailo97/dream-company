@@ -16,3 +16,12 @@
 .jumbotron{
     background: none;
 }
+
+.project-details-box{
+
+    margin: 30px;
+    padding: 30px;
+    border: 1px solid white;
+    width: 400px;
+    height: 200px;
+}

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
+<html id="project-details-html" lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="/fragments/head"></head>
 <body id="project-details-body">
@@ -9,21 +9,10 @@
 </header>
 
 <main>
-    <div th:object="${model}">
-        <div class="row">
-            <div class="col col-md-12 text-right">
-                <h4 th:text="${'Description: ' + model.description}"></h4>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col col-md-12 text-right">
-                <h4 th:text="${'Reward: $'   + model.reward}"></h4>
-            </div>
-        </div>
-
+    <div class="container-fluid" th:object="${model}">
 
         <div class="row">
-            <div class="col-md-5">
+            <div class="col-md-6">
 
                 <div class="radio-box">
                     <p>Tasks</p>
@@ -44,18 +33,26 @@
                 </div>
 
             </div>
+
+            <div class="col-md-6 mt-5">
+
+                <a href="#">
+                    <figure>
+                        <div class="date"><span class="card-date-day" th:text="${model.reward}"></span><span class="card-date-month">$</span></div>
+                        <figcaption>
+                            <h4> <span th:text="${model.name}"></span></h4>
+                            <p th:text="${model.description}"></p>
+                        </figcaption>
+                    </figure>
+                </a>
+            </div>
+
+
         </div>
 
-        <div class="row">
-            <div class="col-md-6 mt-5">
-                <div class="project-tasks-container">
+        <div id="tasks-data" class="row project-tasks-container">
 
-                    <div id="tasks-data" class="row">
 
-                    </div>
-
-                </div>
-            </div>
         </div>
 
     </div>
@@ -99,9 +96,9 @@
 
     $('.project-tasks-cards').commentCards();
 
-    function formatTask(task,gridSize) {
-        return `<div class="col-md-${gridSize} mt-5">`
-            + '<div class="project-task-box">'
+    function formatTask(task) {
+        return `<div class="col">`
+            + '<div class="project-task-box mt-3">'
             + `<div class="imgBx">`
             + `<img src="/img/illustration-document-icon_53876-28510.jpg" alt="">`
             + `</div>`
@@ -129,11 +126,8 @@
                 } else {
                     for (let i = 0; i < json.length; i++) {
 
-                        if (json.length % 2 === 0){
-                            $('#tasks-data').append(formatTask(json[i],6));
-                        }else {
-                            $('#tasks-data').append(formatTask(json[i],3));
-                        }
+                        $('#tasks-data').append(formatTask(json[i]));
+
                     }
                 }
             })
