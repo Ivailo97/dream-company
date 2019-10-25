@@ -1,9 +1,7 @@
 package dreamcompany.domain.model.binding;
 
-import org.hibernate.validator.constraints.Length;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
@@ -66,14 +64,12 @@ public class UserEditBindingModel {
 
     @NotEmpty(message = "Field can't be empty")
     @NotNull(message = "Field can't be null")
-    @Length(min = 3, max = 10, message = "Length must be between 3 and 10 symbols")
     public String getFirstName() {
         return firstName;
     }
 
     @NotEmpty(message = "Field can't be empty")
     @NotNull(message = "Field can't be null")
-    @Length(min = 5, max = 11, message = "Length must be between 5 and 11 symbols")
     public String getLastName() {
         return lastName;
     }
@@ -97,9 +93,6 @@ public class UserEditBindingModel {
         return confirmPassword;
     }
 
-    @NotNull(message = "Field can't be null")
-    @NotEmpty(message = "Field can't be empty")
-    @Email(regexp = "^((\"[\\w-\\s]+\")|([\\w-]+(?:\\.[\\w-]+)*)|(\"[\\w-\\s]+\")([\\w-]+(?:\\.[\\w-]+)*))(@((?:[\\w-]+\\.)*\\w[\\w-]{0,66})\\.([a-z]{2,6}(?:\\.[a-z]{2})?)$)|(@\\[?((25[0-5]\\.|2[0-4][0-9]\\.|1[0-9]{2}\\.|[0-9]{1,2}\\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\\]?$)", message = "Invalid email")
     public String getEmail() {
         return email;
     }

@@ -1,6 +1,5 @@
 package dreamcompany.web.controller;
 
-import dreamcompany.GlobalConstraints;
 import dreamcompany.domain.entity.Position;
 import dreamcompany.domain.model.binding.UserEditBindingModel;
 import dreamcompany.domain.model.binding.UserRegisterBindingModel;
@@ -9,6 +8,8 @@ import dreamcompany.domain.model.view.*;
 import dreamcompany.service.interfaces.CloudinaryService;
 import dreamcompany.service.interfaces.TaskService;
 import dreamcompany.service.interfaces.UserService;
+import dreamcompany.validation.user.UserEditValidator;
+import dreamcompany.validation.user.UserRegisterValidator;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -37,12 +38,18 @@ public class UserController extends BaseController {
 
     private final ModelMapper modelMapper;
 
+    private final UserRegisterValidator registerValidator;
+
+    private final UserEditValidator editValidator;
+
     @Autowired
-    public UserController(UserService userService, TaskService taskService, CloudinaryService cloudinaryService, ModelMapper modelMapper) {
+    public UserController(UserService userService, TaskService taskService, CloudinaryService cloudinaryService, ModelMapper modelMapper, UserRegisterValidator registerValidator, UserEditValidator editValidator) {
         this.userService = userService;
         this.taskService = taskService;
         this.cloudinaryService = cloudinaryService;
         this.modelMapper = modelMapper;
+        this.registerValidator = registerValidator;
+        this.editValidator = editValidator;
     }
 
     @GetMapping("/register")
@@ -55,7 +62,9 @@ public class UserController extends BaseController {
     @PreAuthorize("isAnonymous()")
     public ModelAndView registerConfirm(@Valid @ModelAttribute(name = "model") UserRegisterBindingModel user, BindingResult bindingResult) throws RoleNotFoundException {
 
-        if (bindingResult.hasErrors() || !user.getPassword().equals(user.getConfirmPassword())) {
+        registerValidator.validate(user,bindingResult);
+
+        if (bindingResult.hasErrors()) {
             return view("register");
         }
 
@@ -132,7 +141,9 @@ public class UserController extends BaseController {
     @PreAuthorize("isAuthenticated()")
     public ModelAndView editConfirm(@Valid @ModelAttribute(name = "editModel") UserEditBindingModel model, BindingResult bindingResult) throws IOException {
 
-        if (bindingResult.hasErrors() || !model.getPassword().equals(model.getConfirmPassword())) {
+        editValidator.validate(model,bindingResult);
+
+        if (bindingResult.hasErrors()) {
             return view("user-edit");
         }
 
@@ -147,7 +158,6 @@ public class UserController extends BaseController {
         this.userService.edit(userServiceModel, model.getOldPassword());
         return redirect("/users/profile");
     }
-
 
     //TODO make it so that every TEAM_LEADER IS AN ADMIN TOO
 

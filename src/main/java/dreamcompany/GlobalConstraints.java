@@ -38,7 +38,6 @@ public final class GlobalConstraints {
     public static final String DATE_PATTERN = "yyyy-MM-dd HH:mm:ss";
 
     //Log messages
-
     // user
     public static final String REGISTERED_USER_SUCCESSFULLY = "Registered successfully %s with generated id:%s";
     public static final String UPDATED_USER_PASSWORD = "Updated password";
@@ -52,4 +51,6 @@ public final class GlobalConstraints {
     public static final String CHANGED_ROLE_SUCCESSFULLY = "Role of user with username %s was changed to %s successfully";
     public static final String PROMOTED_SUCCESSFULLY = "Promoted user with username %s to %s successfully";
     public static final String DEMOTED_SUCCESSFULLY = "Demoted user with username %s to %s successfully";
+
+
 }
