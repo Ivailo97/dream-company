@@ -8,12 +8,16 @@ import dreamcompany.domain.model.service.LogServiceModel;
 import dreamcompany.error.duplicates.EmailAlreadyExistException;
 import dreamcompany.error.duplicates.UsernameAlreadyExistException;
 import dreamcompany.error.WrongOldPasswordException;
+import dreamcompany.error.invalidservicemodels.InvalidUserServiceModelException;
+import dreamcompany.error.notexist.TaskNotFoundException;
+import dreamcompany.error.notexist.UserNotFoundException;
 import dreamcompany.repository.TaskRepository;
 import dreamcompany.service.interfaces.CloudinaryService;
 import dreamcompany.service.interfaces.LogService;
 import dreamcompany.service.interfaces.RoleService;
 import dreamcompany.service.interfaces.UserService;
 import dreamcompany.util.MyThread;
+import dreamcompany.validation.service.user.UserValidationService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -52,8 +56,10 @@ public class UserServiceImpl implements UserService {
 
     private final BCryptPasswordEncoder encoder;
 
+    private final UserValidationService userValidationService;
+
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, TaskRepository taskRepository, CloudinaryService cloudinaryService, LogService logService, RoleService roleService, ModelMapper modelMapper, BCryptPasswordEncoder encoder) {
+    public UserServiceImpl(UserRepository userRepository, TaskRepository taskRepository, CloudinaryService cloudinaryService, LogService logService, RoleService roleService, ModelMapper modelMapper, BCryptPasswordEncoder encoder, UserValidationService userValidationService) {
         this.userRepository = userRepository;
         this.taskRepository = taskRepository;
         this.logService = logService;
@@ -61,6 +67,7 @@ public class UserServiceImpl implements UserService {
         this.cloudinaryService = cloudinaryService;
         this.modelMapper = modelMapper;
         this.encoder = encoder;
+        this.userValidationService = userValidationService;
     }
 
     @Override
@@ -68,6 +75,7 @@ public class UserServiceImpl implements UserService {
 
         String username = userServiceModel.getUsername();
 
+        //checks for username taken or email taken
         throwIfUserExist(username, userServiceModel.getEmail());
 
         defineUserRolesAndPosition(userServiceModel);
@@ -75,55 +83,35 @@ public class UserServiceImpl implements UserService {
         userServiceModel.setHiredOn(LocalDateTime.now());
         userServiceModel.setPassword(encoder.encode(userServiceModel.getPassword()));
 
+        //checks for null fields
+        throwIfServiceModelNotValid(userServiceModel);
+
         User entity = modelMapper.map(userServiceModel, User.class);
 
         entity = userRepository.save(entity);
 
-        String logMessage = String.format(GlobalConstraints.REGISTERED_USER_SUCCESSFULLY, username, entity.getId());
+        String logMessage = String.format(REGISTERED_USER_SUCCESSFULLY, username, entity.getId());
 
         logAction(entity.getUsername(), logMessage);
 
         return modelMapper.map(entity, UserServiceModel.class);
     }
 
-    private void logAction(String username, String description) {
-
-        LogServiceModel logServiceModel = new LogServiceModel();
-        logServiceModel.setUsername(username);
-        logServiceModel.setCreatedOn(LocalDateTime.now());
-        logServiceModel.setDescription(description);
-
-        logService.create(logServiceModel);
-    }
-
-    private void throwIfUserExist(String username, String email) {
-
-        User userInDb = userRepository.findByUsername(username).orElse(null);
-
-        if (userInDb != null) {
-            throw new UsernameAlreadyExistException(GlobalConstraints.DUPLICATE_USER_USERNAME_MESSAGE);
-        }
-
-        User userInDbWithSameEmail = userRepository.findByEmail(email).orElse(null);
-
-        if (userInDbWithSameEmail != null) {
-
-            throw new EmailAlreadyExistException(GlobalConstraints.DUPLICATE_USER_EMAIL_MESSAGE);
-        }
-    }
-
     @Override
     public UserServiceModel findByUsername(String username) {
         return userRepository.findByUsername(username)
                 .map(u -> modelMapper.map(u, UserServiceModel.class))
-                .orElseThrow(() -> new UsernameNotFoundException("Username not found!"));
+                .orElseThrow(() -> new UsernameNotFoundException(USERNAME_NOT_FOUND));
     }
 
     @Override
     public UserServiceModel edit(UserServiceModel edited, String oldPassword) throws IOException {
 
+        //checks for null fields
+        throwIfServiceModelNotValid(edited);
+
         User user = userRepository.findByUsername(edited.getUsername())
-                .orElseThrow(() -> new UsernameNotFoundException("Username not found!"));
+                .orElseThrow(() -> new UsernameNotFoundException(USERNAME_NOT_FOUND));
 
         throwIfWrongOldPassword(oldPassword, user.getPassword());
 
@@ -141,77 +129,6 @@ public class UserServiceImpl implements UserService {
         logAction(user.getUsername(), logMessage);
 
         return modelMapper.map(userRepository.saveAndFlush(user), UserServiceModel.class);
-    }
-
-    private String buildUpdatedEntityLogMessage(User user, UserServiceModel edited, boolean imageIsUpdated) {
-
-        StringBuilder message = new StringBuilder();
-
-        message.append(GlobalConstraints.UPDATED_USER_SUCCESSFULLY)
-                .append(System.lineSeparator());
-
-        if (!user.getEmail().equals(edited.getEmail())) {
-            message.append(GlobalConstraints.UPDATED_USER_EMAIL)
-                    .append(System.lineSeparator());
-        }
-
-        if (!encoder.matches(edited.getPassword(), user.getPassword())) {
-            message.append(GlobalConstraints.UPDATED_USER_PASSWORD)
-                    .append(System.lineSeparator());
-        }
-
-        if (!user.getFirstName().equals(edited.getFirstName())) {
-            message.append(GlobalConstraints.UPDATED_USER_FIRST_NAME)
-                    .append(System.lineSeparator());
-        }
-
-        if (!user.getLastName().equals(edited.getLastName())) {
-            message.append(GlobalConstraints.UPDATED_USER_LAST_NAME)
-                    .append(System.lineSeparator());
-        }
-
-        if (imageIsUpdated) {
-            message.append(GlobalConstraints.UPDATED_USER_IMAGE)
-                    .append(System.lineSeparator());
-        }
-
-        return message.toString();
-    }
-
-    private boolean updateImage(User user, UserServiceModel edited) throws IOException {
-
-        if (edited.getImageUrl() != null) {
-
-            if (user.getImageUrl() != null) {
-                cloudinaryService.deleteImage(user.getImageId());
-            }
-
-            user.setImageUrl(edited.getImageUrl());
-            user.setImageId(edited.getImageId());
-
-            return true;
-        }
-
-        return false;
-    }
-
-    private void throwIfWrongOldPassword(String oldPassword, String password) {
-
-        if (!encoder.matches(oldPassword, password)) {
-            throw new WrongOldPasswordException(GlobalConstraints.WRONG_OLD_PASSWORD_MESSAGE);
-        }
-    }
-
-    private void throwIfUpdatedWithTakenEmail(String oldEmail, String newEmail) {
-
-        if (!oldEmail.equals(newEmail)) {
-
-            User userInDbWithSameEmail = userRepository.findByEmail(newEmail).orElse(null);
-
-            if (userInDbWithSameEmail != null) {
-                throw new EmailAlreadyExistException(GlobalConstraints.DUPLICATE_USER_EMAIL_MESSAGE);
-            }
-        }
     }
 
     @Override
@@ -284,10 +201,10 @@ public class UserServiceImpl implements UserService {
     public void assignTask(String userId, String taskId) {
 
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid user id"));
+                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND_MESSAGE));
 
         Task task = taskRepository.findById(taskId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid task id"));
+                .orElseThrow(() -> new TaskNotFoundException(TASK_NOT_FOUND_MESSAGE));
 
         if (user.getAssignedTasks() == null) {
             user.setAssignedTasks(new LinkedHashSet<>());
@@ -303,7 +220,7 @@ public class UserServiceImpl implements UserService {
                 .map(User::getUsername)
                 .findFirst().orElse(null);
 
-        String logMessage = String.format(GlobalConstraints.ASSIGNED_TASK_SUCCESSFULLY, task.getName(), user.getUsername());
+        String logMessage = String.format(ASSIGNED_TASK_SUCCESSFULLY, task.getName(), user.getUsername());
 
         logAction(teamLeaderUsername, logMessage);
 
@@ -313,11 +230,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public void completeTask(String userId, String taskId) {
 
-        Task task = taskRepository.findById(taskId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid task id"));
-
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid task id"));
+                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND_MESSAGE));
+
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new TaskNotFoundException(TASK_NOT_FOUND_MESSAGE));
 
         long milliseconds = TimeUnit.MINUTES.toMillis(task.getMinutesNeeded());
 
@@ -325,7 +242,7 @@ public class UserServiceImpl implements UserService {
 
         thread.start();
 
-        String logMessage = String.format(GlobalConstraints.COMPLETED_TASK_SUCCESSFULLY, user.getUsername(), task.getName());
+        String logMessage = String.format(COMPLETED_TASK_SUCCESSFULLY, user.getUsername(), task.getName());
 
         logAction(user.getUsername(), logMessage);
     }
@@ -334,7 +251,7 @@ public class UserServiceImpl implements UserService {
     public void changeRoles(String userId, String role, String adminUsername) throws RoleNotFoundException {
 
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found! Wrong user id!"));
+                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND_MESSAGE));
 
         UserServiceModel userServiceModel = modelMapper.map(user, UserServiceModel.class);
 
@@ -374,13 +291,13 @@ public class UserServiceImpl implements UserService {
     public void promote(String userId, String rootUsername) {
 
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid id"));
+                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND_MESSAGE));
 
         int nextPositionIndex = user.getPosition().ordinal() + 1;
 
         Position nextPosition = Position.values()[nextPositionIndex];
         user.setPosition(nextPosition);
-        user.setCredits(user.getCredits() - GlobalConstraints.MAX_CREDITS);
+        user.setCredits(user.getCredits() - MAX_CREDITS);
         user.setSalary(nextPosition.getSalary());
 
         userRepository.save(user);
@@ -394,13 +311,13 @@ public class UserServiceImpl implements UserService {
     public void demote(String userId, String rootUsername) {
 
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid id"));
+                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND_MESSAGE));
 
         int nextPositionIndex = user.getPosition().ordinal() - 1;
 
         Position nextPosition = Position.values()[nextPositionIndex];
         user.setPosition(nextPosition);
-        user.setCredits(GlobalConstraints.STARTING_CREDITS);
+        user.setCredits(STARTING_CREDITS);
         user.setSalary(nextPosition.getSalary());
 
         userRepository.save(user);
@@ -413,7 +330,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
         return userRepository.findByUsername(s)
-                .orElseThrow(() -> new UsernameNotFoundException(("Username not found!")));
+                .orElseThrow(() -> new UsernameNotFoundException((USERNAME_NOT_FOUND)));
     }
 
     private void defineUserRolesAndPosition(UserServiceModel userServiceModel) throws RoleNotFoundException {
@@ -425,17 +342,17 @@ public class UserServiceImpl implements UserService {
 
         if (repositoryCount == 0) {
             userServiceModel.setPosition(Position.PROJECT_MANAGER);
-            userServiceModel.setSalary(GlobalConstraints.PROJECT_MANAGER_SALARY);
-            userServiceModel.setCredits(GlobalConstraints.MAX_CREDITS);
-            userServiceModel.getAuthorities().add(roleService.findByAuthority("ROLE_ROOT"));
-            userServiceModel.getAuthorities().add(roleService.findByAuthority("ROLE_ADMIN"));
-            userServiceModel.getAuthorities().add(roleService.findByAuthority("ROLE_MODERATOR"));
-            userServiceModel.getAuthorities().add(roleService.findByAuthority("ROLE_USER"));
+            userServiceModel.setSalary(Position.PROJECT_MANAGER.getSalary());
+            userServiceModel.setCredits(MAX_CREDITS);
+            userServiceModel.getAuthorities().add(roleService.findByAuthority(ROLE_ROOT));
+            userServiceModel.getAuthorities().add(roleService.findByAuthority(ROLE_ADMIN));
+            userServiceModel.getAuthorities().add(roleService.findByAuthority(ROLE_MODERATOR));
+            userServiceModel.getAuthorities().add(roleService.findByAuthority(ROLE_USER));
         } else {
             userServiceModel.setPosition(Position.INTERN);
-            userServiceModel.setSalary(GlobalConstraints.INTERN_SALARY);
-            userServiceModel.setCredits(GlobalConstraints.STARTING_CREDITS);
-            userServiceModel.getAuthorities().add(roleService.findByAuthority("ROLE_USER"));
+            userServiceModel.setSalary(Position.INTERN.getSalary());
+            userServiceModel.setCredits(STARTING_CREDITS);
+            userServiceModel.getAuthorities().add(roleService.findByAuthority(ROLE_USER));
         }
     }
 
@@ -448,5 +365,108 @@ public class UserServiceImpl implements UserService {
         task.setStatus(Status.FINISHED);
 
         taskRepository.save(task);
+    }
+
+    private String buildUpdatedEntityLogMessage(User user, UserServiceModel edited, boolean imageIsUpdated) {
+
+        StringBuilder message = new StringBuilder();
+
+        message.append(UPDATED_USER_SUCCESSFULLY)
+                .append(System.lineSeparator());
+
+        if (!user.getEmail().equals(edited.getEmail())) {
+            message.append(UPDATED_USER_EMAIL)
+                    .append(System.lineSeparator());
+        }
+
+        if (!encoder.matches(edited.getPassword(), user.getPassword())) {
+            message.append(UPDATED_USER_PASSWORD)
+                    .append(System.lineSeparator());
+        }
+
+        if (!user.getFirstName().equals(edited.getFirstName())) {
+            message.append(UPDATED_USER_FIRST_NAME)
+                    .append(System.lineSeparator());
+        }
+
+        if (!user.getLastName().equals(edited.getLastName())) {
+            message.append(UPDATED_USER_LAST_NAME)
+                    .append(System.lineSeparator());
+        }
+
+        if (imageIsUpdated) {
+            message.append(UPDATED_USER_IMAGE)
+                    .append(System.lineSeparator());
+        }
+
+        return message.toString();
+    }
+
+    private boolean updateImage(User user, UserServiceModel edited) throws IOException {
+
+        if (edited.getImageUrl() != null) {
+
+            if (user.getImageUrl() != null) {
+                cloudinaryService.deleteImage(user.getImageId());
+            }
+
+            user.setImageUrl(edited.getImageUrl());
+            user.setImageId(edited.getImageId());
+
+            return true;
+        }
+
+        return false;
+    }
+
+    private void throwIfWrongOldPassword(String oldPassword, String password) {
+
+        if (!encoder.matches(oldPassword, password)) {
+            throw new WrongOldPasswordException(WRONG_OLD_PASSWORD_MESSAGE);
+        }
+    }
+
+    private void throwIfUpdatedWithTakenEmail(String oldEmail, String newEmail) {
+
+        if (!oldEmail.equals(newEmail)) {
+
+            User userInDbWithSameEmail = userRepository.findByEmail(newEmail).orElse(null);
+
+            if (userInDbWithSameEmail != null) {
+                throw new EmailAlreadyExistException(DUPLICATE_USER_EMAIL_MESSAGE);
+            }
+        }
+    }
+
+    private void throwIfServiceModelNotValid(UserServiceModel userServiceModel) {
+        if (!userValidationService.isValid(userServiceModel)){
+            throw new InvalidUserServiceModelException(INVALID_USER_SERVICE_MODEL_MESSAGE);
+        }
+    }
+
+    private void logAction(String username, String description) {
+
+        LogServiceModel logServiceModel = new LogServiceModel();
+        logServiceModel.setUsername(username);
+        logServiceModel.setCreatedOn(LocalDateTime.now());
+        logServiceModel.setDescription(description);
+
+        logService.create(logServiceModel);
+    }
+
+    private void throwIfUserExist(String username, String email) {
+
+        User userInDb = userRepository.findByUsername(username).orElse(null);
+
+        if (userInDb != null) {
+            throw new UsernameAlreadyExistException(DUPLICATE_USER_USERNAME_MESSAGE);
+        }
+
+        User userInDbWithSameEmail = userRepository.findByEmail(email).orElse(null);
+
+        if (userInDbWithSameEmail != null) {
+
+            throw new EmailAlreadyExistException(DUPLICATE_USER_EMAIL_MESSAGE);
+        }
     }
 }

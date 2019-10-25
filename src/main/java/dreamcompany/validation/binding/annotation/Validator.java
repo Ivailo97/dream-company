@@ -1,4 +1,4 @@
-package dreamcompany.validation.annotation;
+package dreamcompany.validation.binding.annotation;
 
 
 import org.springframework.core.annotation.AliasFor;

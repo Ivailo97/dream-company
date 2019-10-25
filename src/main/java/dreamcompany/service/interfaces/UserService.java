@@ -12,9 +12,9 @@ public interface UserService extends UserDetailsService {
 
     UserServiceModel register(UserServiceModel userServiceModel) throws RoleNotFoundException;
 
-    UserServiceModel findByUsername(String username);
-
     UserServiceModel edit(UserServiceModel userServiceModel, String oldPassword) throws IOException;
+
+    UserServiceModel findByUsername(String username);
 
     List<UserServiceModel> findAll();
 

@@ -1,4 +1,4 @@
-package dreamcompany.validation;
+package dreamcompany.validation.binding;
 
 public final class ValidationConstants {
 
@@ -15,6 +15,13 @@ public final class ValidationConstants {
     public final static String EMAIL_ALREADY_EXISTS = "Email %s already exists";
 
     public final static String EMAIL_IS_NOT_VALID = "Email is not valid";
+
+    public final static String USERNAME_IS_MANDATORY = "Enter a username!";
+    public final static String OLD_PASSWORD_IS_MANDATORY = "Enter old password!";
+    public final static String PASSWORD_IS_MANDATORY = "Enter a password!";
+    public final static String CONFIRM_PASSWORD_IS_MANDATORY = "Confirm your password!";
+    public final static String FIRST_NAME_IS_MANDATORY = "Enter first name!";
+    public final static String LAST_NAME_IS_MANDATORY = "Enter last name!";
 
     public final static String WRONG_PASSWORD = "Wrong password!";
 

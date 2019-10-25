@@ -1,14 +1,6 @@
 package dreamcompany;
 
-import java.math.BigDecimal;
-
 public final class GlobalConstraints {
-
-    public static final BigDecimal INTERN_SALARY = new BigDecimal("800");
-    public static final BigDecimal SENIOR_SALARY = new BigDecimal("3000");
-    public static final BigDecimal JUNIOR_SALARY = new BigDecimal("1500");
-    public static final BigDecimal TEAM_LEADER_SALARY = new BigDecimal("4000");
-    public static final BigDecimal PROJECT_MANAGER_SALARY = new BigDecimal("6000");
 
     public static final Integer MAX_CREDITS = 100;
     public static final Integer STARTING_CREDITS = 0;
@@ -27,12 +19,16 @@ public final class GlobalConstraints {
 
 
     //exception messages
-    public static final String DUPLICATE_PROJECT_MESSAGE = "Project with that name already exist";
-    public static final String DUPLICATE_USER_USERNAME_MESSAGE = "User with the same username already exist";
-    public static final String DUPLICATE_USER_EMAIL_MESSAGE = "User with the same email already exist";
-    public static final String WRONG_OLD_PASSWORD_MESSAGE = "Wrong old password";
-    public static final String DUPLICATE_TASK_MESSAGE = "Task with that name already exist";
-    public static final String DUPLICATE_TEAM_MESSAGE = "Team with that name already exist";
+    public static final String DUPLICATE_PROJECT_MESSAGE = "Project with that name already exist!";
+    public static final String DUPLICATE_USER_USERNAME_MESSAGE = "User with the same username already exist!";
+    public static final String DUPLICATE_USER_EMAIL_MESSAGE = "User with the same email already exist!";
+    public static final String WRONG_OLD_PASSWORD_MESSAGE = "Wrong old password!";
+    public static final String DUPLICATE_TASK_MESSAGE = "Task with that name already exist!";
+    public static final String DUPLICATE_TEAM_MESSAGE = "Team with that name already exist!";
+    public static final String USER_NOT_FOUND_MESSAGE = "Invalid user id!";
+    public static final String TASK_NOT_FOUND_MESSAGE = "Invalid task id!";
+    public static final String INVALID_USER_SERVICE_MODEL_MESSAGE = "Invalid data!";
+    public static final String USERNAME_NOT_FOUND = "Username not found!";
 
     //LocalDateTime format pattern
     public static final String DATE_PATTERN = "yyyy-MM-dd HH:mm:ss";

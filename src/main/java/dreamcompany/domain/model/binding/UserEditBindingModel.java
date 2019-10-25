@@ -2,9 +2,6 @@ package dreamcompany.domain.model.binding;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-
 public class UserEditBindingModel {
 
     private MultipartFile picture;
@@ -62,33 +59,22 @@ public class UserEditBindingModel {
         return username;
     }
 
-    @NotEmpty(message = "Field can't be empty")
-    @NotNull(message = "Field can't be null")
     public String getFirstName() {
         return firstName;
     }
 
-    @NotEmpty(message = "Field can't be empty")
-    @NotNull(message = "Field can't be null")
     public String getLastName() {
         return lastName;
     }
 
-    @NotEmpty(message = "Field can't be empty")
-    @NotNull(message = "Field can't be null")
     public String getOldPassword() {
         return oldPassword;
     }
 
-    @NotEmpty(message = "Field can't be empty")
-    @NotNull(message = "Field can't be null")
     public String getPassword() {
         return password;
     }
 
-
-    @NotEmpty(message = "Field can't be empty")
-    @NotNull(message = "Field can't be null")
     public String getConfirmPassword() {
         return confirmPassword;
     }

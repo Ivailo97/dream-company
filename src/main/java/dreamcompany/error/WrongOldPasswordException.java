@@ -1,6 +1,5 @@
 package dreamcompany.error;
 
-import dreamcompany.error.BaseException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
@@ -8,6 +7,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class WrongOldPasswordException extends BaseException {
 
     public WrongOldPasswordException(String message) {
-        super(401, message);
+        super(HttpStatus.UNAUTHORIZED.value(), message);
     }
 }

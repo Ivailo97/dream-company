@@ -1,8 +1,5 @@
 package dreamcompany.domain.model.binding;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-
 public class UserRegisterBindingModel {
 
     private String username;
@@ -20,8 +17,6 @@ public class UserRegisterBindingModel {
     public UserRegisterBindingModel() {
     }
 
-    @NotEmpty(message = "Username can't be empty")
-    @NotNull(message = "Username can't be null")
     public String getUsername() {
         return username;
     }
@@ -30,8 +25,6 @@ public class UserRegisterBindingModel {
         this.username = username;
     }
 
-    @NotEmpty(message = "Password can't be empty")
-    @NotNull(message = "Password can't be null")
     public String getPassword() {
         return password;
     }
@@ -40,8 +33,6 @@ public class UserRegisterBindingModel {
         this.password = password;
     }
 
-    @NotEmpty(message = "Confirmed password can't be empty")
-    @NotNull(message = "Confirmed password can't be null")
     public String getConfirmPassword() {
         return confirmPassword;
     }
@@ -58,9 +49,6 @@ public class UserRegisterBindingModel {
         this.email = email;
     }
 
-
-    @NotEmpty(message = "First name can't be empty")
-    @NotNull(message = "First name can't be null")
     public String getFirstName() {
         return firstName;
     }
@@ -69,8 +57,6 @@ public class UserRegisterBindingModel {
         this.firstName = firstName;
     }
 
-    @NotEmpty(message = "Last name can't be empty")
-    @NotNull(message = "Last name can't be null")
     public String getLastName() {
         return lastName;
     }
