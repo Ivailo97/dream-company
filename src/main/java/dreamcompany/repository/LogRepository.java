@@ -12,4 +12,6 @@ public interface LogRepository extends JpaRepository<Log, String> {
 
     @Query("SELECT l FROM Log l ORDER BY l.createdOn DESC")
     List<Log> findAllOrderedByDateDesc();
+
+    List<Log> findAllByUsername(String username);
 }

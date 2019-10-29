@@ -1,6 +1,7 @@
-package dreamcompany.validation.service.user;
+package dreamcompany.validation.service;
 
 import dreamcompany.domain.model.service.UserServiceModel;
+import dreamcompany.validation.service.interfaces.UserValidationService;
 import org.springframework.stereotype.Component;
 
 import static dreamcompany.validation.binding.ValidationConstants.*;

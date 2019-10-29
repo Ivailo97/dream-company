@@ -7,7 +7,8 @@ import java.util.List;
 
 public interface LogService {
 
-    LogServiceModel create(LogServiceModel log);
+    // returns log message
+    String create(LogServiceModel log);
 
     List<LogServiceModel> getLogsOrderedByDate();
 }

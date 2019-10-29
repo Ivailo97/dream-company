@@ -4,9 +4,11 @@ import dreamcompany.GlobalConstraints;
 import dreamcompany.domain.entity.Log;
 import dreamcompany.domain.entity.User;
 import dreamcompany.domain.model.service.LogServiceModel;
+import dreamcompany.error.notexist.UserNotFoundException;
 import dreamcompany.repository.LogRepository;
 import dreamcompany.repository.UserRepository;
 import dreamcompany.service.interfaces.LogService;
+import dreamcompany.validation.service.interfaces.LogValidationService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,17 +23,21 @@ public class LogServiceImpl implements LogService {
 
     private final LogRepository logRepository;
     private final UserRepository userRepository;
+    private final LogValidationService logValidationService;
     private final ModelMapper modelMapper;
 
     @Autowired
-    public LogServiceImpl(LogRepository logRepository, UserRepository userRepository, ModelMapper modelMapper) {
+    public LogServiceImpl(LogRepository logRepository, UserRepository userRepository, LogValidationService logValidationService, ModelMapper modelMapper) {
         this.logRepository = logRepository;
         this.userRepository = userRepository;
+        this.logValidationService = logValidationService;
         this.modelMapper = modelMapper;
     }
 
     @Override
-    public LogServiceModel create(LogServiceModel logServiceModel) {
+    public String create(LogServiceModel logServiceModel) {
+
+        throwIfInvalidServiceModel(logServiceModel);
 
         Log log = modelMapper.map(logServiceModel, Log.class);
 
@@ -41,14 +47,20 @@ public class LogServiceImpl implements LogService {
 
         log = logRepository.save(log);
 
-        return modelMapper.map(log, LogServiceModel.class);
+        return log.getDescription();
     }
 
 
     private void throwIfUserNotFound(User user) {
 
         if (user == null) {
-            throw new IllegalArgumentException("User not found");
+            throw new UserNotFoundException("User not found");
+        }
+    }
+
+    private void throwIfInvalidServiceModel(LogServiceModel logServiceModel) {
+        if (!logValidationService.isValid(logServiceModel)) {
+            throw new IllegalArgumentException("Invalid log service model");
         }
     }
 

@@ -17,7 +17,7 @@ import dreamcompany.service.interfaces.LogService;
 import dreamcompany.service.interfaces.RoleService;
 import dreamcompany.service.interfaces.UserService;
 import dreamcompany.util.MyThread;
-import dreamcompany.validation.service.user.UserValidationService;
+import dreamcompany.validation.service.interfaces.UserValidationService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -71,7 +71,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserServiceModel register(UserServiceModel userServiceModel) throws RoleNotFoundException {
+    public String register(UserServiceModel userServiceModel) throws RoleNotFoundException {
 
         String username = userServiceModel.getUsername();
 
@@ -92,9 +92,7 @@ public class UserServiceImpl implements UserService {
 
         String logMessage = String.format(REGISTERED_USER_SUCCESSFULLY, username, entity.getId());
 
-        logAction(entity.getUsername(), logMessage);
-
-        return modelMapper.map(entity, UserServiceModel.class);
+        return logAction(entity.getUsername(), logMessage);
     }
 
     @Override
@@ -444,14 +442,14 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    private void logAction(String username, String description) {
+    private String logAction(String username, String description) {
 
         LogServiceModel logServiceModel = new LogServiceModel();
         logServiceModel.setUsername(username);
         logServiceModel.setCreatedOn(LocalDateTime.now());
         logServiceModel.setDescription(description);
 
-        logService.create(logServiceModel);
+       return logService.create(logServiceModel);
     }
 
     private void throwIfUserExist(String username, String email) {

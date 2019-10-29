@@ -1,4 +1,4 @@
-package dreamcompany.validation.service.user;
+package dreamcompany.validation.service.interfaces;
 
 import dreamcompany.domain.model.service.UserServiceModel;
 
