@@ -6,6 +6,7 @@ import dreamcompany.domain.model.service.LogServiceModel;
 import dreamcompany.error.notexist.UserNotFoundException;
 import dreamcompany.repository.LogRepository;
 import dreamcompany.repository.UserRepository;
+import dreamcompany.validation.service.LogValidationServiceImpl;
 import dreamcompany.validation.service.interfaces.LogValidationService;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,11 +28,8 @@ public class LogServiceTests {
     private final User USER_IN_DB = new User();
 
     private final LogServiceModel LOG_SERVICE_MODEL = new LogServiceModel();
-
     private static final String VALID_USERNAME = "ivo";
-
     private static final String VALID_DESCRIPTION = "Someone did something";
-
     private static final LocalDateTime VALID_CREATED_ON = LocalDateTime.now();
 
     @InjectMocks
@@ -51,17 +49,21 @@ public class LogServiceTests {
 
     @Before
     public void init() {
+        LogValidationService actualValidationService = new LogValidationServiceImpl();
+        ModelMapper actualMapper = new ModelMapper();
+
         USER_IN_DB.setUsername(VALID_USERNAME);
         LOG_SERVICE_MODEL.setUsername(USER_IN_DB.getUsername());
         LOG_SERVICE_MODEL.setDescription(VALID_DESCRIPTION);
         LOG_SERVICE_MODEL.setCreatedOn(VALID_CREATED_ON);
 
-        // making new model mapper cuz there is a problem with the initial one..
-        ModelMapper otherMapper = new ModelMapper();
 
         // maps service model to entity correct
         when(modelMapper.map(LOG_SERVICE_MODEL, Log.class))
-                .thenReturn(otherMapper.map(LOG_SERVICE_MODEL, Log.class));
+                .thenReturn(actualMapper.map(LOG_SERVICE_MODEL, Log.class));
+
+        when(logValidationService.isValid(any()))
+                .then(invocationOnMock -> actualValidationService.isValid((LogServiceModel) invocationOnMock.getArguments()[0]));
     }
 
     @Test
@@ -76,10 +78,6 @@ public class LogServiceTests {
         // repository save method returns the entity instead of saving in db
         when(logRepository.save(any()))
                 .thenAnswer(invocationOnMock -> invocationOnMock.getArguments()[0]);
-
-        // make sure validation service returns true because we already tested this
-        when(logValidationService.isValid(LOG_SERVICE_MODEL))
-                .thenReturn(true);
 
         // Act
         String returned = logService.create(LOG_SERVICE_MODEL);
@@ -96,10 +94,6 @@ public class LogServiceTests {
         // when the user doesnt exist in db
         when(userRepository.findByUsername(anyString()))
                 .thenReturn(Optional.empty());
-
-        // make sure validation service returns true because we already tested this
-        when(logValidationService.isValid(LOG_SERVICE_MODEL))
-                .thenReturn(true);
 
         // Act
         logService.create(LOG_SERVICE_MODEL);

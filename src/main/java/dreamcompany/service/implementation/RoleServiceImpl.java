@@ -29,15 +29,16 @@ public class RoleServiceImpl implements RoleService {
     public void seedRoles() {
 
         if (this.roleRepository.count() == 0) {
-            roleRepository.saveAndFlush(new Role("ROLE_ROOT"));
-            roleRepository.saveAndFlush(new Role("ROLE_ADMIN"));
-            roleRepository.saveAndFlush(new Role("ROLE_MODERATOR"));
-            roleRepository.saveAndFlush(new Role("ROLE_USER"));
+            roleRepository.save(new Role("ROLE_ROOT"));
+            roleRepository.save(new Role("ROLE_ADMIN"));
+            roleRepository.save(new Role("ROLE_MODERATOR"));
+            roleRepository.save(new Role("ROLE_USER"));
         }
     }
 
     @Override
     public RoleServiceModel findByAuthority(String authority) throws RoleNotFoundException {
+
         return this.roleRepository.findByAuthority(authority)
                 .map(r-> this.modelMapper.map(r,RoleServiceModel.class))
                 .orElseThrow(()-> new RoleNotFoundException("Role not found!"));
