@@ -11,7 +11,7 @@ import java.util.List;
 public interface UserService extends UserDetailsService {
 
     //returns log description
-    String register(UserServiceModel userServiceModel) throws RoleNotFoundException;
+    UserServiceModel register(UserServiceModel userServiceModel) throws RoleNotFoundException;
 
     UserServiceModel edit(UserServiceModel userServiceModel, String oldPassword) throws IOException;
 

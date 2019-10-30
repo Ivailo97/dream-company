@@ -71,7 +71,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String register(UserServiceModel userServiceModel) throws RoleNotFoundException {
+    public UserServiceModel register(UserServiceModel userServiceModel) throws RoleNotFoundException {
 
         String username = userServiceModel.getUsername();
 
@@ -92,7 +92,9 @@ public class UserServiceImpl implements UserService {
 
         String logMessage = String.format(REGISTERED_USER_SUCCESSFULLY, username, entity.getId());
 
-        return logAction(entity.getUsername(), logMessage);
+        logAction(entity.getUsername(), logMessage);
+
+        return modelMapper.map(entity, UserServiceModel.class);
     }
 
     @Override
@@ -320,9 +322,9 @@ public class UserServiceImpl implements UserService {
 
         userRepository.save(user);
 
-        String logMessage = String.format(DEMOTED_SUCCESSFULLY,user.getUsername(),nextPosition.name());
+        String logMessage = String.format(DEMOTED_SUCCESSFULLY, user.getUsername(), nextPosition.name());
 
-        logAction(rootUsername,logMessage);
+        logAction(rootUsername, logMessage);
     }
 
     @Override
@@ -437,19 +439,19 @@ public class UserServiceImpl implements UserService {
     }
 
     private void throwIfServiceModelNotValid(UserServiceModel userServiceModel) {
-        if (!userValidationService.isValid(userServiceModel)){
+        if (!userValidationService.isValid(userServiceModel)) {
             throw new InvalidUserServiceModelException(INVALID_USER_SERVICE_MODEL_MESSAGE);
         }
     }
 
-    private String logAction(String username, String description) {
+    private void logAction(String username, String description) {
 
         LogServiceModel logServiceModel = new LogServiceModel();
         logServiceModel.setUsername(username);
         logServiceModel.setCreatedOn(LocalDateTime.now());
         logServiceModel.setDescription(description);
 
-       return logService.create(logServiceModel);
+        logService.create(logServiceModel);
     }
 
     private void throwIfUserExist(String username, String email) {

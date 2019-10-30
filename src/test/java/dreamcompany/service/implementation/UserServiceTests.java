@@ -76,9 +76,13 @@ public class UserServiceTests {
         UserValidationServiceImpl actualUserValidation = new UserValidationServiceImpl();
         ModelMapper actualMapper = new ModelMapper();
 
-        when(modelMapper.map(any(UserServiceModel.class),eq(User.class)))
+        when(modelMapper.map(any(UserServiceModel.class), eq(User.class)))
                 .thenAnswer(invocationOnMock ->
                         actualMapper.map(invocationOnMock.getArguments()[0], User.class));
+
+        when(modelMapper.map(any(User.class),eq(UserServiceModel.class)))
+                .thenAnswer(invocationOnMock ->
+                        actualMapper.map(invocationOnMock.getArguments()[0], UserServiceModel.class));
 
         when(roleService.findByAuthority(anyString()))
                 .thenAnswer(invocationOnMock -> actualMapper.map(new Role((String) invocationOnMock.getArguments()[0]),
@@ -106,15 +110,22 @@ public class UserServiceTests {
     public void register_shouldAddUserInDb_andReturnCorrectLogDescription_whenValidUser() throws RoleNotFoundException {
 
         //Arrange
+        //Dirty hack
+        final String[] actualMessage = new String[1];
         when(logService.create(any()))
-                .thenAnswer(invocationOnMock -> ((LogServiceModel)invocationOnMock.getArguments()[0]).getDescription());
+                .thenAnswer(invocationOnMock -> {
+                    LogServiceModel logServiceModel = ((LogServiceModel) invocationOnMock.getArguments()[0]);
+                    actualMessage[0] = logServiceModel.getDescription();
+                   return logServiceModel.getDescription();
+                });
+
 
         //Act
-        String actual = userService.register(MODEL);
+        userService.register(MODEL);
 
         //Assert
         verify(userRepository).save(any());
-        assertEquals(EXPECTED_REGISTER_LOG_MESSAGE,actual);
+        assertEquals(EXPECTED_REGISTER_LOG_MESSAGE, actualMessage[0]);
     }
 
     @Test(expected = UsernameAlreadyExistException.class)
@@ -149,12 +160,12 @@ public class UserServiceTests {
         // makes sure when save method is called to return the entity which is passed as an argument
         when(userRepository.save(any())).thenAnswer(invocationOnMock -> {
             savedInDb[0] = (User) invocationOnMock.getArguments()[0];
-            return  savedInDb[0];
+            return savedInDb[0];
         });
 
         when(logService.create(any()))
                 .thenAnswer(invocationOnMock ->
-                        ((LogServiceModel)invocationOnMock.getArguments()[0]).getDescription());
+                        ((LogServiceModel) invocationOnMock.getArguments()[0]).getDescription());
 
         //Act
         userService.register(MODEL);
@@ -166,10 +177,10 @@ public class UserServiceTests {
         int expectedCredits = GlobalConstraints.MAX_CREDITS;
         int actualCredits = savedInDb[0].getCredits();
 
-        assertEquals(expectedRolesCount,actualRolesCount);
-        assertEquals(Position.PROJECT_MANAGER.name(),actualPosition.name());
-        assertEquals(Position.PROJECT_MANAGER.getSalary(),actualPosition.getSalary());
-        assertEquals(expectedCredits,actualCredits);
+        assertEquals(expectedRolesCount, actualRolesCount);
+        assertEquals(Position.PROJECT_MANAGER.name(), actualPosition.name());
+        assertEquals(Position.PROJECT_MANAGER.getSalary(), actualPosition.getSalary());
+        assertEquals(expectedCredits, actualCredits);
     }
 
     @Test
@@ -184,12 +195,12 @@ public class UserServiceTests {
         // makes sure when save method is called to return the entity which is passed as an argument
         when(userRepository.save(any())).thenAnswer(invocationOnMock -> {
             savedInDb[0] = (User) invocationOnMock.getArguments()[0];
-            return  savedInDb[0];
+            return savedInDb[0];
         });
 
         when(logService.create(any()))
                 .thenAnswer(invocationOnMock ->
-                        ((LogServiceModel)invocationOnMock.getArguments()[0]).getDescription());
+                        ((LogServiceModel) invocationOnMock.getArguments()[0]).getDescription());
 
         //Act
         userService.register(MODEL);
@@ -201,9 +212,9 @@ public class UserServiceTests {
         int expectedCredits = GlobalConstraints.STARTING_CREDITS;
         int actualCredits = savedInDb[0].getCredits();
 
-        assertEquals(expectedRolesCount,actualRolesCount);
-        assertEquals(Position.INTERN.name(),actualPosition.name());
-        assertEquals(Position.INTERN.getSalary(),actualPosition.getSalary());
-        assertEquals(expectedCredits,actualCredits);
+        assertEquals(expectedRolesCount, actualRolesCount);
+        assertEquals(Position.INTERN.name(), actualPosition.name());
+        assertEquals(Position.INTERN.getSalary(), actualPosition.getSalary());
+        assertEquals(expectedCredits, actualCredits);
     }
 }
