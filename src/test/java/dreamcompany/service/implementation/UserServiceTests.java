@@ -29,6 +29,7 @@ import static org.mockito.Mockito.*;
 import static org.junit.Assert.*;
 
 import javax.management.relation.RoleNotFoundException;
+import java.io.IOException;
 import java.util.Optional;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -39,12 +40,26 @@ public class UserServiceTests {
 
     private static final String VALID_USERNAME = "ivo";
     private static final String VALID_PASSWORD = "123";
+    private static final String VALID_EDITED_PASSWORD = "1234";
     private static final String VALID_FIRST_NAME = "Ивайло";
+    private static final String VALID_EDITED_FIRST_NAME = "Иван";
     private static final String VALID_LAST_NAME = "Николов";
+    private static final String VALID_EDITED_LAST_NAME = "Иванович";
     private static final String VALID_EMAIL = "ivailo.8.1993@abv.bg";
+    private static final String VALID_EDITED_EMAIL = "ivanovic.7.1983@abv.bg";
 
-    private static final String RANDOM_HASHED_PASSWORD = "#$Ssda#@!";
     private static final String EXPECTED_REGISTER_LOG_MESSAGE = "Registered successfully ivo with generated id:null";
+    private static final String EXPECTED_EDIT_NAMES_EMAIL_AND_PASSWORD_LOG_MESSAGE = "Updated successfully profile:"
+            + System.lineSeparator() +
+            "Updated email" +
+            System.lineSeparator() +
+            "Updated password"
+            + System.lineSeparator() +
+            "Updated first name"
+            + System.lineSeparator() +
+            "Updated last name"
+            + System.lineSeparator();
+
 
     @InjectMocks
     private UserServiceImpl userService;
@@ -75,12 +90,13 @@ public class UserServiceTests {
 
         UserValidationServiceImpl actualUserValidation = new UserValidationServiceImpl();
         ModelMapper actualMapper = new ModelMapper();
+        BCryptPasswordEncoder actualEncoder = new BCryptPasswordEncoder();
 
         when(modelMapper.map(any(UserServiceModel.class), eq(User.class)))
                 .thenAnswer(invocationOnMock ->
                         actualMapper.map(invocationOnMock.getArguments()[0], User.class));
 
-        when(modelMapper.map(any(User.class),eq(UserServiceModel.class)))
+        when(modelMapper.map(any(User.class), eq(UserServiceModel.class)))
                 .thenAnswer(invocationOnMock ->
                         actualMapper.map(invocationOnMock.getArguments()[0], UserServiceModel.class));
 
@@ -92,7 +108,8 @@ public class UserServiceTests {
         when(validationService.isValid(any()))
                 .thenAnswer(invocationOnMock -> actualUserValidation.isValid((UserServiceModel) invocationOnMock.getArguments()[0]));
 
-        when(encoder.encode(any())).thenReturn(RANDOM_HASHED_PASSWORD);
+        when(encoder.encode(any())).thenAnswer(invocationOnMock -> actualEncoder.encode((CharSequence) invocationOnMock.getArguments()[0]));
+        when(encoder.matches(any(), any())).thenAnswer(invocationOnMock -> actualEncoder.matches((String) invocationOnMock.getArguments()[0], (String) invocationOnMock.getArguments()[1]));
         when(userRepository.save(any())).thenAnswer(invocationOnMock -> invocationOnMock.getArguments()[0]);
         when(logService.create(any())).thenAnswer(invocationOnMock -> invocationOnMock.getArguments()[0]);
 
@@ -116,9 +133,8 @@ public class UserServiceTests {
                 .thenAnswer(invocationOnMock -> {
                     LogServiceModel logServiceModel = ((LogServiceModel) invocationOnMock.getArguments()[0]);
                     actualMessage[0] = logServiceModel.getDescription();
-                   return logServiceModel.getDescription();
+                    return logServiceModel.getDescription();
                 });
-
 
         //Act
         userService.register(MODEL);
@@ -216,5 +232,45 @@ public class UserServiceTests {
         assertEquals(Position.INTERN.name(), actualPosition.name());
         assertEquals(Position.INTERN.getSalary(), actualPosition.getSalary());
         assertEquals(expectedCredits, actualCredits);
+    }
+
+    // happy case
+    @Test
+    public void edit_shouldEditEmailPasswordFirstAndLastName_whenValidUserAndOldPassword() throws IOException {
+
+        //Arrange
+        User userInDb = modelMapper.map(MODEL, User.class);
+
+        when(userRepository.findByUsername(MODEL.getUsername()))
+                .thenReturn(Optional.of(userInDb));
+
+        userInDb.setPassword(encoder.encode(userInDb.getPassword()));
+
+        UserServiceModel edited = new UserServiceModel();
+        edited.setUsername(VALID_USERNAME);
+        edited.setPassword(VALID_EDITED_PASSWORD);
+        edited.setFirstName(VALID_EDITED_FIRST_NAME);
+        edited.setLastName(VALID_EDITED_LAST_NAME);
+        edited.setEmail(VALID_EDITED_EMAIL);
+
+        //Dirty hack
+        final String[] actualLogMessage = new String[1];
+        when(logService.create(any()))
+                .thenAnswer(invocationOnMock -> {
+                    LogServiceModel logServiceModel = ((LogServiceModel) invocationOnMock.getArguments()[0]);
+                    actualLogMessage[0] = logServiceModel.getDescription();
+                    return logServiceModel.getDescription();
+                });
+
+        //Act
+
+       UserServiceModel editedModel = userService.edit(edited, MODEL.getPassword());
+
+        //Assert
+        assertEquals(EXPECTED_EDIT_NAMES_EMAIL_AND_PASSWORD_LOG_MESSAGE, actualLogMessage[0]);
+        assertEquals(VALID_EDITED_EMAIL,editedModel.getEmail());
+        assertEquals(VALID_EDITED_FIRST_NAME,editedModel.getFirstName());
+        assertEquals(VALID_EDITED_LAST_NAME,editedModel.getLastName());
+        assertTrue(encoder.matches(VALID_EDITED_PASSWORD, editedModel.getPassword()));
     }
 }

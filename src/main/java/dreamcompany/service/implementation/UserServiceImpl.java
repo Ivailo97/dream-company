@@ -128,7 +128,7 @@ public class UserServiceImpl implements UserService {
 
         logAction(user.getUsername(), logMessage);
 
-        return modelMapper.map(userRepository.saveAndFlush(user), UserServiceModel.class);
+        return modelMapper.map(userRepository.save(user), UserServiceModel.class);
     }
 
     @Override
