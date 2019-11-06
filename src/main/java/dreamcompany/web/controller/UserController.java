@@ -147,7 +147,7 @@ public class UserController extends BaseController {
             return view("user-edit");
         }
 
-        UserServiceModel userServiceModel = this.modelMapper.map(model, UserServiceModel.class);
+        UserServiceModel userServiceModel = modelMapper.map(model, UserServiceModel.class);
 
         if (!model.getPicture().isEmpty()) {
             String[] uploadInfo = cloudinaryService.uploadImage(model.getPicture());
@@ -155,7 +155,8 @@ public class UserController extends BaseController {
             userServiceModel.setImageId(uploadInfo[1]);
         }
 
-        this.userService.edit(userServiceModel, model.getOldPassword());
+        userService.edit(userServiceModel, model.getOldPassword());
+
         return redirect("/users/profile");
     }
 
