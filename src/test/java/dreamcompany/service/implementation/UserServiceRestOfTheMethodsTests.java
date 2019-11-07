@@ -40,6 +40,7 @@ public class UserServiceRestOfTheMethodsTests {
     private static final String ANOTHER_LAST_NAME = "Владимиров";
     private static final String EMAIL = "ivailo.8.1993@abv.bg";
     private static final String ANOTHER_EMAIL = "pesho.8.1993@abv.bg";
+    private static final Integer USER_CREDITS = 10;
 
     private static final String RANDOM_ID = "asidjasud";
 
@@ -47,9 +48,12 @@ public class UserServiceRestOfTheMethodsTests {
     private static final String TASK_DESCRIPTION = "Do some magic buddy";
     private static final Integer TASK_CREDITS = 10;
 
-    public static final String ASSIGNED_TASK_LOG_MESSAGE = "Assigned task with name: "
+    private static final String EXPECTED_ASSIGNED_TASK_LOG_MESSAGE = "Assigned task with name: "
             + TASK_NAME + " to user with username: "
             + USERNAME + " successfully";
+
+    private static final String EXPECTED_COMPLETED_TASK_SUCCESSFULLY_LOG_MESSAGE = "User with username "+ USERNAME
+            +" completed task with name "+ TASK_NAME +" successfully";
 
     @InjectMocks
     private UserServiceImpl userService;
@@ -80,6 +84,7 @@ public class UserServiceRestOfTheMethodsTests {
         userInDb.setLastName(LAST_NAME);
         userInDb.setEmail(EMAIL);
         userInDb.setPosition(Position.INTERN);
+        userInDb.setCredits(USER_CREDITS);
 
         ModelMapper actualMapper = new ModelMapper();
 
@@ -527,7 +532,7 @@ public class UserServiceRestOfTheMethodsTests {
         //Assert
         assertEquals(Status.IN_PROGRESS.name(), taskInDb.getStatus().name());
         assertEquals(taskInDb.getEmployee().getUsername(),userInDb.getUsername());
-        assertEquals(ASSIGNED_TASK_LOG_MESSAGE,actualMessage[0]);
+        assertEquals(EXPECTED_ASSIGNED_TASK_LOG_MESSAGE,actualMessage[0]);
     }
 
 
@@ -564,4 +569,75 @@ public class UserServiceRestOfTheMethodsTests {
         //Act
         userService.assignTask(RANDOM_ID, RANDOM_ID);
     }
+
+    @Test(expected = UserNotFoundException.class)
+    public void completeTask_shouldThrowException_whenCalledWithInvalidUserIdParam(){
+
+        //Arrange
+
+        //make sure repository find method returns our user
+        when(userRepository.findById(RANDOM_ID))
+                .thenReturn(Optional.empty());
+
+        //Act
+        userService.completeTask(RANDOM_ID,RANDOM_ID);
+    }
+
+    @Test(expected = TaskNotFoundException.class)
+    public void completeTask_shouldThrowException_whenCalledWithInvalidTaskIdParam(){
+
+        //Arrange
+
+        //make sure repository find method returns our user
+        when(userRepository.findById(RANDOM_ID))
+                .thenReturn(Optional.of(userInDb));
+
+        when(taskRepository.findById(RANDOM_ID))
+                .thenReturn(Optional.empty());
+
+        //Act
+        userService.completeTask(RANDOM_ID,RANDOM_ID);
+    }
+
+    @Test
+    public void completeTask_shouldWorkCorrectly_whenCalledWithValidParams(){
+
+        //Arrange
+        taskInDb = new Task();
+        taskInDb.setId(RANDOM_ID);
+        taskInDb.setName(TASK_NAME);
+        taskInDb.setCredits(TASK_CREDITS);
+        taskInDb.setDescription(TASK_DESCRIPTION);
+        taskInDb.setMinutesNeeded(0);
+
+        //make sure repository find method returns our task
+        when(taskRepository.findById(RANDOM_ID))
+                .thenReturn(Optional.of(taskInDb));
+
+        //make sure repository find method returns our user
+        when(userRepository.findById(RANDOM_ID))
+                .thenReturn(Optional.of(userInDb));
+
+        final String[] actualMessage = new String[1];
+        when(logService.create(any()))
+                .thenAnswer(invocationOnMock -> {
+                    LogServiceModel logServiceModel = ((LogServiceModel) invocationOnMock.getArguments()[0]);
+                    actualMessage[0] = logServiceModel.getDescription();
+                    return logServiceModel.getDescription();
+                });
+
+        //Act
+        userService.completeTask(RANDOM_ID,RANDOM_ID);
+
+        //Assert
+        Integer expectedUserCredits = USER_CREDITS + TASK_CREDITS;
+        String expectedTaskStatus = Status.FINISHED.name();
+        assertEquals(expectedUserCredits,userInDb.getCredits());
+        assertEquals(expectedTaskStatus,taskInDb.getStatus().name());
+        assertEquals(EXPECTED_COMPLETED_TASK_SUCCESSFULLY_LOG_MESSAGE,actualMessage[0]);
+        verify(userRepository).save(userInDb);
+        verify(taskRepository).save(taskInDb);
+    }
+
+
 }
