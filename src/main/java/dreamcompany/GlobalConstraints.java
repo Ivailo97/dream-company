@@ -42,7 +42,7 @@ public final class GlobalConstraints {
     public static final String UPDATED_USER_FIRST_NAME = "Updated first name";
     public static final String UPDATED_USER_LAST_NAME = "Updated last name";
     public static final String UPDATED_USER_SUCCESSFULLY = "Updated successfully profile:";
-    public static final String ASSIGNED_TASK_SUCCESSFULLY = "Assigned task with name: %s  to user with username: %s successfully";
+    public static final String ASSIGNED_TASK_SUCCESSFULLY = "Assigned task with name: %s to user with username: %s successfully";
     public static final String COMPLETED_TASK_SUCCESSFULLY = "User with username %s completed task with name %s successfully";
     public static final String CHANGED_ROLE_SUCCESSFULLY = "Role of user with username %s was changed to %s successfully";
     public static final String PROMOTED_SUCCESSFULLY = "Promoted user with username %s to %s successfully";
