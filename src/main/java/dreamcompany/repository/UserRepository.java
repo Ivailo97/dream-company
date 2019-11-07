@@ -21,17 +21,9 @@ public interface UserRepository extends JpaRepository<User, String> {
 
     List<User> findAllByTeamIdAndPosition(String id, Position position);
 
-    //
-    List<User> findAllByTeamNullAndPosition(Position position);
-
-    List<User> findAllByPosition(Position position);
-
     List<User> findAllByPositionNotIn(Position... positions);
-
-    //
 
     List<User> findAllByCreditsGreaterThanAndPositionNotIn(Integer credits, Position... positions);
 
     Optional<User> findByEmail(String email);
-
 }
