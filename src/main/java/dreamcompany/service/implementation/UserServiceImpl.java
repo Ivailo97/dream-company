@@ -42,6 +42,10 @@ import static dreamcompany.GlobalConstraints.*;
 @Service
 public class UserServiceImpl implements UserService {
 
+    private static final String USER_CHANGE_ROLE = "user";
+    private static final String ADMIN_CHANGE_ROLE = "admin";
+    private static final String MODERATOR_CHANGE_ROLE = "moderator";
+
     private final UserRepository userRepository;
 
     private final TaskRepository taskRepository;
@@ -74,15 +78,12 @@ public class UserServiceImpl implements UserService {
     public UserServiceModel register(UserServiceModel userServiceModel) throws RoleNotFoundException {
 
         String username = userServiceModel.getUsername();
-
         //checks for username taken or email taken
         throwIfUserExist(username, userServiceModel.getEmail());
-
         defineUserRolesAndPosition(userServiceModel);
 
         userServiceModel.setHiredOn(LocalDateTime.now());
         userServiceModel.setPassword(encoder.encode(userServiceModel.getPassword()));
-
         //checks for null fields
         throwIfServiceModelNotValid(userServiceModel);
 
@@ -109,7 +110,6 @@ public class UserServiceImpl implements UserService {
 
         //checks for null fields
         throwIfServiceModelNotValid(edited);
-
         User user = userRepository.findByUsername(edited.getUsername())
                 .orElseThrow(() -> new UsernameNotFoundException(USERNAME_NOT_FOUND));
 
@@ -118,9 +118,7 @@ public class UserServiceImpl implements UserService {
         throwIfUpdatedWithTakenEmail(user.getEmail(), edited.getEmail());
 
         boolean imageIsUpdated = updateImage(user, edited);
-
         String logMessage = buildUpdatedEntityLogMessage(user, edited, imageIsUpdated);
-
         user.setPassword(encoder.encode(edited.getPassword()));
         user.setEmail(edited.getEmail());
         user.setFirstName(edited.getFirstName());
@@ -236,14 +234,9 @@ public class UserServiceImpl implements UserService {
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new TaskNotFoundException(TASK_NOT_FOUND_MESSAGE));
 
-        long milliseconds = TimeUnit.MINUTES.toMillis(task.getMinutesNeeded());
-
-        Thread thread = new MyThread(milliseconds, () -> actualTaskComplete(user, task));
-
-        thread.start();
+        actualTaskComplete(user,task);
 
         String logMessage = String.format(COMPLETED_TASK_SUCCESSFULLY, user.getUsername(), task.getName());
-
         logAction(user.getUsername(), logMessage);
     }
 
@@ -262,23 +255,23 @@ public class UserServiceImpl implements UserService {
 
         switch (role) {
 
-            case "user":
+            case USER_CHANGE_ROLE:
                 userServiceModel.getAuthorities().add(roleService.findByAuthority(ROLE_USER));
                 logMessage = String.format(CHANGED_ROLE_SUCCESSFULLY, username, ROLE_USER);
                 break;
-            case "moderator":
+            case MODERATOR_CHANGE_ROLE:
                 userServiceModel.getAuthorities().add(roleService.findByAuthority(ROLE_USER));
                 userServiceModel.getAuthorities().add(roleService.findByAuthority(ROLE_MODERATOR));
                 logMessage = String.format(CHANGED_ROLE_SUCCESSFULLY, username, ROLE_MODERATOR);
                 break;
-            case "admin":
+            case ADMIN_CHANGE_ROLE:
                 userServiceModel.getAuthorities().add(roleService.findByAuthority(ROLE_USER));
                 userServiceModel.getAuthorities().add(roleService.findByAuthority(ROLE_MODERATOR));
                 userServiceModel.getAuthorities().add(roleService.findByAuthority(ROLE_ADMIN));
                 logMessage = String.format(CHANGED_ROLE_SUCCESSFULLY, username, ROLE_ADMIN);
                 break;
             default:
-                logMessage = String.format(CHANGED_ROLE_SUCCESSFULLY, username, ROLE_USER);
+                logMessage = CHANGING_ROLE_FAILED;
                 break;
         }
 
@@ -358,13 +351,20 @@ public class UserServiceImpl implements UserService {
 
     private void actualTaskComplete(User user, Task task) {
 
-        user.setCredits(user.getCredits() + task.getCredits());
+        long milliseconds = TimeUnit.MINUTES.toMillis(task.getMinutesNeeded());
 
-        userRepository.save(user);
+        Thread thread = new MyThread(milliseconds, () ->{
 
-        task.setStatus(Status.FINISHED);
+            user.setCredits(user.getCredits() + task.getCredits());
 
-        taskRepository.save(task);
+            userRepository.save(user);
+
+            task.setStatus(Status.FINISHED);
+
+            taskRepository.save(task);
+        });
+
+        thread.start();
     }
 
     private String buildUpdatedEntityLogMessage(User user, UserServiceModel edited, boolean imageIsUpdated) {

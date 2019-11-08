@@ -448,6 +448,4 @@ public class UserServiceRegisterAndEditTests {
         //Act
         userService.edit(edited, MODEL.getPassword());
     }
-
-
 }

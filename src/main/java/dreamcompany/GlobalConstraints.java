@@ -12,7 +12,7 @@ public final class GlobalConstraints {
     public static final String ROLE_ROOT = "ROLE_ROOT";
 
 
-    // error handler
+    //error handler
     public static final String GLOBAL_EXCEPTION_VIEW_NAME = "/error/error";
     public static final String ERROR_PAGE_STATUS_CODE_ATTRIBUTE_NAME = "statusCode";
     public static final String ERROR_PAGE_MESSAGE_ATTRIBUTE_NAME = "message";
@@ -34,7 +34,8 @@ public final class GlobalConstraints {
     public static final String DATE_PATTERN = "yyyy-MM-dd HH:mm:ss";
 
     //Log messages
-    // user
+
+    //user
     public static final String REGISTERED_USER_SUCCESSFULLY = "Registered successfully %s with generated id:%s";
     public static final String UPDATED_USER_PASSWORD = "Updated password";
     public static final String UPDATED_USER_IMAGE = "Updated image";
@@ -45,8 +46,7 @@ public final class GlobalConstraints {
     public static final String ASSIGNED_TASK_SUCCESSFULLY = "Assigned task with name: %s to user with username: %s successfully";
     public static final String COMPLETED_TASK_SUCCESSFULLY = "User with username %s completed task with name %s successfully";
     public static final String CHANGED_ROLE_SUCCESSFULLY = "Role of user with username %s was changed to %s successfully";
+    public static final String CHANGING_ROLE_FAILED = "Failed to change role";
     public static final String PROMOTED_SUCCESSFULLY = "Promoted user with username %s to %s successfully";
     public static final String DEMOTED_SUCCESSFULLY = "Demoted user with username %s to %s successfully";
-
-
 }
