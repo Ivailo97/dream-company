@@ -1,15 +1,7 @@
 @import url('https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900');
 
 #manage {
-
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
     background: #060c21;
-    font-family: 'Poppins', sans-serif;
 }
 
 .container {
@@ -97,7 +89,6 @@
 }
 
 .box .content a {
-
     position: relative;
     margin: 20px 0 0;
     padding: 10px 20px;

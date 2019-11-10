@@ -9,29 +9,54 @@
 </header>
 
 <main class="mt-3 text-center">
-    <h1 class="text-center text-dark">Edit Team</h1>
-    <hr class="hr-2 bg-dark w-25">
-    <form class="form w-25 mx-auto " th:action="@{/teams/edit/{id}(id=${model.id})}" th:method="post" th:object="${model}">
-        <input type="hidden" name="_csrf" value="c95ccb2b-1afa-47bd-bf7b-a5b72739470b">
-        <div class="form-group" th:classappend="${#fields.hasErrors('name')}? 'text-danger'">
-            <label for="name" class="font-weight-bold">Name</label>
-            <input type="text" class="form-control" id="name" th:value="*{name}" th:field="*{name}">
-            <small th:each="error : ${#fields.errors('name')}" th:text="${error}"></small>
+
+
+    <div th:object="${model}">
+
+        <h1 class="text-center text-dark">Edit Team</h1>
+        <hr class="hr-2 bg-dark w-25">
+
+        <form class="form w-25 mx-auto " th:action="@{/teams/edit/{id}(id=${model.id})}" th:method="post">
+            <input type="hidden" name="_csrf" value="c95ccb2b-1afa-47bd-bf7b-a5b72739470b">
+            <div class="form-group" th:classappend="${#fields.hasErrors('name')}? 'text-danger'">
+                <label for="name" class="font-weight-bold">Name</label>
+                <input type="text" class="form-control" id="name" th:value="*{name}" th:field="*{name}">
+                <small th:each="error : ${#fields.errors('name')}" th:text="${error}"></small>
+            </div>
+
+            <div class="form-group" th:classappend="${#fields.hasErrors('office')}? 'text-danger'">
+                <label for="add-team-office" class="font-weight-bold">Office</label>
+                <select class="form-control" id="add-team-office" th:field="*{office}">
+                    <option value="default" selected="" disabled>--- Select Office ---</option>
+                </select>
+                <small th:each="error : ${#fields.errors('office')}" th:text="${error}"></small>
+            </div>
+
+            <hr class="hr-2 bg-dark">
+            <div class="button-holder d-flex justify-content-center">
+                <button type="submit" class="btn btn-dark">Edit</button>
+            </div>
+
+        </form>
+
+        <div class="row mx-auto">
+
+            <div class="col-md-6">
+                <form th:action="@{/teams/add-employee/{id}(id=${model.id})}" th:method="get" class="mx-1">
+                    <input type="hidden" name="_csrf" value="80417983-fe8b-45c7-963e-31f6915a1560">
+                    <button class="btn btn-success">Add employees</button>
+                </form>
+            </div>
+            <div class="col-md-6">
+                <form th:action="@{/teams/remove-employee/{id}(id=${model.id})}" th:method="get" class="mx-1">
+                    <input type="hidden" name="_csrf" value="80417983-fe8b-45c7-963e-31f6915a1560">
+                    <button class="btn btn-danger">Remove employees</button>
+                </form>
+            </div>
         </div>
 
-        <div class="form-group" th:classappend="${#fields.hasErrors('office')}? 'text-danger'">
-            <label for="add-team-office" class="font-weight-bold">Office</label>
-            <select class="form-control" id="add-team-office" th:field="*{office}">
-                <option value="default" selected="" disabled>--- Select Office ---</option>
-            </select>
-            <small th:each="error : ${#fields.errors('office')}" th:text="${error}"></small>
-        </div>
+    </div>
 
-        <hr class="hr-2 bg-dark">
-        <div class="button-holder d-flex justify-content-center">
-            <button type="submit" class="btn btn-dark">Edit</button>
-        </div>
-    </form>
 </main>
 
 <footer th:replace="/fragments/footer"></footer>

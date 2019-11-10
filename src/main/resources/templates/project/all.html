@@ -2,6 +2,16 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="/fragments/head"></head>
+<style>
+    table{
+        margin: 0 auto;
+        width: 100%;
+        clear: both;
+        border-collapse: collapse;
+        table-layout: fixed;
+        word-wrap:break-word;
+    }
+</style>
 <body>
 
 <header>
@@ -10,61 +20,66 @@
 
 <main class="mt-3">
 
-    <h1 class="text-center text-dark">All Projects</h1>
-    <hr class="hr-2 bg-dark w-75">
+    <div class="container">
+        <h1 class="text-center text-dark">All Projects</h1>
+        <hr class="hr-2 bg-dark mx-auto">
 
-    <table class="table table-hover w-75 mx-auto">
+        <table id="table" class="table table-hover mx-auto">
 
-        <thead>
+            <thead>
 
-        <tr class="row mx-auto">
-            <th class="col-md-2 text-center">#</th>
-            <th class="col-md-3 text-center">Name</th>
-            <th class="col-md-2 text-center">Status</th>
-            <th class="col-md-3 text-center">Action</th>
-        </tr>
-
-        </thead>
-
-        <tbody>
-        <!--/*@thymesVar id="users" type="java.util.List"*/-->
-        <th:block th:each="model, iter : ${models}">
-
-            <tr class="row mx-auto flip">
-                <th class="col-md-2 text-center" th:text="${iter.index + 1}"></th>
-                <td class="col-md-3 text-center" th:text="${model.name}"></td>
-                <td class="col-md-2 text-center" th:text="${model.status}"></td>
-                <td class="col-md-1 text-center">
-                    <form th:action="@{/projects/details/{id}(id=${model.id})}" th:method="get" class="mx-1">
-                        <input type="hidden" name="_csrf" value="80417983-fe8b-45c7-963e-31f6915a1560">
-                        <button class="btn btn-info">Details</button>
-                    </form>
-                </td>
-                <td class="col-md-1 text-center">
-                    <form th:action="@{/projects/delete/{id}(id=${model.id})}" th:method="get" class="mx-1">
-                        <input type="hidden" name="_csrf" value="80417983-fe8b-45c7-963e-31f6915a1560">
-                        <button class="btn btn-danger">Delete</button>
-                    </form>
-                </td>
-                <td class="col-md-1 text-center">
-                    <form th:action="@{/projects/edit/{id}(id=${model.id})}" th:method="get" class="mx-1">
-                        <input type="hidden" name="_csrf" value="80417983-fe8b-45c7-963e-31f6915a1560">
-                        <button class="btn btn-primary">Edit</button>
-                    </form>
-                </td>
+            <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Status</th>
+                <th>Action</th>
             </tr>
 
-        </th:block>
+            </thead>
 
-        </tbody>
+            <tbody>
+            <!--/*@thymesVar id="users" type="java.util.List"*/-->
+            <th:block th:each="model, iter : ${models}">
 
-    </table>
+                <tr>
+                    <th th:text="${iter.index + 1}"></th>
+                    <td th:text="${model.name}"></td>
+                    <td th:text="${model.status}"></td>
+                    <td>
+                        <a th:href="@{/projects/details/{id}(id=${model.id})}" class="btn btn-info">Details</a>
+                        <a th:href="@{/projects/delete/{id}(id=${model.id})}" class="btn btn-danger">Delete</a>
+                        <a th:href="@{/projects/edit/{id}(id=${model.id})}" class="btn btn-primary">Edit</a>
+                    </td>
+                </tr>
 
-    <hr class="hr-2 bg-dark">
+            </th:block>
+
+            </tbody>
+
+        </table>
+
+        <hr class="hr-2 bg-dark">
+    </div>
 
 </main>
 
 <footer th:replace="/fragments/footer"></footer>
+<script>
+    $(document).ready(function () {
+        $('#table').DataTable({
+
+            language: {
+                oPaginate: {
+                    sNext: '<i class="fa fa-forward"></i>',
+                    sPrevious: '<i class="fa fa-backward"></i>',
+                    sFirst: '<i class="fa fa-step-backward"></i>',
+                    sLast: '<i class="fa fa-step-forward"></i>'
+                }
+            },
+            pagingType: 'full_numbers',
+        });
+    });
+</script>
 </body>
 
 </html>

@@ -222,7 +222,7 @@ public class UserController extends BaseController {
 
         modelAndView.addObject("models", viewModels);
 
-        return view("/employee/candidates-for-promotion", modelAndView);
+        return view("/employee/candidates", modelAndView);
     }
 
     @PostMapping("/promote/{id}")
@@ -244,7 +244,7 @@ public class UserController extends BaseController {
 
         modelAndView.addObject("models", viewModels);
 
-        return view("/employee/candidates-for-demotion", modelAndView);
+        return view("/employee/candidates", modelAndView);
     }
 
     @PostMapping("/demote/{id}")
