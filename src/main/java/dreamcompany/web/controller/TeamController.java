@@ -4,6 +4,7 @@ import dreamcompany.domain.model.binding.TeamCreateBindingModel;
 import dreamcompany.domain.model.binding.TeamEditBindingModel;
 import dreamcompany.domain.model.service.TeamServiceModel;
 import dreamcompany.domain.model.view.*;
+import dreamcompany.service.interfaces.CloudinaryService;
 import dreamcompany.service.interfaces.TeamService;
 import dreamcompany.service.interfaces.UserService;
 import dreamcompany.util.MappingConverter;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.*;
 
 @Controller
@@ -27,14 +29,17 @@ public class TeamController extends BaseController {
 
     private final UserService userService;
 
+    private final CloudinaryService cloudinaryService;
+
     private final ModelMapper modelMapper;
 
     private final MappingConverter mappingConverter;
 
     @Autowired
-    public TeamController(TeamService teamService, UserService userService, ModelMapper modelMapper, MappingConverter mappingConverter) {
+    public TeamController(TeamService teamService, UserService userService, CloudinaryService cloudinaryService, ModelMapper modelMapper, MappingConverter mappingConverter) {
         this.teamService = teamService;
         this.userService = userService;
+        this.cloudinaryService = cloudinaryService;
         this.modelMapper = modelMapper;
         this.mappingConverter = mappingConverter;
     }
@@ -48,13 +53,18 @@ public class TeamController extends BaseController {
     @PostMapping("/create")
     @PreAuthorize("hasRole('ROLE_MODERATOR')")
     public ModelAndView createConfirm(@Valid @ModelAttribute(name = "model") TeamCreateBindingModel model,
-                                      BindingResult bindingResult) {
+                                      BindingResult bindingResult) throws IOException {
 
         if (bindingResult.hasErrors()) {
             return view("/team/create");
         }
 
         TeamServiceModel teamServiceModel = mappingConverter.convertToTeamServiceModel(model);
+
+        String[] uploadInfo = cloudinaryService.uploadImage(model.getTeamLogo());
+        teamServiceModel.setLogoUrl(uploadInfo[0]);
+        teamServiceModel.setLogoId(uploadInfo[1]);
+
         teamService.create(teamServiceModel);
         return redirect("/home");
     }
@@ -74,13 +84,20 @@ public class TeamController extends BaseController {
     @PreAuthorize("hasRole('ROLE_MODERATOR')")
     public ModelAndView editConfirm(@PathVariable String id,
                                     @Valid @ModelAttribute(name = "model") TeamEditBindingModel model,
-                                    BindingResult bindingResult) {
+                                    BindingResult bindingResult) throws IOException {
 
         if (bindingResult.hasErrors()) {
             return view("/team/edit");
         }
 
         TeamServiceModel teamServiceModel = mappingConverter.convertToTeamServiceModel(model);
+
+        if (!model.getTeamLogo().isEmpty()) {
+            String[] uploadInfo = cloudinaryService.uploadImage(model.getTeamLogo());
+            teamServiceModel.setLogoUrl(uploadInfo[0]);
+            teamServiceModel.setLogoId(uploadInfo[1]);
+        }
+
         teamService.edit(id, teamServiceModel);
         return redirect("/home");
     }

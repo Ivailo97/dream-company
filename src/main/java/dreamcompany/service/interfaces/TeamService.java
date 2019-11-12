@@ -2,13 +2,14 @@ package dreamcompany.service.interfaces;
 
 import dreamcompany.domain.model.service.TeamServiceModel;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface TeamService {
 
     TeamServiceModel create(TeamServiceModel teamServiceModel);
 
-    TeamServiceModel edit(String id, TeamServiceModel teamServiceModel);
+    TeamServiceModel edit(String id, TeamServiceModel teamServiceModel) throws IOException;
 
     TeamServiceModel delete(String id);
 

@@ -6,7 +6,20 @@
 }
 
 #home{
-    background-image: url('/img/52496497-office-desk-table-with-computer-supplies-flower-top-view-copy-space-for-text-.jpg');
+    background-image: url('/img/home-background.jpg');
+    background-size: 200px;
+    background-repeat: repeat;
+}
+
+.all{
+    background-image: url('/img/tables-background.jpg');
+    background-size: 300px;
+    background-repeat: repeat;
+}
+
+.table{
+    background-color: #666666;
+    color: #1abc9c;
 }
 
 #index{

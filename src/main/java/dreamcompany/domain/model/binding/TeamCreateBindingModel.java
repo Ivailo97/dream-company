@@ -1,4 +1,6 @@
 package dreamcompany.domain.model.binding;
+import org.springframework.web.multipart.MultipartFile;
+
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -10,6 +12,8 @@ public class TeamCreateBindingModel {
 
     //id
     private String office;
+
+    private MultipartFile teamLogo;
 
     //ids
     private Set<String> employees;
@@ -41,5 +45,14 @@ public class TeamCreateBindingModel {
 
     public void setEmployees(Set<String> employees) {
         this.employees = employees;
+    }
+
+    @NotNull(message = "upload a logo")
+    public MultipartFile getTeamLogo() {
+        return teamLogo;
+    }
+
+    public void setTeamLogo(MultipartFile teamLogo) {
+        this.teamLogo = teamLogo;
     }
 }

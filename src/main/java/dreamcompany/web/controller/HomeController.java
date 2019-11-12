@@ -4,9 +4,7 @@ import dreamcompany.domain.entity.Status;
 import dreamcompany.domain.model.service.ProjectServiceModel;
 import dreamcompany.domain.model.view.ProjectHomeViewModel;
 import dreamcompany.service.interfaces.ProjectService;
-import dreamcompany.service.interfaces.TeamService;
 import dreamcompany.service.interfaces.UserService;
-import dreamcompany.util.MyThread;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,22 +21,18 @@ public class HomeController extends BaseController {
 
     private final ProjectService projectService;
 
-    private final TeamService teamService;
-
     private final ModelMapper modelMapper;
 
     @Autowired
-    public HomeController(UserService userService, ProjectService projectService, TeamService teamService, ModelMapper modelMapper) {
+    public HomeController(UserService userService, ProjectService projectService, ModelMapper modelMapper) {
         this.userService = userService;
         this.projectService = projectService;
-        this.teamService = teamService;
         this.modelMapper = modelMapper;
     }
 
     @GetMapping("/")
     @PreAuthorize("isAnonymous()")
     public ModelAndView index() {
-
         return view("index");
     }
 

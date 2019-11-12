@@ -16,7 +16,7 @@
         <h1 class="text-center text-dark">Edit Team</h1>
         <hr class="hr-2 bg-dark w-25">
 
-        <form class="form w-25 mx-auto " th:action="@{/teams/edit/{id}(id=${model.id})}" th:method="post">
+        <form class="form w-25 mx-auto " th:action="@{/teams/edit/{id}(id=${model.id})}" th:method="post"  enctype="multipart/form-data">
             <input type="hidden" name="_csrf" value="c95ccb2b-1afa-47bd-bf7b-a5b72739470b">
             <div class="form-group" th:classappend="${#fields.hasErrors('name')}? 'text-danger'">
                 <label for="name" class="font-weight-bold">Name</label>
@@ -31,6 +31,12 @@
                 </select>
                 <small th:each="error : ${#fields.errors('office')}" th:text="${error}"></small>
             </div>
+
+            <div class="form-group">
+                <label for="picture" class="font-weight-bold">Upload logo:</label>
+                <input type="file" id="picture" th:field="${model.teamLogo}">
+            </div>
+
 
             <hr class="hr-2 bg-dark">
             <div class="button-holder d-flex justify-content-center">

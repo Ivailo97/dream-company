@@ -9,11 +9,13 @@ import dreamcompany.repository.OfficeRepository;
 import dreamcompany.repository.ProjectRepository;
 import dreamcompany.repository.TeamRepository;
 import dreamcompany.repository.UserRepository;
+import dreamcompany.service.interfaces.CloudinaryService;
 import dreamcompany.service.interfaces.TeamService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +26,8 @@ public class TeamServiceImpl implements TeamService {
 
     private final TeamRepository teamRepository;
 
+    private final CloudinaryService cloudinaryService;
+
     private final OfficeRepository officeRepository;
 
     private final ProjectRepository projectRepository;
@@ -33,8 +37,9 @@ public class TeamServiceImpl implements TeamService {
     private final ModelMapper modelMapper;
 
     @Autowired
-    public TeamServiceImpl(TeamRepository teamRepository, OfficeRepository officeRepository, ProjectRepository projectRepository, UserRepository userRepository, ModelMapper modelMapper) {
+    public TeamServiceImpl(TeamRepository teamRepository, CloudinaryService cloudinaryService, OfficeRepository officeRepository, ProjectRepository projectRepository, UserRepository userRepository, ModelMapper modelMapper) {
         this.teamRepository = teamRepository;
+        this.cloudinaryService = cloudinaryService;
         this.officeRepository = officeRepository;
         this.projectRepository = projectRepository;
         this.userRepository = userRepository;
@@ -97,19 +102,21 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public TeamServiceModel edit(String id, TeamServiceModel teamServiceModel) {
+    public TeamServiceModel edit(String id, TeamServiceModel edited) throws IOException {
 
         Team team = this.teamRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid team id"));
 
-        if (!teamServiceModel.getName().equals(team.getName())) {
-            throwIfDuplicate(teamServiceModel);
+        if (!edited.getName().equals(team.getName())) {
+            throwIfDuplicate(edited);
         }
 
-        team.setName(teamServiceModel.getName());
+        boolean logoIsUpdated = updateLogo(team, edited);
+
+        team.setName(edited.getName());
 
         // set new office
-        Office office = officeRepository.findById(teamServiceModel.getOffice().getId())
+        Office office = officeRepository.findById(edited.getOffice().getId())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid office id"));
 
         team.setOffice(office);
@@ -117,6 +124,23 @@ public class TeamServiceImpl implements TeamService {
         team = teamRepository.save(team);
 
         return modelMapper.map(team, TeamServiceModel.class);
+    }
+
+    private boolean updateLogo(Team team, TeamServiceModel edited) throws IOException {
+
+        if (edited.getLogoUrl() != null) {
+
+            if (team.getLogoUrl() != null) {
+                cloudinaryService.deleteImage(team.getLogoId());
+            }
+
+            team.setLogoUrl(edited.getLogoUrl());
+            team.setLogoId(edited.getLogoId());
+
+            return true;
+        }
+
+        return false;
     }
 
     @Override

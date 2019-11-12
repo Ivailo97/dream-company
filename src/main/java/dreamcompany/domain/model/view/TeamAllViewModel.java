@@ -6,6 +6,8 @@ public class TeamAllViewModel {
 
     private String id;
 
+    private String logoUrl;
+
     private String name;
 
     private BigDecimal profit;
@@ -32,5 +34,13 @@ public class TeamAllViewModel {
 
     public void setProfit(BigDecimal profit) {
         this.profit = profit;
+    }
+
+    public String getLogoUrl() {
+        return logoUrl;
+    }
+
+    public void setLogoUrl(String logoUrl) {
+        this.logoUrl = logoUrl;
     }
 }

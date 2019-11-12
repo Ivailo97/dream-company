@@ -12,6 +12,10 @@ public class Team extends BaseEntity {
 
     private BigDecimal profit;
 
+    private String logoUrl;
+
+    private String logoId;
+
     private Office office;
 
     private Project project;
@@ -75,5 +79,23 @@ public class Team extends BaseEntity {
 
     public void setTeamLeaderPreviousPosition(Position teamLeaderPreviousPosition) {
         this.teamLeaderPreviousPosition = teamLeaderPreviousPosition;
+    }
+
+    @Column(name = "logo_url", nullable = false)
+    public String getLogoUrl() {
+        return logoUrl;
+    }
+
+    public void setLogoUrl(String logoUrl) {
+        this.logoUrl = logoUrl;
+    }
+
+    @Column(name = "logo_id", nullable = false)
+    public String getLogoId() {
+        return logoId;
+    }
+
+    public void setLogoId(String logoId) {
+        this.logoId = logoId;
     }
 }

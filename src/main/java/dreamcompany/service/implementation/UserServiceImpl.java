@@ -118,6 +118,7 @@ public class UserServiceImpl implements UserService {
         throwIfUpdatedWithTakenEmail(user.getEmail(), edited.getEmail());
 
         boolean imageIsUpdated = updateImage(user, edited);
+
         String logMessage = buildUpdatedEntityLogMessage(user, edited, imageIsUpdated);
         user.setPassword(encoder.encode(edited.getPassword()));
         user.setEmail(edited.getEmail());

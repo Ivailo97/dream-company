@@ -2,6 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="/fragments/head"></head>
+
 <body id="home">
 
 <header>
@@ -11,7 +12,7 @@
 <main>
     <div class="jumbotron text-center">
 
-        <h1 class="ml-5">Welcome, <span th:text="${user}"></span></h1>
+        <h1>Welcome, <span th:text="${user}"></span></h1>
 
         <th:block th:if="${isLeaderWithAssignedProject}">
 
@@ -47,41 +48,59 @@
 
         <th:block sec:authorize="hasRole('ROLE_ROOT')">
 
-            <div class="row">
-                <div class="col-md-5">
+                <div class="row">
 
-                    <div class="radio-box">
-                        <p>Projects</p>
-                        <label>
-                            <input type="radio" id="allRadio" name="selection" value="all">
-                            <span class="yes">All</span>
-                        </label>
+                    <div class="col-md-12 mt-5">
 
-                        <th:block th:each="status : ${statuses}">
-
+                        <div class="radio-box">
+                            <p>Projects</p>
                             <label>
-                                <input type="radio" th:id="${status}" name="selection" th:value="${status}">
-                                <span class="yes" th:for="${status}" th:text="${status}"></span>
+                                <input type="radio" id="allRadio" name="selection" value="all">
+                                <span class="yes">All</span>
                             </label>
 
-                        </th:block>
+                            <th:block th:each="status : ${statuses}">
+
+                                <label>
+                                    <input type="radio" th:id="${status}" name="selection" th:value="${status}">
+                                    <span class="yes" th:for="${status}" th:text="${status}"></span>
+                                </label>
+
+                            </th:block>
+
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="row">
+
+
+
+                    <div class="col-md-12">
+                        <div id="projects-data" class="projects-container ml-5">
+                            <div id="columns" class="row">
+
+                            </div>
+
+
+                        </div>
+
 
                     </div>
 
                 </div>
-            </div>
 
-            <div class="row">
-                <div class="col-md-6 mt-5">
-                    <div id="projects-data" class="projects-container">
 
-                    </div>
-                </div>
-            </div>
 
         </th:block>
 
     </div>
+
+
+
+
+
 </main>
 
 <footer th:replace="/fragments/footer"></footer>
@@ -89,7 +108,8 @@
 <script>
 
     function formatProject(project) {
-        return `<a href="/projects/details/${project.id}">` + '<div class="home-card">'
+        return `<a href="/projects/details/${project.id}">`
+            + '<div class="home-card mt-4">'
             + `<h3 class="title">${project.name}</h3>`
             + `<div class="bar">`
             + `<div class="emptybar"></div>`
@@ -100,7 +120,7 @@
             + `<circle class="stroke" cx="60" cy="60" r="50"/>`
             + `</svg>`
             + `</div>`
-            + '</div>'
+            + `</div>`
             + `</a>`
     }
 
@@ -111,19 +131,18 @@
         fetch('http://localhost:8000/projects/fetch/' + status)
             .then((response) => response.json())
             .then((json) => {
-                $('#projects-data').empty();
+                $('#columns').empty();
 
                 if (json.length === 0) {
-                    $('#projects-data').append(`<h1 class="text-center font-weight-bold">There are no project with the ${status} status.</h1>`)
+                    $('#columns').append(`<h1 class="text-center font-weight-bold">There are no project with the ${status} status.</h1>`)
                 } else {
                     for (let i = 0; i < json.length; i++) {
-                        $('#projects-data').append('<div class="project-row row d-flex justify-content-around">');
-                        $('#projects-data .project-row:last-child').append(formatProject(json[i]));
+                        $('#columns').append('<div class="project-row row d-flex justify-content-around">');
+                        $('#columns .project-row:last-child').append(formatProject(json[i]))
                     }
                 }
             })
     });
-
 
 </script>
 </html>

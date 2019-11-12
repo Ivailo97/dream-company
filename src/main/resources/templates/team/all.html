@@ -3,16 +3,16 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="/fragments/head"></head>
 <style>
-    table{
+    table {
         margin: 0 auto;
         width: 100%;
         clear: both;
         border-collapse: collapse;
         table-layout: fixed;
-        word-wrap:break-word;
+        word-wrap: break-word;
     }
 </style>
-<body>
+<body class="all">
 
 <header>
     <nav th:replace="/fragments/navbar"></nav>
@@ -29,7 +29,7 @@
 
             <thead>
             <tr>
-                <th>#</th>
+                <th>Logo</th>
                 <th>Name</th>
                 <th>Profit</th>
                 <th>Action</th>
@@ -40,7 +40,9 @@
             <th:block th:each="model, iter : ${models}">
 
                 <tr>
-                    <td th:text="${iter.index + 1}"></td>
+                    <td>
+                        <img th:src="${model.logoUrl}" width="40" height="40" alt="teamLogo">
+                    </td>
                     <td th:text="${model.name}"></td>
                     <td th:text="${model.profit}"></td>
                     <td>

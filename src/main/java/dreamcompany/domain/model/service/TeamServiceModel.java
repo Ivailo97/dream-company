@@ -9,6 +9,10 @@ public class TeamServiceModel extends BaseServiceModel {
 
     private BigDecimal profit;
 
+    private String logoUrl;
+
+    private String logoId;
+
     private OfficeServiceModel office;
 
     private ProjectServiceModel project;
@@ -56,5 +60,21 @@ public class TeamServiceModel extends BaseServiceModel {
 
     public void setProject(ProjectServiceModel project) {
         this.project = project;
+    }
+
+    public String getLogoUrl() {
+        return logoUrl;
+    }
+
+    public void setLogoUrl(String logoUrl) {
+        this.logoUrl = logoUrl;
+    }
+
+    public String getLogoId() {
+        return logoId;
+    }
+
+    public void setLogoId(String logoId) {
+        this.logoId = logoId;
     }
 }

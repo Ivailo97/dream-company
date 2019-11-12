@@ -1,5 +1,7 @@
 package dreamcompany.domain.model.binding;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -10,6 +12,8 @@ public class TeamEditBindingModel {
     private String id;
 
     private String name;
+
+    private MultipartFile teamLogo;
 
     //id
     private String office;
@@ -40,5 +44,13 @@ public class TeamEditBindingModel {
 
     public void setOffice(String office) {
         this.office = office;
+    }
+
+    public MultipartFile getTeamLogo() {
+        return teamLogo;
+    }
+
+    public void setTeamLogo(MultipartFile teamLogo) {
+        this.teamLogo = teamLogo;
     }
 }
