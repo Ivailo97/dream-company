@@ -189,9 +189,7 @@ public class UserController extends BaseController {
     @PostMapping("/assign-task/{taskId}/{userId}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ModelAndView assignProjectConfirm(@PathVariable String taskId, @PathVariable String userId) {
-
         userService.assignTask(userId, taskId);
-
         return redirect("/home");
     }
 

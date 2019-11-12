@@ -16,27 +16,27 @@
         <div class="form-group" th:classappend="${#fields.hasErrors('name')}? 'text-danger'">
             <label for="name" class="font-weight-bold">Name</label>
             <input type="text" class="form-control" id="name" placeholder="Name..." th:field="*{name}">
-            <small th:each="error : ${#fields.errors('name')}" th:text="${error}"></small>
+            <small th:each="error : ${#fields.errors('name')}" th:utext="${error}  + '&lt;br /&gt;'"></small>
         </div>
         <div class="form-group" th:classappend="${#fields.hasErrors('office')}? 'text-danger'">
             <label for="add-team-office" class="font-weight-bold">Office</label>
             <select class="form-control" id="add-team-office" th:field="*{office}">
                 <option value="default" selected="" disabled>--- Select Office ---</option>
             </select>
-            <small th:each="error : ${#fields.errors('office')}" th:text="${error}"></small>
+            <small th:each="error : ${#fields.errors('office')}" th:utext="${error}  + '&lt;br /&gt;'"></small>
         </div>
         <div class="form-group" th:classappend="${#fields.hasErrors('employees')}? 'text-danger'">
             <label for="add-team-employees" class="font-weight-bold">Employees</label>
             <select multiple class="form-control" id="add-team-employees" th:field="*{employees}">
                 <option value="default" selected="" disabled>--- Select Employees ---</option>
             </select>
-            <small th:each="error : ${#fields.errors('employees')}" th:text="${error}"></small>
+            <small th:each="error : ${#fields.errors('employees')}" th:utext="${error}  + '&lt;br /&gt;'"></small>
         </div>
 
-        <div class="form-group" th:classappend="${#fields.hasErrors('teamLogo')}? 'text-danger'">
+        <div class="form-group" th:classappend="${#fields.hasErrors('logo')}? 'text-danger'">
             <label for="picture" class="font-weight-bold">Upload logo:</label>
-            <input type="file" id="picture" th:field="${model.teamLogo}">
-            <small th:each="error : ${#fields.errors('teamLogo')}" th:text="${error}"></small>
+            <input type="file" id="picture" th:field="${model.logo}">
+            <div th:each="error : ${#fields.errors('logo')}" th:utext="${error}  + '&lt;br /&gt;'"></div>
         </div>
 
         <hr class="hr-2 bg-dark">

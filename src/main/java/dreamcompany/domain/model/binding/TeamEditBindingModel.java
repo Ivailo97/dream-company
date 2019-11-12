@@ -4,8 +4,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import java.util.Set;
 
 public class TeamEditBindingModel {
 
@@ -13,7 +11,7 @@ public class TeamEditBindingModel {
 
     private String name;
 
-    private MultipartFile teamLogo;
+    private MultipartFile logo;
 
     //id
     private String office;
@@ -26,8 +24,6 @@ public class TeamEditBindingModel {
         this.id = id;
     }
 
-    @NotNull(message = "Choose a name")
-    @NotEmpty(message = "Choose a name")
     public String getName() {
         return name;
     }
@@ -36,8 +32,6 @@ public class TeamEditBindingModel {
         this.name = name;
     }
 
-    @NotNull(message = "Select a office")
-    @NotEmpty(message = "Select a office")
     public String getOffice() {
         return office;
     }
@@ -46,11 +40,11 @@ public class TeamEditBindingModel {
         this.office = office;
     }
 
-    public MultipartFile getTeamLogo() {
-        return teamLogo;
+    public MultipartFile getLogo() {
+        return logo;
     }
 
-    public void setTeamLogo(MultipartFile teamLogo) {
-        this.teamLogo = teamLogo;
+    public void setLogo(MultipartFile logo) {
+        this.logo = logo;
     }
 }

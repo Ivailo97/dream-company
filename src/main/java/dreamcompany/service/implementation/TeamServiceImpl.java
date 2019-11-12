@@ -144,7 +144,7 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public TeamServiceModel delete(String id) {
+    public TeamServiceModel delete(String id) throws IOException {
 
         Team team = this.teamRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid team id"));
@@ -167,6 +167,8 @@ public class TeamServiceImpl implements TeamService {
         team.setProject(null);
 
         TeamServiceModel teamServiceModel = modelMapper.map(team, TeamServiceModel.class);
+
+        cloudinaryService.deleteImage(team.getLogoId());
         teamRepository.delete(team);
         return teamServiceModel;
     }

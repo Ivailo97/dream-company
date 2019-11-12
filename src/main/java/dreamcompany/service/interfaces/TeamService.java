@@ -11,7 +11,7 @@ public interface TeamService {
 
     TeamServiceModel edit(String id, TeamServiceModel teamServiceModel) throws IOException;
 
-    TeamServiceModel delete(String id);
+    TeamServiceModel delete(String id) throws IOException;
 
     TeamServiceModel findById(String id);
 

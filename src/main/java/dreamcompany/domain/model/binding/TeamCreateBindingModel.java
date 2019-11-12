@@ -1,9 +1,6 @@
 package dreamcompany.domain.model.binding;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.util.Set;
 
 public class TeamCreateBindingModel {
@@ -13,13 +10,11 @@ public class TeamCreateBindingModel {
     //id
     private String office;
 
-    private MultipartFile teamLogo;
+    private MultipartFile logo;
 
     //ids
     private Set<String> employees;
 
-    @NotNull(message = "Choose a name")
-    @NotEmpty(message = "Choose a name")
     public String getName() {
         return name;
     }
@@ -28,8 +23,6 @@ public class TeamCreateBindingModel {
         this.name = name;
     }
 
-    @NotNull(message = "Select a office")
-    @NotEmpty(message = "Select a office")
     public String getOffice() {
         return office;
     }
@@ -38,7 +31,6 @@ public class TeamCreateBindingModel {
         this.office = office;
     }
 
-    @Size(min = 2, message = "Select at least two employees")
     public Set<String> getEmployees() {
         return employees;
     }
@@ -47,12 +39,11 @@ public class TeamCreateBindingModel {
         this.employees = employees;
     }
 
-    @NotNull(message = "upload a logo")
-    public MultipartFile getTeamLogo() {
-        return teamLogo;
+    public MultipartFile getLogo() {
+        return logo;
     }
 
-    public void setTeamLogo(MultipartFile teamLogo) {
-        this.teamLogo = teamLogo;
+    public void setLogo(MultipartFile logo) {
+        this.logo = logo;
     }
 }

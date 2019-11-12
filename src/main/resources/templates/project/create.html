@@ -16,17 +16,17 @@
         <div class="form-group" th:classappend="${#fields.hasErrors('name')}? 'text-danger'">
             <label for="name" class="font-weight-bold">Name</label>
             <input type="text" class="form-control" id="name" placeholder="Name..." th:field="*{name}">
-            <small th:each="error : ${#fields.errors('name')}" th:text="${error}"></small>
+            <small th:each="error : ${#fields.errors('name')}" th:utext="${error}  + '&lt;br /&gt;'"></small>
         </div>
         <div class="form-group" th:classappend="${#fields.hasErrors('description')}? 'text-danger'">
             <label for="description" class="font-weight-bold">Description</label>
             <textarea class="form-control" id="description" placeholder="Description..." th:field="*{description}"></textarea>
-            <small th:each="error : ${#fields.errors('description')}" th:text="${error}"></small>
+            <small th:each="error : ${#fields.errors('description')}" th:utext="${error}  + '&lt;br /&gt;'"></small>
         </div>
         <div class="form-group" th:classappend="${#fields.hasErrors('reward')}? 'text-danger'">
             <label for="reward" class="font-weight-bold">Reward</label>
             <input type="number" class="form-control" id="reward" placeholder="Reward..." th:field="*{reward}">
-            <small th:each="error : ${#fields.errors('reward')}" th:text="${error}"></small>
+            <small th:each="error : ${#fields.errors('reward')}" th:utext="${error}  + '&lt;br /&gt;'"></small>
         </div>
         <hr class="hr-2 bg-dark">
         <div class="button-holder d-flex justify-content-center">

@@ -40,29 +40,29 @@ public class UserEditValidator implements Validator {
         User user = userRepository.findByUsername(model.getUsername()).orElse(null);
 
         if (model.getOldPassword() == null || model.getOldPassword().isEmpty()) {
-            errors.rejectValue(OLD_PASSWORD_FIELD_NAME, OLD_PASSWORD_IS_MANDATORY, OLD_PASSWORD_IS_MANDATORY);
+            errors.rejectValue(OLD_PASSWORD_FIELD, OLD_PASSWORD_IS_MANDATORY, OLD_PASSWORD_IS_MANDATORY);
         }
 
         if (!encoder.matches(model.getOldPassword(), user.getPassword())) {
-            errors.rejectValue(OLD_PASSWORD_FIELD_NAME, WRONG_OLD_PASSWORD, WRONG_OLD_PASSWORD);
+            errors.rejectValue(OLD_PASSWORD_FIELD, WRONG_OLD_PASSWORD, WRONG_OLD_PASSWORD);
         }
 
         if (model.getPassword() == null || model.getPassword().isEmpty()) {
-            errors.rejectValue(PASSWORD_FIELD_NAME, PASSWORD_IS_MANDATORY, PASSWORD_IS_MANDATORY);
+            errors.rejectValue(PASSWORD_FIELD, PASSWORD_IS_MANDATORY, PASSWORD_IS_MANDATORY);
         }
 
         if (model.getConfirmPassword() == null || model.getConfirmPassword().isEmpty()) {
-            errors.rejectValue(CONFIRM_PASSWORD_FIELD_NAME, CONFIRM_PASSWORD_IS_MANDATORY, CONFIRM_PASSWORD_IS_MANDATORY);
+            errors.rejectValue(CONFIRM_PASSWORD_FIELD, CONFIRM_PASSWORD_IS_MANDATORY, CONFIRM_PASSWORD_IS_MANDATORY);
         }
 
         if (model.getPassword() != null && !model.getPassword().equals(model.getConfirmPassword())) {
-            errors.rejectValue(PASSWORD_FIELD_NAME, PASSWORDS_DO_NOT_MATCH, PASSWORDS_DO_NOT_MATCH);
+            errors.rejectValue(PASSWORD_FIELD, PASSWORDS_DO_NOT_MATCH, PASSWORDS_DO_NOT_MATCH);
         }
 
 
         if (!user.getEmail().equals(model.getEmail()) && userRepository.findByEmail(model.getEmail()).isPresent()) {
             errors.rejectValue(
-                    EMAIL_FIELD_NAME,
+                    EMAIL_FIELD,
                     String.format(EMAIL_ALREADY_EXISTS, model.getEmail()),
                     String.format(EMAIL_ALREADY_EXISTS, model.getEmail())
             );
@@ -72,23 +72,23 @@ public class UserEditValidator implements Validator {
         Matcher matcher = pattern.matcher(model.getEmail());
 
         if (!matcher.matches()) {
-            errors.rejectValue(EMAIL_FIELD_NAME, EMAIL_IS_NOT_VALID, EMAIL_IS_NOT_VALID);
+            errors.rejectValue(EMAIL_FIELD, EMAIL_IS_NOT_VALID, EMAIL_IS_NOT_VALID);
         }
 
         if (model.getFirstName() == null || model.getFirstName().isEmpty()) {
-            errors.rejectValue(FIRST_NAME_FIELD_NAME, FIRST_NAME_IS_MANDATORY, FIRST_NAME_IS_MANDATORY);
+            errors.rejectValue(FIRST_NAME_FIELD, FIRST_NAME_IS_MANDATORY, FIRST_NAME_IS_MANDATORY);
         }
 
         if (model.getLastName() == null || model.getLastName().isEmpty()) {
-            errors.rejectValue(LAST_NAME_FIELD_NAME, LAST_NAME_IS_MANDATORY, LAST_NAME_IS_MANDATORY);
+            errors.rejectValue(LAST_NAME_FIELD, LAST_NAME_IS_MANDATORY, LAST_NAME_IS_MANDATORY);
         }
 
         if (model.getFirstName().length() < FIRST_NAME_MIN_LENGTH || model.getFirstName().length() > FIRST_NAME_MAX_LENGTH) {
-            errors.rejectValue(FIRST_NAME_FIELD_NAME, FIRST_NAME_LENGTH, FIRST_NAME_LENGTH);
+            errors.rejectValue(FIRST_NAME_FIELD, FIRST_NAME_LENGTH, FIRST_NAME_LENGTH);
         }
 
         if (model.getLastName().length() < LAST_NAME_MIN_LENGTH || model.getLastName().length() > LAST_NAME_MAX_LENGTH) {
-            errors.rejectValue(LAST_NAME_FIELD_NAME, LAST_NAME_LENGTH, LAST_NAME_LENGTH);
+            errors.rejectValue(LAST_NAME_FIELD, LAST_NAME_LENGTH, LAST_NAME_LENGTH);
         }
     }
 }
