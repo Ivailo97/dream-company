@@ -13,7 +13,6 @@ import java.util.regex.Pattern;
 
 import static dreamcompany.validation.binding.ValidationConstants.*;
 
-
 @dreamcompany.validation.binding.annotation.Validator
 public class UserEditValidator implements Validator {
 
@@ -58,7 +57,6 @@ public class UserEditValidator implements Validator {
         if (model.getPassword() != null && !model.getPassword().equals(model.getConfirmPassword())) {
             errors.rejectValue(PASSWORD_FIELD, PASSWORDS_DO_NOT_MATCH, PASSWORDS_DO_NOT_MATCH);
         }
-
 
         if (!user.getEmail().equals(model.getEmail()) && userRepository.findByEmail(model.getEmail()).isPresent()) {
             errors.rejectValue(

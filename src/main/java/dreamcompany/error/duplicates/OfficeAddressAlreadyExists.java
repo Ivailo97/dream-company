@@ -4,10 +4,10 @@ import dreamcompany.error.BaseException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ResponseStatus(code = HttpStatus.CONFLICT, reason = "Duplicate email")
-public class EmailAlreadyExistException extends BaseException {
+@ResponseStatus(code = HttpStatus.CONFLICT, reason = "Duplicate address")
+public class OfficeAddressAlreadyExists extends BaseException {
 
-    public EmailAlreadyExistException(String message) {
+    public OfficeAddressAlreadyExists(String message) {
         super(HttpStatus.CONFLICT.value(), message);
     }
 }

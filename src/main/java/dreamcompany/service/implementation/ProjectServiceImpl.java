@@ -41,9 +41,7 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public ProjectServiceModel create(ProjectServiceModel projectServiceModel) {
 
-        Project projectInDb = projectRepository.findByName(projectServiceModel.getName()).orElse(null);
-
-        if (projectInDb != null){
+        if (projectRepository.existsByName(projectServiceModel.getName())){
             throw new ProjectNameAlreadyExistException(GlobalConstraints.DUPLICATE_PROJECT_MESSAGE);
         }
 
@@ -61,9 +59,7 @@ public class ProjectServiceImpl implements ProjectService {
 
         if (!project.getName().equals(projectServiceModel.getName())){
 
-            Project projectWithSameNameInDb = projectRepository.findByName(projectServiceModel.getName()).orElse(null);
-
-            if (projectWithSameNameInDb != null){
+            if (projectRepository.existsByName(projectServiceModel.getName())){
                 throw new ProjectNameAlreadyExistException(GlobalConstraints.DUPLICATE_PROJECT_MESSAGE);
             }
         }

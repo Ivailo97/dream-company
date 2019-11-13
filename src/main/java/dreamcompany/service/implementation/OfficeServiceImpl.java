@@ -1,7 +1,9 @@
 package dreamcompany.service.implementation;
 
+import dreamcompany.GlobalConstraints;
 import dreamcompany.domain.entity.Office;
 import dreamcompany.domain.model.service.OfficeServiceModel;
+import dreamcompany.error.duplicates.OfficeAddressAlreadyExists;
 import dreamcompany.repository.OfficeRepository;
 import dreamcompany.service.interfaces.OfficeService;
 import org.modelmapper.ModelMapper;
@@ -34,20 +36,29 @@ public class OfficeServiceImpl implements OfficeService {
     }
 
     @Override
-    public OfficeServiceModel edit(String id, OfficeServiceModel officeServiceModel) {
+    public OfficeServiceModel edit(String id, OfficeServiceModel edited) {
 
         Office office = officeRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid office id"));
 
+        if (!office.getAddress().equals(edited.getAddress())){
+            throwIfDuplicate(edited.getAddress());
+        }
 
-        office.setAddress(officeServiceModel.getAddress());
-        office.setTown(officeServiceModel.getTown());
-        office.setCountry(officeServiceModel.getCountry());
-        office.setPhoneNumber(officeServiceModel.getPhoneNumber());
+        office.setAddress(edited.getAddress());
+        office.setTown(edited.getTown());
+        office.setCountry(edited.getCountry());
+        office.setPhoneNumber(edited.getPhoneNumber());
 
         office = officeRepository.save(office);
 
         return modelMapper.map(office, OfficeServiceModel.class);
+    }
+
+    private void throwIfDuplicate(String address) {
+        if (officeRepository.existsByAddress(address)){
+            throw new OfficeAddressAlreadyExists(GlobalConstraints.DUPLICATE_ADDRESS_MESSAGE);
+        }
     }
 
     @Override

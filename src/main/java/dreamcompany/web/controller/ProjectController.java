@@ -8,6 +8,8 @@ import dreamcompany.domain.model.service.TaskServiceModel;
 import dreamcompany.domain.model.view.*;
 import dreamcompany.service.interfaces.ProjectService;
 import dreamcompany.service.interfaces.TaskService;
+import dreamcompany.validation.binding.project.ProjectCreateValidator;
+import dreamcompany.validation.binding.project.ProjectEditValidator;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -27,13 +29,19 @@ public class ProjectController extends BaseController {
 
     private final ProjectService projectService;
 
+    private final ProjectCreateValidator createValidator;
+
+    private final ProjectEditValidator editValidator;
+
     private final TaskService taskService;
 
     private final ModelMapper modelMapper;
 
     @Autowired
-    public ProjectController(ProjectService projectService, TaskService taskService, ModelMapper modelMapper) {
+    public ProjectController(ProjectService projectService, ProjectCreateValidator createValidator, ProjectEditValidator editValidator, TaskService taskService, ModelMapper modelMapper) {
         this.projectService = projectService;
+        this.createValidator = createValidator;
+        this.editValidator = editValidator;
         this.taskService = taskService;
         this.modelMapper = modelMapper;
     }
@@ -47,6 +55,8 @@ public class ProjectController extends BaseController {
     @PostMapping("/create")
     @PreAuthorize("hasRole('ROLE_MODERATOR')")
     public ModelAndView createConfirm(@Valid @ModelAttribute(name = "model") ProjectCreateBindingModel model, BindingResult bindingResult) {
+
+        createValidator.validate(model, bindingResult);
 
         if (bindingResult.hasErrors()) {
             return view("/project/create");
@@ -106,6 +116,8 @@ public class ProjectController extends BaseController {
                                     @Valid @ModelAttribute(name = "model") ProjectEditBindingModel model,
                                     BindingResult bindingResult) {
 
+        editValidator.validate(model, bindingResult);
+
         if (bindingResult.hasErrors()) {
             return view("/project/edit");
         }
@@ -135,7 +147,6 @@ public class ProjectController extends BaseController {
     public ModelAndView deleteConfirm(@PathVariable String id) {
 
         projectService.delete(id);
-
         return redirect("/projects/all");
     }
 

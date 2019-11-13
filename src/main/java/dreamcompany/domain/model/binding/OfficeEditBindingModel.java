@@ -1,10 +1,5 @@
 package dreamcompany.domain.model.binding;
 
-import org.hibernate.validator.constraints.Length;
-
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-
 public class OfficeEditBindingModel {
 
     private String id;
@@ -25,9 +20,6 @@ public class OfficeEditBindingModel {
         this.id = id;
     }
 
-    @NotEmpty(message = "Address can't be empty")
-    @Length(min = 5, max = 50, message = "Length must be between 5 and 50 symbols")
-    @NotNull(message = "Address can't be null")
     public String getAddress() {
         return address;
     }
@@ -36,9 +28,6 @@ public class OfficeEditBindingModel {
         this.address = address;
     }
 
-    @NotEmpty(message = "Phone number cant be empty")
-    @Length(min = 5, max = 10, message = "Length must be between 5 and 10 symbols")
-    @NotNull(message = "Phone number can't be null")
     public String getPhoneNumber() {
         return phoneNumber;
     }
@@ -47,8 +36,6 @@ public class OfficeEditBindingModel {
         this.phoneNumber = phoneNumber;
     }
 
-    @NotEmpty(message = "Town cant be empty")
-    @NotNull(message = "Town can't be null")
     public String getTown() {
         return town;
     }
@@ -57,8 +44,6 @@ public class OfficeEditBindingModel {
         this.town = town;
     }
 
-    @NotEmpty(message = "Country cant be empty")
-    @NotNull(message = "Country can't be null")
     public String getCountry() {
         return country;
     }

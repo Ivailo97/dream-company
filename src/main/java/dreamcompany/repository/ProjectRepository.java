@@ -15,4 +15,5 @@ public interface ProjectRepository extends JpaRepository<Project, String> {
 
     Optional<Project> findByName(String name);
 
+    boolean existsByName(String name);
 }

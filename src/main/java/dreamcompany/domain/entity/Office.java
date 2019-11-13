@@ -23,7 +23,7 @@ public class Office extends BaseEntity {
     public Office() {
     }
 
-    @Column(name = "address",nullable = false)
+    @Column(name = "address", nullable = false, unique = true)
     public String getAddress() {
         return address;
     }
@@ -32,7 +32,7 @@ public class Office extends BaseEntity {
         this.address = address;
     }
 
-    @Column(name = "phone_number",nullable = false)
+    @Column(name = "phone_number", nullable = false)
     public String getPhoneNumber() {
         return phoneNumber;
     }
@@ -41,7 +41,7 @@ public class Office extends BaseEntity {
         this.phoneNumber = phoneNumber;
     }
 
-    @Column(name = "town",nullable = false)
+    @Column(name = "town", nullable = false)
     public String getTown() {
         return town;
     }
@@ -50,7 +50,7 @@ public class Office extends BaseEntity {
         this.town = town;
     }
 
-    @Column(name = "country",nullable = false)
+    @Column(name = "country", nullable = false)
     public String getCountry() {
         return country;
     }

@@ -20,6 +20,7 @@ public final class GlobalConstraints {
 
     //exception messages
     public static final String DUPLICATE_PROJECT_MESSAGE = "Project with that name already exist!";
+    public static final String DUPLICATE_ADDRESS_MESSAGE = "Office with same address already exist!";
     public static final String DUPLICATE_USER_USERNAME_MESSAGE = "User with the same username already exist!";
     public static final String DUPLICATE_USER_EMAIL_MESSAGE = "User with the same email already exist!";
     public static final String WRONG_OLD_PASSWORD_MESSAGE = "Wrong old password!";

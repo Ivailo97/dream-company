@@ -8,6 +8,8 @@ import dreamcompany.domain.model.view.OfficeDeleteViewModel;
 import dreamcompany.domain.model.view.OfficeDetailsViewModel;
 import dreamcompany.domain.model.view.OfficeFetchViewModel;
 import dreamcompany.service.interfaces.OfficeService;
+import dreamcompany.validation.binding.office.OfficeCreateValidator;
+import dreamcompany.validation.binding.office.OfficeEditValidator;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -27,11 +29,17 @@ public class OfficeController extends BaseController {
 
     private final OfficeService officeService;
 
+    private final OfficeCreateValidator createValidator;
+
+    private final OfficeEditValidator editValidator;
+
     private final ModelMapper modelMapper;
 
     @Autowired
-    public OfficeController(OfficeService officeService, ModelMapper modelMapper) {
+    public OfficeController(OfficeService officeService, OfficeCreateValidator createValidator, OfficeEditValidator editValidator, ModelMapper modelMapper) {
         this.officeService = officeService;
+        this.createValidator = createValidator;
+        this.editValidator = editValidator;
         this.modelMapper = modelMapper;
     }
 
@@ -45,6 +53,8 @@ public class OfficeController extends BaseController {
     @PreAuthorize("hasRole('ROLE_MODERATOR')")
     public ModelAndView createConfirm(@Valid @ModelAttribute("model") OfficeCreateBindingModel model,
                                       BindingResult bindingResult) {
+
+        createValidator.validate(model, bindingResult);
 
         if (bindingResult.hasErrors()) {
             return view("/office/create");
@@ -129,6 +139,8 @@ public class OfficeController extends BaseController {
     public ModelAndView editConfirm(@PathVariable String id,
                                     @Valid @ModelAttribute(name = "model") OfficeEditBindingModel model,
                                     BindingResult bindingResult) {
+
+        editValidator.validate(model,bindingResult);
 
         if (bindingResult.hasErrors()) {
             return view("/office/edit");
