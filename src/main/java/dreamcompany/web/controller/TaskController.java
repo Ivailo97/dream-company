@@ -1,7 +1,6 @@
 package dreamcompany.web.controller;
 
 import dreamcompany.domain.entity.Position;
-import dreamcompany.domain.entity.Status;
 import dreamcompany.domain.model.binding.TaskCreateBindingModel;
 import dreamcompany.domain.model.binding.TaskEditBindingModel;
 import dreamcompany.domain.model.service.TaskServiceModel;
@@ -9,8 +8,9 @@ import dreamcompany.domain.model.view.TaskAllViewModel;
 import dreamcompany.domain.model.view.TaskDeleteViewModel;
 import dreamcompany.domain.model.view.TaskDetailsViewModel;
 import dreamcompany.domain.model.view.TaskFetchViewModel;
-import dreamcompany.service.interfaces.ProjectService;
 import dreamcompany.service.interfaces.TaskService;
+import dreamcompany.validation.binding.task.TaskCreateValidator;
+import dreamcompany.validation.binding.task.TaskEditValidator;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -31,11 +31,17 @@ public class TaskController extends BaseController {
 
     private final TaskService taskService;
 
+    private final TaskCreateValidator createValidator;
+
+    private final TaskEditValidator editValidator;
+
     private final ModelMapper modelMapper;
 
     @Autowired
-    public TaskController(TaskService taskService, ModelMapper modelMapper) {
+    public TaskController(TaskService taskService, TaskCreateValidator createValidator, TaskEditValidator editValidator, ModelMapper modelMapper) {
         this.taskService = taskService;
+        this.createValidator = createValidator;
+        this.editValidator = editValidator;
         this.modelMapper = modelMapper;
     }
 
@@ -49,6 +55,8 @@ public class TaskController extends BaseController {
     @PreAuthorize("hasRole('ROLE_MODERATOR')")
     public ModelAndView createConfirm(@Valid @ModelAttribute(name = "model") TaskCreateBindingModel model,
                                       BindingResult bindingResult) {
+
+        createValidator.validate(model, bindingResult);
 
         if (bindingResult.hasErrors()) {
             return view("/task/create");
@@ -105,6 +113,8 @@ public class TaskController extends BaseController {
                                     @Valid @ModelAttribute(name = "model") TaskEditBindingModel model,
                                     BindingResult bindingResult) {
 
+        editValidator.validate(model, bindingResult);
+
         if (bindingResult.hasErrors()) {
             return view("/task/edit");
         }
@@ -136,7 +146,6 @@ public class TaskController extends BaseController {
     public ModelAndView loading(@PathVariable String id, ModelAndView modelAndView) {
 
         modelAndView.addObject("minutes", taskService.findById(id).getMinutesNeeded());
-
         return view("task/loading", modelAndView);
     }
 
@@ -146,6 +155,7 @@ public class TaskController extends BaseController {
     public List<String> fetchPositions() {
 
         return Arrays.stream(Position.values())
+                .filter(position -> !position.equals(Position.PROJECT_MANAGER))
                 .map(Enum::name)
                 .collect(Collectors.toList());
     }

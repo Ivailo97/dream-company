@@ -17,5 +17,4 @@ public abstract class BaseController {
         return view("redirect:" + url);
     }
 
-
 }

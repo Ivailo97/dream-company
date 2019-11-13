@@ -1,6 +1,6 @@
 package dreamcompany.domain.model.service;
 
-public abstract class BaseServiceModel {
+public class BaseServiceModel {
 
     private String id;
 

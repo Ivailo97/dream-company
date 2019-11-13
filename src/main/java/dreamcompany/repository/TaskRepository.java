@@ -23,4 +23,5 @@ public interface TaskRepository extends JpaRepository<Task, String> {
 
     Optional<Task> findByName(String name);
 
+    boolean existsByNameAndProjectId(String taskName, String projectId);
 }

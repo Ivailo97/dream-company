@@ -24,7 +24,7 @@ public final class GlobalConstraints {
     public static final String DUPLICATE_USER_USERNAME_MESSAGE = "User with the same username already exist!";
     public static final String DUPLICATE_USER_EMAIL_MESSAGE = "User with the same email already exist!";
     public static final String WRONG_OLD_PASSWORD_MESSAGE = "Wrong old password!";
-    public static final String DUPLICATE_TASK_MESSAGE = "Task with that name already exist!";
+    public static final String DUPLICATE_TASK_MESSAGE = "Task with that name already exist in this project!";
     public static final String DUPLICATE_TEAM_MESSAGE = "Team with that name already exist!";
     public static final String USER_NOT_FOUND_MESSAGE = "Invalid user id!";
     public static final String TASK_NOT_FOUND_MESSAGE = "Invalid task id!";

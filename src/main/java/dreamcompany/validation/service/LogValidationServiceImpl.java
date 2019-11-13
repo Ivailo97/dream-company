@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class LogValidationServiceImpl implements LogValidationService {
 
-
     @Override
     public boolean isValid(LogServiceModel logServiceModel) {
         return fieldsAreNotNull(logServiceModel);

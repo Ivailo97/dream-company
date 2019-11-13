@@ -102,7 +102,6 @@ public class ProjectServiceImpl implements ProjectService {
                     .collect(Collectors.toList());
         }
 
-
         return projectRepository.findAllByStatus(Status.valueOf(status.toUpperCase()))
                 .stream()
                 .map(p -> modelMapper.map(p, ProjectServiceModel.class))

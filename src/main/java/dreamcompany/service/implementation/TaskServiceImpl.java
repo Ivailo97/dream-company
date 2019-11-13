@@ -62,8 +62,7 @@ public class TaskServiceImpl implements TaskService {
         Project project = projectRepository.findById(taskServiceModel.getProject())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid project id"));
 
-        if (!taskServiceModel.getName().equals(task.getName())){
-
+        if (!taskServiceModel.getName().equals(task.getName())) {
             throwIfDuplicate(taskServiceModel);
         }
 
@@ -160,10 +159,9 @@ public class TaskServiceImpl implements TaskService {
                 .collect(Collectors.toList());
     }
 
-    private void throwIfDuplicate(TaskServiceModel taskServiceModel){
-        Task taskInDb = taskRepository.findByName(taskServiceModel.getName()).orElse(null);
+    private void throwIfDuplicate(TaskServiceModel task) {
 
-        if (taskInDb != null) {
+        if (taskRepository.existsByNameAndProjectId(task.getName(), task.getProject())) {
             throw new TaskNameAlreadyExistException(GlobalConstraints.DUPLICATE_TASK_MESSAGE);
         }
     }
