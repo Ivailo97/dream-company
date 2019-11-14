@@ -11,6 +11,12 @@
     background-repeat: repeat;
 }
 
+#task-details-body{
+    background-image: url('/img/task-details-background.jpg');
+    background-size: 200px;
+    background-repeat: repeat;
+}
+
 .all{
     background-image: url('/img/tables-background.jpg');
     background-size: 300px;

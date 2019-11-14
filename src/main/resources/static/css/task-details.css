@@ -1,0 +1,101 @@
+:root {
+    --background: white;
+    --primary: #ff1ead;
+    --secondary: #1effc3;
+    --card-size: 300px;
+}
+
+#task-details {
+    height: 100vh;
+    margin: 0;
+    display: grid;
+    place-items: center;
+    padding: 1rem;
+    font-family: 'Source Code Pro', monospace;
+    text-rendering: optimizelegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.task-details-card {
+    width: calc(var(--card-size) * 1.586);
+    height: var(--card-size);
+    border-radius: 0.75rem;
+    box-shadow: 0 22px 70px 4px rgba(0, 0, 0, 0.56), 0 0 0 1px rgba(0, 0, 0, 0.3);
+    background: black;
+    display: grid;
+    grid-template-columns: 40% auto;
+    color: white;
+    align-items: center;
+    will-change: transform;
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.task-details-card:hover {
+    transform: scale(1.1);
+    box-shadow: 0 32px 80px 14px rgba(0, 0, 0, 0.36), 0 0 0 1px rgba(0, 0, 0, 0.3);
+}
+
+.task-details-card-details {
+    padding: 1rem;
+}
+
+.name {
+    font-size: 1.25rem;
+}
+
+.occupation {
+    font-weight: 600;
+    color: var(--primary);
+}
+
+.card-avatar {
+    display: grid;
+    place-items: center;
+}
+
+#task-details-svg {
+    fill: white;
+    width: 65%;
+}
+
+.card-about {
+    margin-top: 1rem;
+    display: grid;
+    grid-auto-flow: column;
+}
+
+.item {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0.5rem;
+}
+
+.item .value {
+    font-size: 1rem;
+}
+
+.item .label {
+    margin-top: 0.15rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--primary);
+}
+
+.skills {
+    display: flex;
+    flex-direction: column;
+    margin-top: 0.75rem;
+}
+
+.skills .label {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--primary);
+}
+
+.skills .value {
+    margin-top: 0.15rem;
+    font-size: 0.75rem;
+    line-height: 1.25rem;
+}
