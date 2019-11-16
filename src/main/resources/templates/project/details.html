@@ -9,13 +9,32 @@
 </header>
 
 <main>
-    <div class="container-fluid" th:object="${model}">
+    <div class="jumbotron text-center" th:object="${model}">
 
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-12">
+                <div class="blog-card">
+                    <div class="meta">
+                        <div class="photo"
+                             style="background-image: url(/img/Project-Management.jpg)"></div>
+                        <ul class="details">
+                            <li class="tags">Completion reward:</li>
+                            <li class="tags"><small th:text="*{reward}"></small>$</li>
+                        </ul>
+                    </div>
+                    <div class="description">
+                        <h1 th:text="*{name}"></h1>
+                        <h2>Opening a door to the future</h2>
+                        <p th:text="*{description}"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
 
+        <div class="row">
+            <div class="col-md-12 mt-5">
                 <div class="radio-box">
-                    <p>Tasks</p>
+                    <p>Project tasks</p>
                     <label>
                         <input type="radio" id="allRadio" name="selection" value="all">
                         <span class="yes">All</span>
@@ -31,32 +50,29 @@
                     </th:block>
 
                 </div>
-
             </div>
+        </div>
 
-            <div class="col-md-6 mt-5">
 
-                <a href="#">
-                    <figure>
-                        <div class="date"><span class="card-date-day" th:text="${model.reward}"></span><span class="card-date-month">$</span></div>
-                        <figcaption>
-                            <h4> <span th:text="${model.name}"></span></h4>
-                            <p th:text="${model.description}"></p>
-                        </figcaption>
-                    </figure>
-                </a>
-            </div>
+        <div class="row project-tasks-container m-5">
+
+            <section id="tasks-data" class="cards-wrapper">
+
+
+            </section>
 
 
         </div>
 
-        <div id="tasks-data" class="row project-tasks-container">
+
+        <div class="no-data-messages">
 
 
         </div>
+
+
 
     </div>
-
 
 </main>
 
@@ -64,50 +80,36 @@
 </body>
 <script th:inline="javascript">
 
-    $.fn.commentCards = function () {
-
-        return this.each(function () {
-
-            let $this = $(this),
-                $cards = $this.find('.project-task-card'),
-                $current = $cards.filter('.card--current'),
-                $next;
-
-            $cards.on('click', function () {
-                if (!$current.is(this)) {
-                    $cards.removeClass('card--current card--out card--next');
-                    $current.addClass('card--out');
-                    $current = $(this).addClass('card--current');
-                    $next = $current.next();
-                    $next = $next.length ? $next : $cards.first();
-                    $next.addClass('card--next');
-                }
-            });
-
-            if (!$current.length) {
-                $current = $cards.last();
-                $cards.first().trigger('click');
-            }
-
-            $this.addClass('cards--active');
-
-        })
-    };
-
-    $('.project-tasks-cards').commentCards();
-
     function formatTask(task) {
-        return `<div class="col">`
-            + '<div class="project-task-box mt-3">'
-            + `<div class="imgBx">`
-            + `<img src="/img/illustration-document-icon_53876-28510.jpg" alt="">`
-            + `</div>`
-            + `<div class="task-content">`
-            + `<h3>${task.name}</h3>`
+
+        let date = formatDate(task);
+
+        return `<div class="card-grid-space">`
+            + `<a class="t_card" href="http://localhost:8000/tasks/details/${task.id}" style="--bg-img: url(/img/task-img.jpg)">`
+            + `<div>`
+            + `<h1>${task.name}</h1>`
             + `<p>${task.description}</p>`
+            + `<div class="date">${date}</div>`
             + `</div>`
-            + '</div>'
+            + `</a>`
             + `</div>`
+    }
+
+    function formatDate(task) {
+
+        let date = task.createdOn;
+
+        let d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        return [year, month, day].join('-');
     }
 
     $('input[type=radio][name=selection]').change(function () {
@@ -120,14 +122,13 @@
             .then((response) => response.json())
             .then((json) => {
                 $('#tasks-data').empty();
+                $('.no-data-messages').empty();
 
                 if (json.length === 0) {
-                    $('#tasks-data').append(`<h1 class="text-center font-weight-bold mt-5">There are no tasks with the ${status} status.</h1>`)
+                    $('.no-data-messages').append(`<h1 class="font-weight-bold">There are no ${status} tasks.</h1>`)
                 } else {
                     for (let i = 0; i < json.length; i++) {
-
                         $('#tasks-data').append(formatTask(json[i]));
-
                     }
                 }
             })
