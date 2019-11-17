@@ -7,7 +7,7 @@ import dreamcompany.error.notexist.UserNotFoundException;
 import dreamcompany.repository.LogRepository;
 import dreamcompany.repository.UserRepository;
 import dreamcompany.validation.service.LogValidationServiceImpl;
-import dreamcompany.validation.service.interfaces.LogValidationService;
+import dreamcompany.validation.service.LogValidationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

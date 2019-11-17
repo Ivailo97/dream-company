@@ -1,7 +1,6 @@
 package dreamcompany.validation.service;
 
 import dreamcompany.domain.model.service.LogServiceModel;
-import dreamcompany.validation.service.interfaces.LogValidationService;
 import org.springframework.stereotype.Component;
 
 @Component

@@ -1,4 +1,4 @@
-package dreamcompany.validation.binding.project;
+package dreamcompany.validation.project.binding;
 
 import dreamcompany.domain.model.binding.ProjectEditBindingModel;
 import org.springframework.validation.Errors;
@@ -7,10 +7,9 @@ import org.springframework.validation.Validator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static dreamcompany.validation.binding.ValidationConstants.*;
-import static dreamcompany.validation.binding.ValidationConstants.REWARD_IS_NEGATIVE;
+import static dreamcompany.validation.project.ProjectConstants.*;
 
-@dreamcompany.validation.binding.annotation.Validator
+@dreamcompany.validation.annotation.Validator
 public class ProjectEditValidator implements Validator {
     @Override
     public boolean supports(Class<?> aClass) {
@@ -22,11 +21,11 @@ public class ProjectEditValidator implements Validator {
 
         ProjectEditBindingModel project = (ProjectEditBindingModel) o;
 
-        Pattern pattern = Pattern.compile(NAME_PATTERN_STRING);
+        Pattern pattern = Pattern.compile(PROJECT_NAME_PATTERN_STRING);
         Matcher matcher = pattern.matcher(project.getName());
 
         if (!matcher.matches()){
-            errors.rejectValue(NAME_FIELD,NAME_IS_INVALID,NAME_IS_INVALID);
+            errors.rejectValue(PROJECT_NAME_FIELD,NAME_IS_INVALID,NAME_IS_INVALID);
         }
 
         pattern = Pattern.compile(DESCRIPTION_PATTERN_STRING);

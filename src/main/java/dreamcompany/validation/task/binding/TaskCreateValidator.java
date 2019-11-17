@@ -1,4 +1,4 @@
-package dreamcompany.validation.binding.task;
+package dreamcompany.validation.task.binding;
 
 import dreamcompany.domain.model.binding.TaskCreateBindingModel;
 import dreamcompany.repository.TaskRepository;
@@ -6,12 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import static dreamcompany.validation.task.TaskConstants.*;
 
-import static dreamcompany.validation.binding.ValidationConstants.*;
-
-@dreamcompany.validation.binding.annotation.Validator
+@dreamcompany.validation.annotation.Validator
 public class TaskCreateValidator implements Validator {
 
     private final TaskRepository taskRepository;
@@ -35,12 +32,12 @@ public class TaskCreateValidator implements Validator {
             errors.rejectValue(PROJECT_FIELD, PROJECT_IS_MANDATORY, PROJECT_IS_MANDATORY);
         }
 
-        if (task.getName() == null || task.getName().isEmpty()) {
-            errors.rejectValue(NAME_FIELD, NAME_IS_MANDATORY, NAME_IS_MANDATORY);
+        if (!task.getName().matches(TASK_NAME_PATTERN_STRING)) {
+            errors.rejectValue(TASK_NAME_FIELD, NAME_IS_INVALID, NAME_IS_INVALID);
         }
 
         if (taskWithSameNameExistInTheProject(task)) {
-            errors.rejectValue(NAME_FIELD, TASK_ALREADY_EXIST_IN_THIS_PROJECT, TASK_ALREADY_EXIST_IN_THIS_PROJECT);
+            errors.rejectValue(TASK_NAME_FIELD, TASK_ALREADY_EXIST_IN_THIS_PROJECT, TASK_ALREADY_EXIST_IN_THIS_PROJECT);
         }
 
         if (task.getCredits() == null){
@@ -51,10 +48,7 @@ public class TaskCreateValidator implements Validator {
             errors.rejectValue(CREDITS_FIELD, CREDITS_COUNT_INVALID, CREDITS_COUNT_INVALID);
         }
 
-        Pattern pattern = Pattern.compile(DESCRIPTION_PATTERN_STRING);
-        Matcher matcher = pattern.matcher(task.getDescription());
-
-        if (!matcher.matches()) {
+        if (!task.getDescription().matches(DESCRIPTION_PATTERN_STRING)) {
             errors.rejectValue(DESCRIPTION_FIELD, DESCRIPTION_IS_INVALID, DESCRIPTION_IS_INVALID);
         }
 
@@ -75,7 +69,6 @@ public class TaskCreateValidator implements Validator {
     }
 
     private boolean taskWithSameNameExistInTheProject(TaskCreateBindingModel task) {
-
         return task.getProject() != null
                 && !task.getProject().isEmpty()
                 && task.getName() != null

@@ -17,7 +17,7 @@ import dreamcompany.service.interfaces.LogService;
 import dreamcompany.service.interfaces.RoleService;
 import dreamcompany.service.interfaces.UserService;
 import dreamcompany.util.MyThread;
-import dreamcompany.validation.service.interfaces.UserValidationService;
+import dreamcompany.validation.user.service.UserValidationService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

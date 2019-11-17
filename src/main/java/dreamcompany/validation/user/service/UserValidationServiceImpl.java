@@ -1,17 +1,12 @@
-package dreamcompany.validation.service;
+package dreamcompany.validation.user.service;
 
 import dreamcompany.domain.model.service.UserServiceModel;
-import dreamcompany.validation.service.interfaces.UserValidationService;
 import org.springframework.stereotype.Component;
 
-import static dreamcompany.validation.binding.ValidationConstants.*;
-
-import java.util.regex.Pattern;
+import static dreamcompany.validation.user.UserConstants.*;
 
 @Component
 public class UserValidationServiceImpl implements UserValidationService {
-
-    private static final Pattern REGEX_PATTERN = Pattern.compile(EMAIL_PATTERN_STRING);
 
     @Override
     public boolean isValid(UserServiceModel userServiceModel) {
@@ -23,14 +18,11 @@ public class UserValidationServiceImpl implements UserValidationService {
     }
 
     private boolean fieldsMeetTheRequirements(UserServiceModel userServiceModel) {
-        return REGEX_PATTERN.matcher(userServiceModel.getEmail()).matches()
+        return userServiceModel.getEmail().matches(EMAIL_PATTERN_STRING)
                 && !userServiceModel.getPassword().isEmpty()
-                && userServiceModel.getUsername().length() >= USERNAME_MIN_LENGTH
-                && userServiceModel.getUsername().length() <= USERNAME_MAX_LENGTH
-                && userServiceModel.getFirstName().length() >= FIRST_NAME_MIN_LENGTH
-                && userServiceModel.getFirstName().length() <= FIRST_NAME_MAX_LENGTH
-                && userServiceModel.getLastName().length() >= LAST_NAME_MIN_LENGTH
-                && userServiceModel.getLastName().length() <= LAST_NAME_MAX_LENGTH;
+                && userServiceModel.getUsername().matches(USERNAME_PATTERN_STRING)
+                && userServiceModel.getFirstName().matches(NAME_PATTERN_STRING)
+                && userServiceModel.getLastName().matches(NAME_PATTERN_STRING);
     }
 
     private boolean fieldsAreNotNull(UserServiceModel userServiceModel) {

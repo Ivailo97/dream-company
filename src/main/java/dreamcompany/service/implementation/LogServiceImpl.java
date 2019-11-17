@@ -8,7 +8,7 @@ import dreamcompany.error.notexist.UserNotFoundException;
 import dreamcompany.repository.LogRepository;
 import dreamcompany.repository.UserRepository;
 import dreamcompany.service.interfaces.LogService;
-import dreamcompany.validation.service.interfaces.LogValidationService;
+import dreamcompany.validation.service.LogValidationService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

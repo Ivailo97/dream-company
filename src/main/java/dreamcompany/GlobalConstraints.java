@@ -11,12 +11,10 @@ public final class GlobalConstraints {
     public static final String ROLE_ADMIN = "ROLE_ADMIN";
     public static final String ROLE_ROOT = "ROLE_ROOT";
 
-
     //error handler
     public static final String GLOBAL_EXCEPTION_VIEW_NAME = "/error/error";
     public static final String ERROR_PAGE_STATUS_CODE_ATTRIBUTE_NAME = "statusCode";
     public static final String ERROR_PAGE_MESSAGE_ATTRIBUTE_NAME = "message";
-
 
     //exception messages
     public static final String DUPLICATE_PROJECT_MESSAGE = "Project with that name already exist!";
@@ -35,7 +33,6 @@ public final class GlobalConstraints {
     public static final String DATE_PATTERN = "yyyy-MM-dd HH:mm:ss";
 
     //Log messages
-
     //user
     public static final String REGISTERED_USER_SUCCESSFULLY = "Registered successfully %s with generated id:%s";
     public static final String UPDATED_USER_PASSWORD = "Updated password";

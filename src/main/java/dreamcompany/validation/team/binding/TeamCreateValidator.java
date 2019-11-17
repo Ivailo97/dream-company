@@ -1,13 +1,13 @@
-package dreamcompany.validation.binding.team;
+package dreamcompany.validation.team.binding;
 
 import dreamcompany.domain.model.binding.TeamCreateBindingModel;
 import dreamcompany.repository.TeamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
-import static dreamcompany.validation.binding.ValidationConstants.*;
+import static dreamcompany.validation.team.TeamConstants.*;
 
-@dreamcompany.validation.binding.annotation.Validator
+@dreamcompany.validation.annotation.Validator
 public class TeamCreateValidator implements Validator {
 
     private final TeamRepository teamRepository;
@@ -28,7 +28,7 @@ public class TeamCreateValidator implements Validator {
         TeamCreateBindingModel team = (TeamCreateBindingModel) o;
 
         if (team.getName() == null || team.getName().isEmpty()) {
-            errors.rejectValue(NAME_FIELD, NAME_IS_MANDATORY, NAME_IS_MANDATORY);
+            errors.rejectValue(TEAM_NAME_FIELD, TEAM_NAME_IS_MANDATORY, TEAM_NAME_IS_MANDATORY);
         }
 
         if (team.getOffice() == null || team.getOffice().isEmpty()){
@@ -44,7 +44,7 @@ public class TeamCreateValidator implements Validator {
         }
 
         if (teamRepository.findByName(team.getName()).isPresent()){
-            errors.rejectValue(NAME_FIELD,NAME_ALREADY_EXIST,NAME_ALREADY_EXIST);
+            errors.rejectValue(TEAM_NAME_FIELD,NAME_ALREADY_EXIST,NAME_ALREADY_EXIST);
         }
     }
 }
