@@ -5,6 +5,19 @@ body {
     background-size: 100%;
 }
 
+#choose-employee{
+    background-image: url("/img/Wood-Background-Repeat.jpg");
+    background-repeat: repeat;
+    background-size: 30%;
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+#tasks{
+    background-image: url('/img/task-details-background.jpg');
+    background-size: 200px;
+    background-repeat: repeat;
+}
+
 #choose {
     background-image: url('/img/choose-team-background.jpg');
     background-size: 200px;

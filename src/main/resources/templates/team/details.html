@@ -22,7 +22,7 @@
                                 <div class="card">
                                     <div class="card-body text-center">
                                         <p>
-                                            <img class="img-fluid" alt="Team Cards Flipper" th:src="${(employee.imageUrl != null && !#strings.isEmpty(employee.imageUrl)) ? employee.imageUrl : 'https://res.cloudinary.com/rado-cloud/image/upload/v1553353764/manager-512.png'}" /></p>
+                                            <img class="img-fluid" alt="Team Cards Flipper" th:src="${(employee.imageUrl != null && !#strings.isEmpty(employee.imageUrl)) ? employee.imageUrl : '/img/default-avatar.png'}" /></p>
                                         <h4 class="card-title" th:text="${employee.position}"></h4>
                                         <p class="card-text" th:text="${employee.fullName}"></p>
                                     </div>
