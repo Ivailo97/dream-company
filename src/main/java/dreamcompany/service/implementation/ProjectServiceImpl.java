@@ -79,6 +79,15 @@ public class ProjectServiceImpl implements ProjectService {
         Project project = projectRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid project id"));
 
+
+        Team team = project.getTeam();
+
+        project.setTeam(null);
+        team.setProject(null);
+
+        teamRepository.save(team);
+        projectRepository.save(project);
+
         ProjectServiceModel projectServiceModel = modelMapper.map(project, ProjectServiceModel.class);
 
         projectRepository.delete(project);

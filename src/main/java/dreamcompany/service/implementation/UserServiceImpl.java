@@ -77,13 +77,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserServiceModel register(UserServiceModel userServiceModel) throws RoleNotFoundException {
 
-        String username = userServiceModel.getUsername();
         //checks for username taken or email taken
-        throwIfUserExist(username, userServiceModel.getEmail());
+        throwIfUserExist(userServiceModel.getUsername(), userServiceModel.getEmail());
+
         defineUserRolesAndPosition(userServiceModel);
 
         userServiceModel.setHiredOn(LocalDateTime.now());
         userServiceModel.setPassword(encoder.encode(userServiceModel.getPassword()));
+
         //checks for null fields
         throwIfServiceModelNotValid(userServiceModel);
 
@@ -91,7 +92,7 @@ public class UserServiceImpl implements UserService {
 
         entity = userRepository.save(entity);
 
-        String logMessage = String.format(REGISTERED_USER_SUCCESSFULLY, username, entity.getId());
+        String logMessage = String.format(REGISTERED_USER_SUCCESSFULLY, userServiceModel.getUsername(), entity.getId());
 
         logAction(entity.getUsername(), logMessage);
 
@@ -110,6 +111,7 @@ public class UserServiceImpl implements UserService {
 
         //checks for null fields
         throwIfServiceModelNotValid(edited);
+
         User user = userRepository.findByUsername(edited.getUsername())
                 .orElseThrow(() -> new UsernameNotFoundException(USERNAME_NOT_FOUND));
 
@@ -235,7 +237,7 @@ public class UserServiceImpl implements UserService {
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new TaskNotFoundException(TASK_NOT_FOUND_MESSAGE));
 
-        actualTaskComplete(user,task);
+        actualTaskComplete(user, task);
 
         String logMessage = String.format(COMPLETED_TASK_SUCCESSFULLY, user.getUsername(), task.getName());
         logAction(user.getUsername(), logMessage);
@@ -354,7 +356,7 @@ public class UserServiceImpl implements UserService {
 
         long milliseconds = TimeUnit.MINUTES.toMillis(task.getMinutesNeeded());
 
-        Thread thread = new MyThread(milliseconds, () ->{
+        Thread thread = new MyThread(milliseconds, () -> {
 
             user.setCredits(user.getCredits() + task.getCredits());
 
@@ -451,7 +453,6 @@ public class UserServiceImpl implements UserService {
         logServiceModel.setUsername(username);
         logServiceModel.setCreatedOn(LocalDateTime.now());
         logServiceModel.setDescription(description);
-
         logService.create(logServiceModel);
     }
 
@@ -466,7 +467,6 @@ public class UserServiceImpl implements UserService {
         User userInDbWithSameEmail = userRepository.findByEmail(email).orElse(null);
 
         if (userInDbWithSameEmail != null) {
-
             throw new EmailAlreadyExistException(DUPLICATE_USER_EMAIL_MESSAGE);
         }
     }

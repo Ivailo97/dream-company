@@ -5,10 +5,7 @@ import dreamcompany.domain.entity.*;
 import dreamcompany.domain.model.service.TeamServiceModel;
 import dreamcompany.domain.model.service.UserServiceModel;
 import dreamcompany.error.duplicates.TeamNameAlreadyExistException;
-import dreamcompany.repository.OfficeRepository;
-import dreamcompany.repository.ProjectRepository;
-import dreamcompany.repository.TeamRepository;
-import dreamcompany.repository.UserRepository;
+import dreamcompany.repository.*;
 import dreamcompany.service.interfaces.CloudinaryService;
 import dreamcompany.service.interfaces.TeamService;
 import org.modelmapper.ModelMapper;
@@ -21,6 +18,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static dreamcompany.GlobalConstraints.ROLE_ADMIN;
+import static dreamcompany.GlobalConstraints.ROLE_MODERATOR;
+
 @Service
 public class TeamServiceImpl implements TeamService {
 
@@ -28,20 +28,26 @@ public class TeamServiceImpl implements TeamService {
 
     private final CloudinaryService cloudinaryService;
 
+    private final RoleRepository roleRepository;
+
     private final OfficeRepository officeRepository;
 
     private final ProjectRepository projectRepository;
+
+    private final TaskRepository taskRepository;
 
     private final UserRepository userRepository;
 
     private final ModelMapper modelMapper;
 
     @Autowired
-    public TeamServiceImpl(TeamRepository teamRepository, CloudinaryService cloudinaryService, OfficeRepository officeRepository, ProjectRepository projectRepository, UserRepository userRepository, ModelMapper modelMapper) {
+    public TeamServiceImpl(TeamRepository teamRepository, CloudinaryService cloudinaryService, RoleRepository roleRepository, OfficeRepository officeRepository, ProjectRepository projectRepository, TaskRepository taskRepository, UserRepository userRepository, ModelMapper modelMapper) {
         this.teamRepository = teamRepository;
         this.cloudinaryService = cloudinaryService;
+        this.roleRepository = roleRepository;
         this.officeRepository = officeRepository;
         this.projectRepository = projectRepository;
+        this.taskRepository = taskRepository;
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
     }
@@ -63,7 +69,6 @@ public class TeamServiceImpl implements TeamService {
         team.setProfit(BigDecimal.ZERO);
 
         // set prev position
-
         List<UserServiceModel> employees = new ArrayList<>(teamServiceModel.getEmployees());
 
         User first = userRepository.findById(employees.get(0).getId()).orElse(null);
@@ -85,6 +90,8 @@ public class TeamServiceImpl implements TeamService {
         });
 
         first.setPosition(Position.TEAM_LEADER);
+        first.getAuthorities().add(roleRepository.findByAuthority(ROLE_MODERATOR).orElse(null));
+        first.getAuthorities().add(roleRepository.findByAuthority(ROLE_ADMIN).orElse(null));
         first.setSalary(Position.TEAM_LEADER.getSalary());
 
         userRepository.save(first);
@@ -163,6 +170,21 @@ public class TeamServiceImpl implements TeamService {
             e.setTeam(null);
             userRepository.save(e);
         });
+
+        Project assignedProject = team.getProject();
+
+        if (assignedProject != null) {
+
+            // removing the appointed employee from all tasks in the project
+            assignedProject.getTasks().forEach(x -> {
+                x.setEmployee(null);
+                x.setStatus(Status.PENDING);
+                taskRepository.save(x);
+            });
+
+            assignedProject.setStatus(Status.PENDING);
+            projectRepository.save(assignedProject);
+        }
 
         team.setProject(null);
 

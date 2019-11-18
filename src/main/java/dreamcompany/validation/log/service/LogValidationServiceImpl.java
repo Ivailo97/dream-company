@@ -1,4 +1,4 @@
-package dreamcompany.validation.service;
+package dreamcompany.validation.log.service;
 
 import dreamcompany.domain.model.service.LogServiceModel;
 import org.springframework.stereotype.Component;
@@ -8,7 +8,7 @@ public class LogValidationServiceImpl implements LogValidationService {
 
     @Override
     public boolean isValid(LogServiceModel logServiceModel) {
-        return fieldsAreNotNull(logServiceModel);
+        return logServiceModel != null && fieldsAreNotNull(logServiceModel);
     }
 
     private boolean fieldsAreNotNull(LogServiceModel logServiceModel) {

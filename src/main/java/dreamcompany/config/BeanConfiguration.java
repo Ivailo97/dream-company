@@ -16,10 +16,6 @@ public class BeanConfiguration {
     static {
         mapper = new ModelMapper();
         mapper.getConfiguration().setAmbiguityIgnored(true);
-
-
-        // MappingsInitializer.initMappings(mapper);
-        //mapper.validate();
     }
 
     @Bean

@@ -53,6 +53,7 @@ public class HomeController extends BaseController {
             ProjectServiceModel projectServiceModel = userService.findByUsername(loggedUserName).getTeam().getProject();
             ProjectHomeViewModel viewModel = modelMapper.map(projectServiceModel, ProjectHomeViewModel.class);
             modelAndView.addObject("project", viewModel);
+            modelAndView.addObject("hasTasks",!projectServiceModel.getTasks().isEmpty());
 
             boolean projectIsCompleted = projectService.projectIsCompleted(projectServiceModel.getId());
             modelAndView.addObject("projectIsCompleted",projectIsCompleted);

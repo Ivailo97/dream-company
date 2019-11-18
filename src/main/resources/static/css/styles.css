@@ -1,43 +1,48 @@
- body{
+body {
     background-repeat: no-repeat;
     background-color: rgba(255, 255, 255, 0.3);
     background-blend-mode: lighten;
     background-size: 100%;
 }
 
-#home{
+#choose {
+    background-image: url('/img/choose-team-background.jpg');
+    background-size: 200px;
+    background-repeat: repeat;
+}
+
+#home {
     background-image: url('/img/home-background.jpg');
     background-size: 200px;
     background-repeat: repeat;
 }
 
-#task-details-body{
+#task-details-body {
     background-image: url('/img/task-details-background.jpg');
     background-size: 200px;
     background-repeat: repeat;
 }
 
-.all{
+.all {
     background-image: url('/img/tables-background.jpg');
     background-size: 300px;
     background-repeat: repeat;
 }
 
-.table{
+.table {
     background-color: #666666;
     color: #1abc9c;
 }
 
-#index{
+#index {
     background-image: url("/img/item-3.jpg");
 }
 
-.jumbotron{
+.jumbotron {
     background: none;
 }
 
-.project-details-box{
-
+.project-details-box {
     margin: 30px;
     padding: 30px;
     border: 1px solid white;

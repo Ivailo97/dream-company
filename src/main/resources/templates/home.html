@@ -34,13 +34,21 @@
 
                 <div class="card__content">
                     <h1 class="card__title" th:text="${project.name}"></h1>
-                    <p th:text="${project.description}"></p>
-                    <a id="cool-link" th:href="@{/projects/project-tasks/{id}(id=${project.id})}">Project Tasks</a>
-                    <th:block th:if="${projectIsCompleted}">
+
+                    <th:block th:if="${hasTasks}">
+                        <a id="cool-link" th:href="@{/projects/project-tasks/{id}(id=${project.id})}">Project Tasks</a>
+                    </th:block>
+
+                    <th:block th:if="${hasTasks && projectIsCompleted}">
                         <form th:action="@{/projects/complete/{id}(id=${project.id})}" method="post">
                             <button id="complete" class="btn btn-success">Complete The Project</button>
                         </form>
                     </th:block>
+
+                    <th:block th:if="${!hasTasks}">
+                        <h2>No tasks created yet chill for now!</h2>
+                    </th:block>
+
                 </div>
             </div>
 

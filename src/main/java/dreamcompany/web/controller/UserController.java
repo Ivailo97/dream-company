@@ -160,8 +160,6 @@ public class UserController extends BaseController {
         return redirect("/users/profile");
     }
 
-    //TODO make it so that every TEAM_LEADER IS AN ADMIN TOO
-
     @GetMapping("/assign-task/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ModelAndView assignTask(@PathVariable String id, ModelAndView modelAndView) {

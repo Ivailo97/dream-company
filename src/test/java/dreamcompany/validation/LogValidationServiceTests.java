@@ -1,6 +1,8 @@
-package dreamcompany.validation.service;
+package dreamcompany.validation;
 
 import dreamcompany.domain.model.service.LogServiceModel;
+import dreamcompany.validation.log.service.LogValidationService;
+import dreamcompany.validation.log.service.LogValidationServiceImpl;
 import org.junit.Before;
 import org.junit.Test;
 

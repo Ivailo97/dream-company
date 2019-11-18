@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -117,7 +118,7 @@ public class OfficeController extends BaseController {
 
     @PostMapping("/delete/{id}")
     @PreAuthorize("hasRole('ROLE_MODERATOR')")
-    public ModelAndView deleteConfirm(@PathVariable String id) {
+    public ModelAndView deleteConfirm(@PathVariable String id) throws IOException {
 
         officeService.delete(id);
         return redirect("/offices/all");
