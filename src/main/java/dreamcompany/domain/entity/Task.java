@@ -5,13 +5,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "tasks")
-public class Task extends BaseEntity {
-
-    private String name;
-
-    private String description;
-
-    private Status status;
+public class Task extends Assignment {
 
     private LocalDateTime createdOn;
 
@@ -25,16 +19,8 @@ public class Task extends BaseEntity {
 
     private User employee;
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public void setMinutesNeeded(long minutesNeeded) {
         this.minutesNeeded = minutesNeeded;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
     }
 
     public void setCreatedOn(LocalDateTime createdOn) {
@@ -57,29 +43,9 @@ public class Task extends BaseEntity {
         this.employee = employee;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     @Column(name = "minutes_to_accomplish", nullable = false)
     public long getMinutesNeeded() {
         return minutesNeeded;
-    }
-
-    @Column(name = "name", nullable = false)
-    public String getName() {
-        return name;
-    }
-
-    @Column(name = "description", nullable = false)
-    public String getDescription() {
-        return description;
-    }
-
-    @Column(name = "status", nullable = false)
-    @Enumerated(EnumType.STRING)
-    public Status getStatus() {
-        return status;
     }
 
     @Column(name = "created_on", nullable = false)

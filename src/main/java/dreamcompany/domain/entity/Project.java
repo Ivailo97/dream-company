@@ -6,31 +6,13 @@ import java.util.Set;
 
 @Entity
 @Table(name = "projects")
-public class Project extends BaseEntity {
-
-    private String name;
-
-    private String description;
-
-    private Status status;
+public class Project extends Assignment {
 
     private BigDecimal reward;
 
     private Team team;
 
     private Set<Task> tasks;
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
-    }
 
     public void setReward(BigDecimal reward) {
         this.reward = reward;
@@ -47,22 +29,6 @@ public class Project extends BaseEntity {
     @OneToOne(mappedBy = "project")
     public Team getTeam() {
         return team;
-    }
-
-    @Column(name = "name", nullable = false, unique = true)
-    public String getName() {
-        return name;
-    }
-
-    @Column(name = "description", nullable = false, columnDefinition = "text")
-    public String getDescription() {
-        return description;
-    }
-
-    @Column(name = "status", nullable = false)
-    @Enumerated(EnumType.STRING)
-    public Status getStatus() {
-        return status;
     }
 
     @Column(name = "reward", nullable = false)
