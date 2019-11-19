@@ -177,8 +177,6 @@ public class ProjectController extends BaseController {
         return view("/project/tasks", modelAndView);
     }
 
-    // TODO make sure admin = team_lead
-
     @PostMapping("/complete/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ModelAndView completeProject(@PathVariable String id) {

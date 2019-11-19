@@ -25,7 +25,6 @@ import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/offices")
-@PreAuthorize("isAuthenticated()")
 public class OfficeController extends BaseController {
 
     private final OfficeService officeService;
@@ -67,7 +66,6 @@ public class OfficeController extends BaseController {
     }
 
     @GetMapping("/our")
-    @PreAuthorize("isAuthenticated()")
     public ModelAndView listOur(ModelAndView modelAndView) {
 
         List<OfficeAllViewModel> viewModels = officeService.findAll()

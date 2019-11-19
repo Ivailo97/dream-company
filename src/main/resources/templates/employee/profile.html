@@ -12,7 +12,7 @@
 
     <header>
 
-        <img th:src="${(model.imageUrl != null && !#strings.isEmpty(model.imageUrl)) ? model.imageUrl : 'https://res.cloudinary.com/rado-cloud/image/upload/v1553353764/manager-512.png'}" style="width: 210px;height: 210px" th:alt="${model.firstName}"/>
+        <img th:src="${(model.imageUrl != null && !#strings.isEmpty(model.imageUrl)) ? model.imageUrl : '/img/default-avatar.png'}" style="width: 210px;height: 210px" th:alt="${model.firstName}"/>
 
         <h1 th:text="${model.firstName + ' ' + model.lastName}"></h1>
 

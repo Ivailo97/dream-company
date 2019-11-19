@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 @Controller
 public class HomeController extends BaseController {
@@ -46,6 +47,9 @@ public class HomeController extends BaseController {
 
         modelAndView.addObject("user", loggedUserName);
         modelAndView.addObject("isLeaderWithAssignedProject", isLeaderWithAssignedProject);
+        HttpSession session = request.getSession();
+        String imageUrl = userService.findByUsername(loggedUserName).getImageUrl();
+        session.setAttribute("userImageUrl", imageUrl == null ? "/img/default-avatar.png" : imageUrl);
         modelAndView.addObject("statuses", Status.values());
 
         if (isLeaderWithAssignedProject) {
@@ -53,10 +57,9 @@ public class HomeController extends BaseController {
             ProjectServiceModel projectServiceModel = userService.findByUsername(loggedUserName).getTeam().getProject();
             ProjectHomeViewModel viewModel = modelMapper.map(projectServiceModel, ProjectHomeViewModel.class);
             modelAndView.addObject("project", viewModel);
-            modelAndView.addObject("hasTasks",!projectServiceModel.getTasks().isEmpty());
-
+            modelAndView.addObject("hasTasks", !projectServiceModel.getTasks().isEmpty());
             boolean projectIsCompleted = projectService.projectIsCompleted(projectServiceModel.getId());
-            modelAndView.addObject("projectIsCompleted",projectIsCompleted);
+            modelAndView.addObject("projectIsCompleted", projectIsCompleted);
         }
 
         return view("home", modelAndView);

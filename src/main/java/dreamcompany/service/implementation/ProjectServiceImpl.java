@@ -41,7 +41,7 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public ProjectServiceModel create(ProjectServiceModel projectServiceModel) {
 
-        if (projectRepository.existsByName(projectServiceModel.getName())){
+        if (projectRepository.existsByName(projectServiceModel.getName())) {
             throw new ProjectNameAlreadyExistException(GlobalConstraints.DUPLICATE_PROJECT_MESSAGE);
         }
 
@@ -57,9 +57,9 @@ public class ProjectServiceImpl implements ProjectService {
         Project project = projectRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid project id"));
 
-        if (!project.getName().equals(projectServiceModel.getName())){
+        if (!project.getName().equals(projectServiceModel.getName())) {
 
-            if (projectRepository.existsByName(projectServiceModel.getName())){
+            if (projectRepository.existsByName(projectServiceModel.getName())) {
                 throw new ProjectNameAlreadyExistException(GlobalConstraints.DUPLICATE_PROJECT_MESSAGE);
             }
         }
@@ -105,7 +105,7 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public List<ProjectServiceModel> findAllByStatus(String status) {
 
-        if (status.equals("all")){
+        if (status.equals("all")) {
             return projectRepository.findAll().stream()
                     .map(p -> modelMapper.map(p, ProjectServiceModel.class))
                     .collect(Collectors.toList());
@@ -136,7 +136,7 @@ public class ProjectServiceImpl implements ProjectService {
 
         long completedTasks = taskRepository.countAllByStatusAndProjectId(Status.FINISHED, id);
 
-        return allTasks.size() == completedTasks;
+        return allTasks != null && allTasks.size() == completedTasks;
     }
 
     @Override
