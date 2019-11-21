@@ -11,7 +11,7 @@
 <main class=" text-center">
     <h1 class="text-center text-dark">Create Task</h1>
     <hr class="hr-2 bg-dark w-25">
-    <form class="form w-25 mx-auto m-5 " th:action="@{/tasks/create}" th:method="post" th:object="${model}">
+    <form class="form w-25 mx-auto" th:action="@{/tasks/create}" th:method="post" th:object="${model}">
         <input type="hidden" name="_csrf" value="c95ccb2b-1afa-47bd-bf7b-a5b72739470b">
         <div class="form-group" th:classappend="${#fields.hasErrors('name')}? 'text-danger'">
             <label for="name" class="font-weight-bold">Name</label>
@@ -20,7 +20,8 @@
         </div>
         <div class="form-group" th:classappend="${#fields.hasErrors('description')}? 'text-danger'">
             <label for="description" class="font-weight-bold">Description</label>
-            <textarea class="form-control" id="description" placeholder="Description..." th:field="*{description}"></textarea>
+            <textarea class="form-control" id="description" placeholder="Description..."
+                      th:field="*{description}"></textarea>
             <small th:each="error : ${#fields.errors('description')}" th:utext="${error}  + '&lt;br /&gt;'"></small>
         </div>
         <div class="form-group" th:classappend="${#fields.hasErrors('requiredPosition')}? 'text-danger'">
@@ -28,7 +29,8 @@
             <select class="form-control" id="add-task-position" th:field="*{requiredPosition}">
                 <option value="default" selected="" disabled>--- Select Position ---</option>
             </select>
-            <small th:each="error : ${#fields.errors('requiredPosition')}" th:utext="${error}  + '&lt;br /&gt;'"></small>
+            <small th:each="error : ${#fields.errors('requiredPosition')}"
+                   th:utext="${error}  + '&lt;br /&gt;'"></small>
         </div>
         <div class="form-group" th:classappend="${#fields.hasErrors('project')}? 'text-danger'">
             <label for="add-task-project" class="font-weight-bold">Project</label>
@@ -44,11 +46,12 @@
         </div>
         <div class="form-group" th:classappend="${#fields.hasErrors('minutesNeeded')}? 'text-danger'">
             <label for="minutesNeeded" class="font-weight-bold">Accomplish time</label>
-            <input type="number" class="form-control" id="minutesNeeded" placeholder="Minutes Needed..." th:field="*{minutesNeeded}">
+            <input type="number" class="form-control" id="minutesNeeded" placeholder="Minutes Needed..."
+                   th:field="*{minutesNeeded}">
             <small th:each="error : ${#fields.errors('minutesNeeded')}" th:utext="${error}  + '&lt;br /&gt;'"></small>
         </div>
         <hr class="hr-2 bg-dark">
-        <div class="button-holder d-flex justify-content-center">
+        <div class="button-holder d-flex justify-content-center mb-1">
             <button type="submit" class="btn btn-dark">Create</button>
         </div>
     </form>
@@ -71,5 +74,10 @@
             json.forEach((project) => $('#add-task-project').append(`<option value="${project.id}">${project.name}</option>`));
         })
         .catch((err) => console.log(err));
+
+    $(document).ready(function () {
+       document.getElementsByTagName("footer")[0].classList.remove("fixed-bottom");
+    });
+
 </script>
 </html>

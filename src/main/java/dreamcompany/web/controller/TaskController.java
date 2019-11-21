@@ -68,19 +68,6 @@ public class TaskController extends BaseController {
         return redirect("/home");
     }
 
-    @GetMapping("/all")
-    @PreAuthorize("hasRole('ROLE_MODERATOR')")
-    public ModelAndView listAll(ModelAndView modelAndView) {
-
-        List<TaskAllViewModel> viewModels = taskService.findAll().stream()
-                .map(t -> modelMapper.map(t, TaskAllViewModel.class))
-                .collect(Collectors.toList());
-
-        modelAndView.addObject("models", viewModels);
-
-        return view("/task/all", modelAndView);
-    }
-
     @GetMapping("/details/{id}")
     public ModelAndView details(@PathVariable String id, ModelAndView modelAndView) {
 

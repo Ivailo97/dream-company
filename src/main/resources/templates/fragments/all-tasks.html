@@ -1,0 +1,49 @@
+<table id="table" class="table table-hover mx-auto">
+
+    <thead>
+
+    <tr>
+        <th>#</th>
+        <th>Name</th>
+        <th>Status</th>
+        <th>Created On</th>
+        <th>Action</th>
+    </tr>
+
+    </thead>
+
+    <tbody>
+    <th:block th:each="model, iter : ${models}">
+
+        <tr>
+            <th th:text="${iter.index + 1}"></th>
+            <td th:text="${model.name}"></td>
+            <td th:text="${model.status}"></td>
+            <td th:text="${#temporals.format(model.createdOn, 'yyyy-MM-dd HH:mm')}"></td>
+            <td class="row">
+                <a th:href="@{/tasks/details/{id}(id=${model.id})}" class="btn btn-info">Details</a>
+                <a th:href="@{/tasks/delete/{id}(id=${model.id})}" class="btn btn-danger">Delete</a>
+                <a th:href="@{/tasks/edit/{id}(id=${model.id})}" class="btn btn-primary">Edit</a>
+            </td>
+        </tr>
+
+    </th:block>
+
+    </tbody>
+
+</table>
+
+<script>
+    $('#table').DataTable({
+
+        language: {
+            oPaginate: {
+                sNext: '<i class="fa fa-forward"></i>',
+                sPrevious: '<i class="fa fa-backward"></i>',
+                sFirst: '<i class="fa fa-step-backward"></i>',
+                sLast: '<i class="fa fa-step-forward"></i>'
+            }
+        },
+        pagingType: 'full_numbers',
+    });
+</script>

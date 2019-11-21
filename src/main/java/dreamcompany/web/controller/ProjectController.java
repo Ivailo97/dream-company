@@ -17,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -66,19 +67,6 @@ public class ProjectController extends BaseController {
         projectService.create(projectServiceModel);
 
         return redirect("/home");
-    }
-
-    @GetMapping("/all")
-    @PreAuthorize("hasRole('ROLE_MODERATOR')")
-    public ModelAndView listAllProjects(ModelAndView modelAndView) {
-
-        List<ProjectAllViewModel> models = projectService.findAll().stream()
-                .map(p -> modelMapper.map(p, ProjectAllViewModel.class))
-                .collect(Collectors.toList());
-
-        modelAndView.addObject("models", models);
-
-        return view("/project/all", modelAndView);
     }
 
     @GetMapping("/details/{id}")

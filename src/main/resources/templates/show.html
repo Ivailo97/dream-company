@@ -1,0 +1,88 @@
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head th:replace="/fragments/head"></head>
+<body class="all">
+<header>
+    <nav th:replace="/fragments/navbar"></nav>
+</header>
+<main class="mt-3">
+
+    <div class="row d-flex justify-content-around">
+        <div class="col-6 align-self-center text-right  d-flex justify-content-around">
+            <div class="custom-control custom-radio custom-control-inline">
+                <input type="radio" class="custom-control-input" id="teamsRadio" name="tableRadio" value="teams-list">
+                <label class="custom-control-label" for="teamsRadio">Teams</label>
+            </div>
+            <div class="custom-control custom-radio custom-control-inline">
+                <input type="radio" class="custom-control-input" id="projectsRadio" name="tableRadio"
+                       value="projects-list">
+                <label class="custom-control-label" for="projectsRadio">Projects</label>
+            </div>
+            <div class="custom-control custom-radio custom-control-inline">
+                <input type="radio" class="custom-control-input" id="tasksRadio" name="tableRadio"
+                       value="tasks-list">
+                <label class="custom-control-label" for="tasksRadio">Tasks</label>
+            </div>
+            <div class="custom-control custom-radio custom-control-inline">
+                <input type="radio" class="custom-control-input" id="officesRadio" name="tableRadio"
+                       value="offices-list">
+                <label class="custom-control-label" for="officesRadio">Offices</label>
+            </div>
+        </div>
+    </div>
+    <hr/>
+
+    <div class="container">
+        <h1 id="table-heading" class="text-center text-dark">Choose</h1>
+
+        <hr class="hr-2 bg-dark mx-auto">
+        <div id="replace">
+            <h2 class="text-center">Select, what data you want to visualize!</h2>
+        </div>
+
+        <hr class="hr-2 bg-dark">
+
+    </div>
+
+</main>
+<footer th:replace="/fragments/footer"></footer>
+<script>
+
+    $(document).ready(function () {
+
+        //call function when page is loaded
+        //getContent();
+
+        //set on change listener
+        $('input[name=tableRadio]').change(getContent);
+
+        function getContent() {
+            let tableSelector = $('input[type=radio][name=tableRadio]:checked');
+            let tabHeading = $('#table-heading');
+
+            //create url to request fragment
+            let url = /show/;
+
+            if (tableSelector.val() === "teams-list") {
+                url = url + "teams";
+                tabHeading.html('All Teams')
+            } else if (tableSelector.val() === "projects-list") {
+                url = url + "projects";
+                tabHeading.html('All Projects')
+            }else if (tableSelector.val() === "tasks-list"){
+                url = url + "tasks";
+                tabHeading.html('All Tasks')
+            }else if (tableSelector.val() === "offices-list"){
+                url = url + "offices";
+                tabHeading.html('All Offices')
+            }
+
+            //load fragment and replace content
+            $('#replace').load(url);
+        }
+    });
+
+</script>
+</body>
+</html>

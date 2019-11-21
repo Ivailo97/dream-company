@@ -78,20 +78,6 @@ public class OfficeController extends BaseController {
         return view("/office/our", modelAndView);
     }
 
-    @GetMapping("/all")
-    @PreAuthorize("isAuthenticated()")
-    public ModelAndView listAll(ModelAndView modelAndView) {
-
-        List<OfficeAllViewModel> viewModels = officeService.findAll()
-                .stream()
-                .map(x -> modelMapper.map(x, OfficeAllViewModel.class))
-                .collect(Collectors.toList());
-
-        modelAndView.addObject("models", viewModels);
-
-        return view("/office/all", modelAndView);
-    }
-
     @GetMapping("/details/{id}")
     @PreAuthorize("isAuthenticated()")
     public ModelAndView details(@PathVariable String id, ModelAndView modelAndView) {

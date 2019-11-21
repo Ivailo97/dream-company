@@ -150,15 +150,6 @@ public class TeamController extends BaseController {
         return redirect("/teams/all");
     }
 
-    @GetMapping("/all")
-    @PreAuthorize("hasRole('ROLE_MODERATOR')")
-    public ModelAndView all(ModelAndView modelAndView) {
-
-        List<TeamAllViewModel> viewModels = mappingConverter.convertToTeamAllViewModels(teamService.findAll());
-        modelAndView.addObject("models", viewModels);
-        return view("/team/all", modelAndView);
-    }
-
     @GetMapping("/details/{id}")
     @PreAuthorize("hasRole('ROLE_MODERATOR')")
     public ModelAndView details(@PathVariable String id, ModelAndView modelAndView) {

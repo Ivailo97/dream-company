@@ -1,0 +1,48 @@
+<table id="table" class="table table-hover mx-auto">
+
+    <thead>
+    <tr>
+        <th>#</th>
+        <th>Logo</th>
+        <th>Name</th>
+        <th>Profit</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+
+    <tbody>
+
+    <th:block th:each="model, iter : ${models}">
+        <tr>
+            <th th:text="${iter.index + 1}"></th>
+            <td>
+                <img th:src="${model.logoUrl}" width="40" height="40" alt="teamLogo">
+            </td>
+            <td th:text="${model.name}"></td>
+            <td th:text="${model.profit}"></td>
+            <td class="row">
+                <a th:href="@{/teams/details/{id}(id=${model.id})}" class="btn btn-info">Details</a>
+                <a th:href="@{/teams/delete/{id}(id=${model.id})}" class="btn btn-danger">Delete</a>
+                <a th:href="@{/teams/edit/{id}(id=${model.id})}" class="btn btn-primary">Edit</a>
+            </td>
+        </tr>
+    </th:block>
+
+    </tbody>
+
+</table>
+
+<script>
+    $('#table').DataTable({
+
+        language: {
+            oPaginate: {
+                sNext: '<i class="fa fa-forward"></i>',
+                sPrevious: '<i class="fa fa-backward"></i>',
+                sFirst: '<i class="fa fa-step-backward"></i>',
+                sLast: '<i class="fa fa-step-forward"></i>'
+            }
+        },
+        pagingType: 'full_numbers',
+    });
+</script>
