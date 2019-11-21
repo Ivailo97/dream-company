@@ -5,6 +5,15 @@ body {
     background-size: 100%;
 }
 
+table {
+    margin: 0 auto;
+    width: 100%;
+    clear: both;
+    border-collapse: collapse;
+    table-layout: fixed;
+    word-wrap: break-word;
+}
+
 #choose-employee{
     background-image: url("/img/Wood-Background-Repeat.jpg");
     background-repeat: repeat;

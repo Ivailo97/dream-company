@@ -1,10 +1,9 @@
 package dreamcompany.service.implementation;
 
 import dreamcompany.GlobalConstraints;
-import dreamcompany.domain.entity.Position;
-import dreamcompany.domain.entity.Status;
-import dreamcompany.domain.entity.Task;
+import dreamcompany.domain.entity.*;
 import dreamcompany.domain.model.service.LogServiceModel;
+import dreamcompany.domain.model.service.TeamServiceModel;
 import dreamcompany.error.duplicates.EmailAlreadyExistException;
 import dreamcompany.error.duplicates.UsernameAlreadyExistException;
 import dreamcompany.error.WrongOldPasswordException;
@@ -24,7 +23,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import dreamcompany.domain.entity.User;
 import dreamcompany.domain.model.service.UserServiceModel;
 import dreamcompany.repository.UserRepository;
 
@@ -278,7 +276,9 @@ public class UserServiceImpl implements UserService {
                 break;
         }
 
-        userRepository.save(modelMapper.map(userServiceModel, User.class));
+        User updated = modelMapper.map(userServiceModel,User.class);
+
+        userRepository.save(updated);
 
         logAction(adminUsername, logMessage);
     }

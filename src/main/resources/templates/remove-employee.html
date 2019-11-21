@@ -18,55 +18,76 @@
 
     <th:block th:if="${#lists.size(models) > 2}">
 
-        <h1 class="text-center text-dark">Employees in the team</h1>
-        <hr class="hr-2 bg-dark w-75">
+        <div class="container">
+            <h1 class="text-center text-dark">Employees in the team</h1>
+            <hr class="hr-2 bg-dark mx-auto">
 
-        <table class="table table-hover w-75 mx-auto">
+            <table id="table" class="table table-hover mx-auto">
 
-            <thead>
+                <thead>
 
-            <tr class="row mx-auto">
-                <th class="col-md-2 text-center">#</th>
-                <th class="col-md-3 text-center">First Name</th>
-                <th class="col-md-2 text-center">Last Name</th>
-                <th class="col-md-2 text-center">Position</th>
-                <th class="col-md-3 text-center">Action</th>
-            </tr>
-
-            </thead>
-
-            <tbody>
-            <th:block th:each="model, iter : ${models}">
-
-                <tr class="row mx-auto flip">
-                    <th class="col-md-2 text-center" th:text="${iter.index + 1}"></th>
-                    <td class="col-md-3 text-center" th:text="${model.firstName}"></td>
-                    <td class="col-md-2 text-center" th:text="${model.lastName}"></td>
-                    <td class="col-md-2 text-center" th:text="${model.position}"></td>
-
-                    <td class="col-md-1 text-center">
-                        <form th:action="@{'/teams/remove-employee/' + ${teamId} + '/' + ${model.id}}" th:method="post" class="mx-1">
-                            <input type="hidden" name="_csrf" value="80417983-fe8b-45c7-963e-31f6915a1560">
-                            <button class="btn btn-danger">Remove from Team</button>
-                        </form>
-                    </td>
+                <tr>
+                    <th>#</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Position</th>
+                    <th>Action</th>
                 </tr>
 
-            </th:block>
+                </thead>
 
-            </tbody>
+                <tbody>
+                <th:block th:each="model, iter : ${models}">
 
-        </table>
+                    <tr>
+                        <th th:text="${iter.index + 1}"></th>
+                        <td th:text="${model.firstName}"></td>
+                        <td th:text="${model.lastName}"></td>
+                        <td th:text="${model.position}"></td>
 
-        <hr class="hr-2 bg-dark">
+                        <td>
+                            <form th:action="@{'/teams/remove-employee/' + ${teamId} + '/' + ${model.id}}"
+                                  th:method="post" class="mx-1">
+                                <input type="hidden" name="_csrf" value="80417983-fe8b-45c7-963e-31f6915a1560">
+                                <button class="btn btn-danger">Remove from Team</button>
+                            </form>
+                        </td>
+                    </tr>
+
+                </th:block>
+
+                </tbody>
+
+            </table>
+
+            <hr class="hr-2 bg-dark">
+
+        </div>
+
 
     </th:block>
-
 
 
 </main>
 
 <footer th:replace="/fragments/footer"></footer>
+
+<script>
+    $(document).ready(function () {
+        $('#table').DataTable({
+
+            language: {
+                oPaginate: {
+                    sNext: '<i class="fa fa-forward"></i>',
+                    sPrevious: '<i class="fa fa-backward"></i>',
+                    sFirst: '<i class="fa fa-step-backward"></i>',
+                    sLast: '<i class="fa fa-step-forward"></i>'
+                }
+            },
+            pagingType: 'full_numbers',
+        });
+    });
+</script>
 </body>
 
 </html>

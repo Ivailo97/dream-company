@@ -1,5 +1,7 @@
 package dreamcompany.domain.model.service;
 
+import dreamcompany.domain.entity.Position;
+
 import java.math.BigDecimal;
 import java.util.Set;
 
@@ -14,6 +16,8 @@ public class TeamServiceModel extends BaseServiceModel {
     private String logoId;
 
     private OfficeServiceModel office;
+
+    private Position teamLeaderPreviousPosition;
 
     private ProjectServiceModel project;
 
@@ -76,5 +80,13 @@ public class TeamServiceModel extends BaseServiceModel {
 
     public void setLogoId(String logoId) {
         this.logoId = logoId;
+    }
+
+    public Position getTeamLeaderPreviousPosition() {
+        return teamLeaderPreviousPosition;
+    }
+
+    public void setTeamLeaderPreviousPosition(Position teamLeaderPreviousPosition) {
+        this.teamLeaderPreviousPosition = teamLeaderPreviousPosition;
     }
 }

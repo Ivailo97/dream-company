@@ -2,6 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="/fragments/head"></head>
+
 <body class="all">
 
 <header>
@@ -18,12 +19,12 @@
 
             <thead>
 
-            <tr class="row mx-auto">
-                <th class="col-md-2 text-center">#</th>
-                <th class="col-md-2 text-center">Username</th>
-                <th class="col-md-2 text-center">Email</th>
-                <th class="col-md-2 text-center">Roles</th>
-                <th class="col-md-2 text-center">Actions</th>
+            <tr>
+                <th>#</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Roles</th>
+                <th>Actions</th>
             </tr>
 
             </thead>
@@ -32,17 +33,18 @@
             <!--/*@thymesVar id="users" type="java.util.List"*/-->
             <th:block th:each="user, iter : ${users}">
 
-                <tr class="row mx-auto">
+                <tr>
 
-                    <th class="col-md-2 text-center" th:text="${iter.index + 1}"></th>
-                    <td class="col-md-2 text-center" th:text="${user.username}"></td>
-                    <td class="col-md-2 text-center" th:text="${user.email}"></td>
-                    <td class="col-md-2 text-center" th:text="${#strings.listJoin(user.authorities, ' ')}"></td>
-                    <td class="col-md-2 text-center">
+                    <td th:text="${iter.index + 1}"></td>
+                    <td th:text="${user.username}"></td>
+                    <td th:text="${user.email}"></td>
+                    <td th:text="${#strings.listJoin(user.authorities, ' ')}"></td>
+                    <td>
 
                         <div class="row">
                             <th:block th:if="${!#lists.contains(user.authorities, 'ROLE_MODERATOR')}">
-                                <form th:action="@{/users/set-moderator/{id}(id=${user.id})}" th:method="post" class="mx-1">
+                                <form th:action="@{/users/set-moderator/{id}(id=${user.id})}" th:method="post"
+                                      class="mx-1">
                                     <input type="hidden" name="_csrf" value="80417983-fe8b-45c7-963e-31f6915a1560">
                                     <button class="btn btn-dark">MOD</button>
                                 </form>
@@ -66,7 +68,8 @@
 
                             <th:block
                                     th:if="${#lists.contains(user.authorities, 'ROLE_ADMIN') && !#lists.contains(user.authorities, 'ROLE_ROOT')}">
-                                <form th:action="@{/users/set-moderator/{id}(id=${user.id})}" th:method="post" class="mx-1">
+                                <form th:action="@{/users/set-moderator/{id}(id=${user.id})}" th:method="post"
+                                      class="mx-1">
                                     <input type="hidden" name="_csrf" value="80417983-fe8b-45c7-963e-31f6915a1560">
                                     <button class="btn btn-dark">MOD</button>
                                 </form>
@@ -93,7 +96,7 @@
 
 <footer th:replace="/fragments/footer"></footer>
 <script>
-    $(document).ready( function () {
+    $(document).ready(function () {
         $('#table').DataTable({
 
             language: {
@@ -104,10 +107,10 @@
                     sLast: '<i class="fa fa-step-forward"></i>'
                 }
 
-            } ,
+            },
             pagingType: 'full_numbers',
         });
-    } );
+    });
 
 </script>
 
