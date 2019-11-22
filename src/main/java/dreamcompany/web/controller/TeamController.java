@@ -52,12 +52,6 @@ public class TeamController extends BaseController {
         this.mappingConverter = mappingConverter;
     }
 
-    @GetMapping("/create")
-    @PreAuthorize("hasRole('ROLE_MODERATOR')")
-    public ModelAndView create(@ModelAttribute(name = "model") TeamCreateBindingModel model) {
-        return view("/team/create");
-    }
-
     @PostMapping("/create")
     @PreAuthorize("hasRole('ROLE_MODERATOR')")
     public ModelAndView createConfirm(@Valid @ModelAttribute(name = "model") TeamCreateBindingModel model,
@@ -66,7 +60,7 @@ public class TeamController extends BaseController {
         createValidator.validate(model,bindingResult);
 
         if (bindingResult.hasErrors()) {
-            return view("/team/create");
+            return view("/validation/invalid-team-form");
         }
 
         TeamServiceModel teamServiceModel = mappingConverter.convertToTeamServiceModel(model);
@@ -111,7 +105,7 @@ public class TeamController extends BaseController {
         }
 
         teamService.edit(id, teamServiceModel);
-        return redirect("/home");
+        return redirect("/show");
     }
 
     @GetMapping("/add-employee/{id}")
@@ -121,7 +115,7 @@ public class TeamController extends BaseController {
         List<UserAddRemoveFromTeamViewModel> viewModels = mappingConverter.convertToUserAddRemoveFromTeamViewModels(userService.findAllWithoutTeam());
         modelAndView.addObject("teamId", id);
         modelAndView.addObject("models", viewModels);
-        return view("add-employee", modelAndView);
+        return view("team/add-employee", modelAndView);
     }
 
     @PostMapping("/add-employee/{teamId}/{userId}")
@@ -129,7 +123,7 @@ public class TeamController extends BaseController {
     public ModelAndView addEmployeeConfirm(@PathVariable String teamId, @PathVariable String userId) {
 
         teamService.addEmployeeToTeam(teamId, userId);
-        return redirect("/teams/all");
+        return redirect("/show");
     }
 
     @GetMapping("/remove-employee/{id}")
@@ -139,7 +133,7 @@ public class TeamController extends BaseController {
         List<UserAddRemoveFromTeamViewModel> viewModels = mappingConverter.convertToUserAddRemoveFromTeamViewModels(userService.findAllInTeam(id));
         modelAndView.addObject("teamId", id);
         modelAndView.addObject("models", viewModels);
-        return view("remove-employee", modelAndView);
+        return view("team/remove-employee", modelAndView);
     }
 
     @PostMapping("/remove-employee/{teamId}/{userId}")
@@ -147,7 +141,7 @@ public class TeamController extends BaseController {
     public ModelAndView removeEmployeeConfirm(@PathVariable String teamId, @PathVariable String userId) {
 
         teamService.removeEmployeeFromTeam(teamId, userId);
-        return redirect("/teams/all");
+        return redirect("/show");
     }
 
     @GetMapping("/details/{id}")
@@ -175,7 +169,7 @@ public class TeamController extends BaseController {
     public ModelAndView deleteConfirm(@PathVariable String id) throws IOException {
 
         teamService.delete(id);
-        return redirect("/teams/all");
+        return redirect("/show");
     }
 
     @GetMapping("/assign-project/{id}")

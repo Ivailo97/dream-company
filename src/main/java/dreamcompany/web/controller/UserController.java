@@ -90,8 +90,7 @@ public class UserController extends BaseController {
                 .collect(Collectors.toList());
 
         modelAndView.addObject("users", users);
-
-        return view("user-all", modelAndView);
+        return view("employee/all", modelAndView);
     }
 
     @PostMapping("/set-admin/{id}")
@@ -134,7 +133,7 @@ public class UserController extends BaseController {
         UserEditBindingModel userEditBindingModel = this.modelMapper.map(userServiceModel, UserEditBindingModel.class);
 
         modelAndView.addObject("editModel", userEditBindingModel);
-        return view("user-edit", modelAndView);
+        return view("employee/edit", modelAndView);
     }
 
     @PatchMapping("/edit")
@@ -144,7 +143,7 @@ public class UserController extends BaseController {
         editValidator.validate(model,bindingResult);
 
         if (bindingResult.hasErrors()) {
-            return view("user-edit");
+            return view("employee/edit");
         }
 
         UserServiceModel userServiceModel = modelMapper.map(model, UserServiceModel.class);
@@ -181,7 +180,7 @@ public class UserController extends BaseController {
 
         modelAndView.addObject("employees", viewModels);
 
-        return view("choose-employee", modelAndView);
+        return view("employee/choose-employee", modelAndView);
     }
 
     @PostMapping("/assign-task/{taskId}/{userId}")

@@ -43,12 +43,6 @@ public class OfficeController extends BaseController {
         this.modelMapper = modelMapper;
     }
 
-    @GetMapping("/create")
-    @PreAuthorize("hasRole('ROLE_MODERATOR')")
-    public ModelAndView create(@ModelAttribute("model") OfficeCreateBindingModel model) {
-        return view("/office/create");
-    }
-
     @PostMapping("/create")
     @PreAuthorize("hasRole('ROLE_MODERATOR')")
     public ModelAndView createConfirm(@Valid @ModelAttribute("model") OfficeCreateBindingModel model,
@@ -57,7 +51,7 @@ public class OfficeController extends BaseController {
         createValidator.validate(model, bindingResult);
 
         if (bindingResult.hasErrors()) {
-            return view("/office/create");
+            return view("/validation/invalid-office-form");
         }
 
         OfficeServiceModel officeServiceModel = modelMapper.map(model, OfficeServiceModel.class);
@@ -105,7 +99,7 @@ public class OfficeController extends BaseController {
     public ModelAndView deleteConfirm(@PathVariable String id) throws IOException {
 
         officeService.delete(id);
-        return redirect("/offices/all");
+        return redirect("/show");
     }
 
     @GetMapping("/edit/{id}")
@@ -135,7 +129,7 @@ public class OfficeController extends BaseController {
 
         officeService.edit(id, officeServiceModel);
 
-        return redirect("/offices/all");
+        return redirect("/show");
     }
 
     @GetMapping("/fetch")

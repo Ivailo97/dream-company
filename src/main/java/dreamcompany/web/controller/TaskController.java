@@ -45,12 +45,6 @@ public class TaskController extends BaseController {
         this.modelMapper = modelMapper;
     }
 
-    @GetMapping("/create")
-    @PreAuthorize("hasRole('ROLE_MODERATOR')")
-    public ModelAndView create(@ModelAttribute(name = "model") TaskCreateBindingModel model) {
-        return view("/task/create");
-    }
-
     @PostMapping("/create")
     @PreAuthorize("hasRole('ROLE_MODERATOR')")
     public ModelAndView createConfirm(@Valid @ModelAttribute(name = "model") TaskCreateBindingModel model,
@@ -59,7 +53,7 @@ public class TaskController extends BaseController {
         createValidator.validate(model, bindingResult);
 
         if (bindingResult.hasErrors()) {
-            return view("/task/create");
+            return view("/validation/invalid-task-form");
         }
 
         TaskServiceModel taskServiceModel = modelMapper.map(model, TaskServiceModel.class);
@@ -109,7 +103,7 @@ public class TaskController extends BaseController {
         TaskServiceModel taskServiceModel = modelMapper.map(model, TaskServiceModel.class);
         taskService.edit(id, taskServiceModel);
 
-        return redirect("/tasks/all");
+        return redirect("/show");
     }
 
     @GetMapping("/delete/{id}")
@@ -126,7 +120,7 @@ public class TaskController extends BaseController {
     @PreAuthorize("hasRole('ROLE_MODERATOR')")
     public ModelAndView deleteConfirm(@PathVariable String id) {
         taskService.delete(id);
-        return redirect("/tasks/all");
+        return redirect("/show");
     }
 
     @GetMapping("/loading/{id}")

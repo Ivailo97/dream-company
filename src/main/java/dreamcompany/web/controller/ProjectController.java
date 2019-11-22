@@ -17,7 +17,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -47,12 +46,6 @@ public class ProjectController extends BaseController {
         this.modelMapper = modelMapper;
     }
 
-    @GetMapping("/create")
-    @PreAuthorize("hasRole('ROLE_MODERATOR')")
-    public ModelAndView create(@ModelAttribute(name = "model") ProjectCreateBindingModel model) {
-        return view("/project/create");
-    }
-
     @PostMapping("/create")
     @PreAuthorize("hasRole('ROLE_MODERATOR')")
     public ModelAndView createConfirm(@Valid @ModelAttribute(name = "model") ProjectCreateBindingModel model, BindingResult bindingResult) {
@@ -60,7 +53,7 @@ public class ProjectController extends BaseController {
         createValidator.validate(model, bindingResult);
 
         if (bindingResult.hasErrors()) {
-            return view("/project/create");
+            return view("/validation/invalid-project-form");
         }
 
         ProjectServiceModel projectServiceModel = modelMapper.map(model, ProjectServiceModel.class);
@@ -113,7 +106,7 @@ public class ProjectController extends BaseController {
         ProjectServiceModel projectServiceModel = modelMapper.map(model, ProjectServiceModel.class);
         projectService.edit(id, projectServiceModel);
 
-        return redirect("/projects/all");
+        return redirect("/show");
     }
 
     @GetMapping("/delete/{id}")
@@ -135,7 +128,7 @@ public class ProjectController extends BaseController {
     public ModelAndView deleteConfirm(@PathVariable String id) {
 
         projectService.delete(id);
-        return redirect("/projects/all");
+        return redirect("/show");
     }
 
     @GetMapping("/manage")

@@ -1,0 +1,53 @@
+<th:block th:fragment>
+    <form class="form w-25 mx-auto " th:action="@{/teams/create}" th:method="post" th:object="${model}" enctype="multipart/form-data">
+        <input type="hidden" name="_csrf" value="c95ccb2b-1afa-47bd-bf7b-a5b72739470b">
+        <div class="form-group" th:classappend="${#fields.hasErrors('name')}? 'text-danger'">
+            <label for="name" class="font-weight-bold">Name</label>
+            <input type="text" class="form-control" id="name" placeholder="Name..." th:field="*{name}">
+            <small th:each="error : ${#fields.errors('name')}" th:utext="${error}  + '&lt;br /&gt;'"></small>
+        </div>
+        <div class="form-group" th:classappend="${#fields.hasErrors('office')}? 'text-danger'">
+            <label for="add-team-office" class="font-weight-bold">Office</label>
+            <select class="form-control" id="add-team-office" th:field="*{office}">
+                <option value="default" selected="" disabled>--- Select Office ---</option>
+            </select>
+            <small th:each="error : ${#fields.errors('office')}" th:utext="${error}  + '&lt;br /&gt;'"></small>
+        </div>
+        <div class="form-group" th:classappend="${#fields.hasErrors('employees')}? 'text-danger'">
+            <label for="add-team-employees" class="font-weight-bold">Employees</label>
+            <select multiple class="form-control" id="add-team-employees" th:field="*{employees}">
+                <option value="default" selected="" disabled>--- Select Employees ---</option>
+            </select>
+            <small th:each="error : ${#fields.errors('employees')}" th:utext="${error}  + '&lt;br /&gt;'"></small>
+        </div>
+
+        <div class="form-group" th:classappend="${#fields.hasErrors('logo')}? 'text-danger'">
+            <label for="picture" class="font-weight-bold">Upload logo:</label>
+            <input type="file" id="picture" th:field="${model.logo}">
+            <div th:each="error : ${#fields.errors('logo')}" th:utext="${error}  + '&lt;br /&gt;'"></div>
+        </div>
+
+        <hr class="hr-2 bg-dark">
+        <div class="button-holder d-flex justify-content-center">
+            <button type="submit" class="btn btn-dark">Create</button>
+        </div>
+    </form>
+
+    <script>
+        fetch('/offices/fetch')
+            .then((response) => response.json())
+            .then((json) => {
+                json.forEach((office) => $('#add-team-office').append(`<option value="${office.id}">${office.address}</option>`));
+            })
+            .catch((err) => console.log(err));
+
+        fetch('/users/fetchNonLeaders')
+            .then((response) => response.json())
+            .then((json) => {
+                json.forEach(
+                    (user) => $('#add-team-employees').append(`<option value="${user.id}">${user.fullName}</option>`)
+                );
+            })
+            .catch((err) => console.log(err));
+    </script>
+</th:block>

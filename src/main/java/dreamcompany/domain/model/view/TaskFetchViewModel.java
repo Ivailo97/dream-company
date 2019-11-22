@@ -8,8 +8,6 @@ public class TaskFetchViewModel {
 
     private String name;
 
-    private String description;
-
     private LocalDateTime createdOn;
 
     public String getName() {
@@ -18,14 +16,6 @@ public class TaskFetchViewModel {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public LocalDateTime getCreatedOn() {

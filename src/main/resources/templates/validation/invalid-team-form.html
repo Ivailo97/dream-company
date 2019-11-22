@@ -1,0 +1,83 @@
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head th:replace="/fragments/head"></head>
+<body class="all">
+<header>
+    <nav th:replace="/fragments/navbar"></nav>
+</header>
+
+<div class="row d-flex justify-content-around mt-3">
+    <div class="col-6 align-self-center text-right  d-flex justify-content-around">
+        <div class="custom-control custom-radio custom-control-inline">
+            <input type="radio" class="custom-control-input" id="teamRadio" name="tableRadio" value="team" checked="checked">
+            <label class="custom-control-label" for="teamRadio">Team</label>
+        </div>
+        <div class="custom-control custom-radio custom-control-inline">
+            <input type="radio" class="custom-control-input" id="projectRadio" name="tableRadio"
+                   value="project">
+            <label class="custom-control-label" for="projectRadio">Project</label>
+        </div>
+        <div class="custom-control custom-radio custom-control-inline">
+            <input type="radio" class="custom-control-input" id="taskRadio" name="tableRadio"
+                   value="task">
+            <label class="custom-control-label" for="taskRadio">Task</label>
+        </div>
+        <div class="custom-control custom-radio custom-control-inline">
+            <input type="radio" class="custom-control-input" id="officeRadio" name="tableRadio"
+                   value="office">
+            <label class="custom-control-label" for="officeRadio">Office</label>
+        </div>
+    </div>
+</div>
+<hr/>
+
+<h1 id="table-heading" class="text-center text-dark">Create Team</h1>
+
+<hr class="hr-2 bg-dark mx-auto w-25">
+
+<div id="replace" class="form text-center" th:include="~{fragments/create-team}">
+
+</div>
+
+<footer th:replace="/fragments/footer"></footer>
+<script>
+
+    $(document).ready(function () {
+
+        //call function when page is loaded
+        //getContent();
+
+        //set on change listener
+        $('input[name=tableRadio]').change(getContent);
+
+        function getContent() {
+            let tableSelector = $('input[type=radio][name=tableRadio]:checked');
+            let tabHeading = $('#table-heading');
+
+            //create url to request fragment
+            let url = /create/;
+
+            if (tableSelector.val() === "team") {
+                url = url + "team";
+                tabHeading.html('Create Team')
+            } else if (tableSelector.val() === "project") {
+                url = url + "project";
+                tabHeading.html('Create Project')
+            } else if (tableSelector.val() === "task") {
+                url = url + "task";
+                tabHeading.html('Create Task')
+            } else if (tableSelector.val() === "office") {
+                url = url + "office";
+                tabHeading.html('Create Office')
+            }
+
+            //load fragment and replace content
+            document.getElementsByTagName("footer")[0].classList.add("fixed-bottom");
+            $('#replace').load(url);
+        }
+    });
+
+</script>
+</body>
+</html>
