@@ -26,7 +26,11 @@ public final class GlobalConstraints {
     public static final String DUPLICATE_TEAM_MESSAGE = "Team with that name already exist!";
     public static final String USER_NOT_FOUND_MESSAGE = "Invalid user id!";
     public static final String TASK_NOT_FOUND_MESSAGE = "Invalid task id!";
-    public static final String INVALID_USER_SERVICE_MODEL_MESSAGE = "Invalid data!";
+    public static final String INVALID_USER_SERVICE_MODEL_MESSAGE = "Invalid user data entered!";
+    public static final String INVALID_TEAM_SERVICE_MODEL_MESSAGE = "Invalid team data entered!";
+    public static final String INVALID_PROJECT_SERVICE_MODEL_MESSAGE = "Invalid project data entered!";
+    public static final String INVALID_TASK_SERVICE_MODEL_MESSAGE = "Invalid task data entered!";
+    public static final String INVALID_OFFICE_SERVICE_MODEL_MESSAGE = "Invalid office data entered!";
     public static final String USERNAME_NOT_FOUND = "Username not found!";
 
     //LocalDateTime format pattern

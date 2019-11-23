@@ -7,13 +7,17 @@ import dreamcompany.domain.entity.Task;
 import dreamcompany.domain.entity.Team;
 import dreamcompany.domain.model.service.ProjectServiceModel;
 import dreamcompany.error.duplicates.ProjectNameAlreadyExistException;
+import dreamcompany.error.invalidservicemodels.InvalidProjectServiceModelException;
 import dreamcompany.repository.ProjectRepository;
 import dreamcompany.repository.TaskRepository;
 import dreamcompany.repository.TeamRepository;
 import dreamcompany.service.interfaces.ProjectService;
+import dreamcompany.service.interfaces.ProjectValidationService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import static dreamcompany.GlobalConstraints.*;
 
 import java.util.List;
 import java.util.Set;
@@ -24,6 +28,8 @@ public class ProjectServiceImpl implements ProjectService {
 
     private final ProjectRepository projectRepository;
 
+    private final ProjectValidationService validationService;
+
     private final TeamRepository teamRepository;
 
     private final TaskRepository taskRepository;
@@ -31,8 +37,9 @@ public class ProjectServiceImpl implements ProjectService {
     private final ModelMapper modelMapper;
 
     @Autowired
-    public ProjectServiceImpl(ProjectRepository projectRepository, TeamRepository teamRepository, TaskRepository taskRepository, ModelMapper modelMapper) {
+    public ProjectServiceImpl(ProjectRepository projectRepository, ProjectValidationService validationService, TeamRepository teamRepository, TaskRepository taskRepository, ModelMapper modelMapper) {
         this.projectRepository = projectRepository;
+        this.validationService = validationService;
         this.teamRepository = teamRepository;
         this.taskRepository = taskRepository;
         this.modelMapper = modelMapper;
@@ -40,6 +47,8 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public ProjectServiceModel create(ProjectServiceModel projectServiceModel) {
+
+        throwIfInvalidServiceModel(projectServiceModel);
 
         if (projectRepository.existsByName(projectServiceModel.getName())) {
             throw new ProjectNameAlreadyExistException(GlobalConstraints.DUPLICATE_PROJECT_MESSAGE);
@@ -51,8 +60,17 @@ public class ProjectServiceImpl implements ProjectService {
         return modelMapper.map(project, ProjectServiceModel.class);
     }
 
+    private void throwIfInvalidServiceModel(ProjectServiceModel projectServiceModel) {
+
+        if (!validationService.isValid(projectServiceModel)) {
+            throw new InvalidProjectServiceModelException(INVALID_PROJECT_SERVICE_MODEL_MESSAGE);
+        }
+    }
+
     @Override
     public ProjectServiceModel edit(String id, ProjectServiceModel projectServiceModel) {
+
+        throwIfInvalidServiceModel(projectServiceModel);
 
         Project project = projectRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid project id"));

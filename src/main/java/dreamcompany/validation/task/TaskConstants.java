@@ -11,7 +11,7 @@ public final class TaskConstants {
     public static final String MINUTES_FIELD = "minutesNeeded";
 
     //task invalid input error messages
-    public static final String NAME_IS_INVALID = "Name must start with capital letter and must be between 4 and 20 symbols long!";
+    public static final String NAME_IS_INVALID = "Name must start with capital letter and must be between 4 and 11 symbols long!";
     public static final String POSITION_IS_MANDATORY = "Select required position!";
     public static final String DESCRIPTION_IS_INVALID = "Description must be between 10 and 300 symbols long!";
     public static final String TASK_ALREADY_EXIST_IN_THIS_PROJECT = "Task with same name already exist in the project!";
@@ -23,7 +23,7 @@ public final class TaskConstants {
     //task fields constraints
     public static final int MIN_CREDITS = 2;
     public static final int MAX_CREDITS = 20;
-    public final static String TASK_NAME_PATTERN_STRING = "^[\\p{Lu}]\\p{L}{3,19}$";
+    public final static String TASK_NAME_PATTERN_STRING = "^[\\p{Lu}]\\p{L}{3,10}$";
     public final static String DESCRIPTION_PATTERN_STRING = "^[\\p{L}][\\p{L}\\s]{9,299}$";
     public static final int MIN_MINUTES = 1;
     public static final int MAX_MINUTES = 60;

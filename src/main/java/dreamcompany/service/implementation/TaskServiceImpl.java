@@ -7,12 +7,16 @@ import dreamcompany.domain.entity.Status;
 import dreamcompany.domain.entity.Task;
 import dreamcompany.domain.model.service.TaskServiceModel;
 import dreamcompany.error.duplicates.TaskNameAlreadyExistException;
+import dreamcompany.error.invalidservicemodels.InvalidTaskServiceModelException;
 import dreamcompany.repository.ProjectRepository;
 import dreamcompany.repository.TaskRepository;
 import dreamcompany.service.interfaces.TaskService;
+import dreamcompany.service.interfaces.TaskValidationService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import static dreamcompany.GlobalConstraints.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -23,19 +27,24 @@ public class TaskServiceImpl implements TaskService {
 
     private final TaskRepository taskRepository;
 
+    private final TaskValidationService validationService;
+
     private final ProjectRepository projectRepository;
 
     private final ModelMapper modelMapper;
 
     @Autowired
-    public TaskServiceImpl(TaskRepository taskRepository, ProjectRepository projectRepository, ModelMapper modelMapper) {
+    public TaskServiceImpl(TaskRepository taskRepository, TaskValidationService validationService, ProjectRepository projectRepository, ModelMapper modelMapper) {
         this.taskRepository = taskRepository;
+        this.validationService = validationService;
         this.projectRepository = projectRepository;
         this.modelMapper = modelMapper;
     }
 
     @Override
     public TaskServiceModel create(TaskServiceModel taskServiceModel) {
+
+        throwIfInvalidServiceModel(taskServiceModel);
 
         throwIfDuplicate(taskServiceModel);
 
@@ -53,25 +62,33 @@ public class TaskServiceImpl implements TaskService {
         return modelMapper.map(task, TaskServiceModel.class);
     }
 
+    private void throwIfInvalidServiceModel(TaskServiceModel taskServiceModel) {
+        if (!validationService.isValid(taskServiceModel)) {
+            throw new InvalidTaskServiceModelException(INVALID_TASK_SERVICE_MODEL_MESSAGE);
+        }
+    }
+
     @Override
-    public TaskServiceModel edit(String id, TaskServiceModel taskServiceModel) {
+    public TaskServiceModel edit(String id, TaskServiceModel edited) {
+
+        throwIfInvalidServiceModel(edited);
 
         Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid task id"));
 
-        Project project = projectRepository.findById(taskServiceModel.getProject())
+        Project project = projectRepository.findById(edited.getProject())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid project id"));
 
-        if (!taskServiceModel.getName().equals(task.getName())) {
-            throwIfDuplicate(taskServiceModel);
+        if (!edited.getName().equals(task.getName())) {
+            throwIfDuplicate(edited);
         }
 
         task.setProject(project);
-        task.setDescription(taskServiceModel.getDescription());
-        task.setCredits(taskServiceModel.getCredits());
-        task.setName(taskServiceModel.getName());
-        task.setRequiredPosition(taskServiceModel.getRequiredPosition());
-        task.setMinutesNeeded(taskServiceModel.getMinutesNeeded());
+        task.setDescription(edited.getDescription());
+        task.setCredits(edited.getCredits());
+        task.setName(edited.getName());
+        task.setRequiredPosition(edited.getRequiredPosition());
+        task.setMinutesNeeded(edited.getMinutesNeeded());
 
         task = taskRepository.save(task);
 

@@ -5,8 +5,10 @@ import dreamcompany.domain.entity.BaseEntity;
 import dreamcompany.domain.entity.Office;
 import dreamcompany.domain.model.service.OfficeServiceModel;
 import dreamcompany.error.duplicates.OfficeAddressAlreadyExists;
+import dreamcompany.error.invalidservicemodels.InvalidOfficeServiceModelException;
 import dreamcompany.repository.OfficeRepository;
 import dreamcompany.service.interfaces.OfficeService;
+import dreamcompany.service.interfaces.OfficeValidationService;
 import dreamcompany.service.interfaces.TeamService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,18 +18,23 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static dreamcompany.GlobalConstraints.*;
+
 @Service
 public class OfficeServiceImpl implements OfficeService {
 
     private final OfficeRepository officeRepository;
+
+    private final OfficeValidationService officeValidationService;
 
     private final TeamService teamService;
 
     private final ModelMapper modelMapper;
 
     @Autowired
-    public OfficeServiceImpl(OfficeRepository officeRepository, TeamService teamService, ModelMapper modelMapper) {
+    public OfficeServiceImpl(OfficeRepository officeRepository, OfficeValidationService officeValidationService, TeamService teamService, ModelMapper modelMapper) {
         this.officeRepository = officeRepository;
+        this.officeValidationService = officeValidationService;
         this.teamService = teamService;
         this.modelMapper = modelMapper;
     }
@@ -35,14 +42,25 @@ public class OfficeServiceImpl implements OfficeService {
     @Override
     public OfficeServiceModel create(OfficeServiceModel officeServiceModel) {
 
+        throwIfInvalidServiceModel(officeServiceModel);
+
         Office office = modelMapper.map(officeServiceModel, Office.class);
         office = officeRepository.save(office);
 
         return modelMapper.map(office, OfficeServiceModel.class);
     }
 
+    private void throwIfInvalidServiceModel(OfficeServiceModel officeServiceModel) {
+
+        if (!officeValidationService.isValid(officeServiceModel)){
+            throw new InvalidOfficeServiceModelException(INVALID_OFFICE_SERVICE_MODEL_MESSAGE);
+        }
+    }
+
     @Override
     public OfficeServiceModel edit(String id, OfficeServiceModel edited) {
+
+        throwIfInvalidServiceModel(edited);
 
         Office office = officeRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid office id"));

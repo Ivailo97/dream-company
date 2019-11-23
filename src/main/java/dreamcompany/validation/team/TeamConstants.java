@@ -9,7 +9,7 @@ public final class TeamConstants {
     public static final String LOGO_FIELD = "logo";
 
     //team invalid input error messages
-    public final static String TEAM_NAME_IS_MANDATORY = "Enter name!";
+    public final static String TEAM_NAME_IS_INVALID = "Team name must start with capital letter and must be between 4 and 11 symbols long!";
     public final static String OFFICE_IS_MANDATORY = "Select office!";
     public final static String EMPLOYEES_COUNT_INVALID = "Select at least two employees!";
     public final static String LOGO_IS_MANDATORY = "Upload logo!";
@@ -17,4 +17,5 @@ public final class TeamConstants {
 
     //team fields constraints
     public static final int EMPLOYEES_MIN_COUNT = 2;
+    public static final String NAME_PATTERN = "^[\\p{Lu}]\\p{L}{3,10}$";
 }

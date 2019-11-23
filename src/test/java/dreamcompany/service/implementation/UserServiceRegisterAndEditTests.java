@@ -15,7 +15,6 @@ import dreamcompany.repository.UserRepository;
 import dreamcompany.service.interfaces.CloudinaryService;
 import dreamcompany.service.interfaces.LogService;
 import dreamcompany.service.interfaces.RoleService;
-import dreamcompany.validation.user.service.UserValidationServiceImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

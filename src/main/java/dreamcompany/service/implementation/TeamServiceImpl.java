@@ -5,9 +5,11 @@ import dreamcompany.domain.entity.*;
 import dreamcompany.domain.model.service.TeamServiceModel;
 import dreamcompany.domain.model.service.UserServiceModel;
 import dreamcompany.error.duplicates.TeamNameAlreadyExistException;
+import dreamcompany.error.invalidservicemodels.InvalidTeamServiceModelException;
 import dreamcompany.repository.*;
 import dreamcompany.service.interfaces.CloudinaryService;
 import dreamcompany.service.interfaces.TeamService;
+import dreamcompany.service.interfaces.TeamValidationService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,13 +20,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static dreamcompany.GlobalConstraints.ROLE_ADMIN;
-import static dreamcompany.GlobalConstraints.ROLE_MODERATOR;
+import static dreamcompany.GlobalConstraints.*;
 
 @Service
 public class TeamServiceImpl implements TeamService {
 
     private final TeamRepository teamRepository;
+
+    private final TeamValidationService teamValidationService;
 
     private final CloudinaryService cloudinaryService;
 
@@ -41,8 +44,9 @@ public class TeamServiceImpl implements TeamService {
     private final ModelMapper modelMapper;
 
     @Autowired
-    public TeamServiceImpl(TeamRepository teamRepository, CloudinaryService cloudinaryService, RoleRepository roleRepository, OfficeRepository officeRepository, ProjectRepository projectRepository, TaskRepository taskRepository, UserRepository userRepository, ModelMapper modelMapper) {
+    public TeamServiceImpl(TeamRepository teamRepository, TeamValidationService teamValidationService, CloudinaryService cloudinaryService, RoleRepository roleRepository, OfficeRepository officeRepository, ProjectRepository projectRepository, TaskRepository taskRepository, UserRepository userRepository, ModelMapper modelMapper) {
         this.teamRepository = teamRepository;
+        this.teamValidationService = teamValidationService;
         this.cloudinaryService = cloudinaryService;
         this.roleRepository = roleRepository;
         this.officeRepository = officeRepository;
@@ -54,6 +58,8 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     public TeamServiceModel create(TeamServiceModel teamServiceModel) {
+
+        throwIfInvalidServiceModel(teamServiceModel);
 
         throwIfDuplicate(teamServiceModel);
 
@@ -99,6 +105,13 @@ public class TeamServiceImpl implements TeamService {
         return modelMapper.map(team, TeamServiceModel.class);
     }
 
+    private void throwIfInvalidServiceModel(TeamServiceModel teamServiceModel) {
+
+        if (!teamValidationService.isValid(teamServiceModel)){
+            throw new InvalidTeamServiceModelException(INVALID_TEAM_SERVICE_MODEL_MESSAGE);
+        }
+    }
+
     private void throwIfDuplicate(TeamServiceModel teamServiceModel) {
 
         Team teamInDb = teamRepository.findByName(teamServiceModel.getName()).orElse(null);
@@ -111,8 +124,11 @@ public class TeamServiceImpl implements TeamService {
     @Override
     public TeamServiceModel edit(String id, TeamServiceModel edited) throws IOException {
 
-        Team team = this.teamRepository.findById(id)
+        throwIfInvalidEditedTeamServiceModel(edited);
+
+        Team team = teamRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid team id"));
+
 
         if (!edited.getName().equals(team.getName())) {
             throwIfDuplicate(edited);
@@ -131,6 +147,13 @@ public class TeamServiceImpl implements TeamService {
         team = teamRepository.save(team);
 
         return modelMapper.map(team, TeamServiceModel.class);
+    }
+
+    private void throwIfInvalidEditedTeamServiceModel(TeamServiceModel edited) {
+
+        if (edited.getName() == null || edited.getOffice() == null){
+            throw new InvalidTeamServiceModelException(INVALID_TEAM_SERVICE_MODEL_MESSAGE);
+        }
     }
 
     private boolean updateLogo(Team team, TeamServiceModel edited) throws IOException {

@@ -27,8 +27,8 @@ public class TeamCreateValidator implements Validator {
 
         TeamCreateBindingModel team = (TeamCreateBindingModel) o;
 
-        if (team.getName() == null || team.getName().isEmpty()) {
-            errors.rejectValue(TEAM_NAME_FIELD, TEAM_NAME_IS_MANDATORY, TEAM_NAME_IS_MANDATORY);
+        if (!team.getName().matches(NAME_PATTERN)) {
+            errors.rejectValue(TEAM_NAME_FIELD, TEAM_NAME_IS_INVALID, TEAM_NAME_IS_INVALID);
         }
 
         if (team.getOffice() == null || team.getOffice().isEmpty()){

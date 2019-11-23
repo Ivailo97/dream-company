@@ -1,4 +1,4 @@
-package dreamcompany.validation.log.service;
+package dreamcompany.service.interfaces;
 
 import dreamcompany.domain.model.service.LogServiceModel;
 

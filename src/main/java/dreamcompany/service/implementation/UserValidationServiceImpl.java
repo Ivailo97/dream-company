@@ -1,11 +1,13 @@
-package dreamcompany.validation.user.service;
+package dreamcompany.service.implementation;
 
 import dreamcompany.domain.model.service.UserServiceModel;
+import dreamcompany.service.interfaces.UserValidationService;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import static dreamcompany.validation.user.UserConstants.*;
 
-@Component
+@Service
 public class UserValidationServiceImpl implements UserValidationService {
 
     @Override
