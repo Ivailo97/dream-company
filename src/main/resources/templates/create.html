@@ -2,7 +2,9 @@
       xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
 <head th:replace="/fragments/head"></head>
+
 <body class="all">
+
 <header>
     <nav th:replace="/fragments/navbar"></nav>
 </header>
@@ -42,7 +44,10 @@
 </div>
 
 
-<footer th:replace="/fragments/footer"></footer>
+<div class="fixed-bottom">
+    <footer th:replace="/fragments/footer"></footer>
+</div>
+
 <script>
 
     $(document).ready(function () {
@@ -75,7 +80,6 @@
             }
 
             //load fragment and replace content
-            document.getElementsByTagName("footer")[0].classList.add("fixed-bottom");
             $('#replace').load(url);
         }
     });

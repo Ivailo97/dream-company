@@ -1,5 +1,6 @@
 <th:block th:fragment>
-    <form class="form w-25 mx-auto " th:action="@{/teams/create}" th:method="post" th:object="${model}" enctype="multipart/form-data">
+    <form class="form w-25 mx-auto " th:action="@{/teams/create}" th:method="post" th:object="${model}"
+          enctype="multipart/form-data">
         <input type="hidden" name="_csrf" value="c95ccb2b-1afa-47bd-bf7b-a5b72739470b">
         <div class="form-group" th:classappend="${#fields.hasErrors('name')}? 'text-danger'">
             <label for="name" class="font-weight-bold">Name</label>
@@ -49,5 +50,6 @@
                 );
             })
             .catch((err) => console.log(err));
+
     </script>
 </th:block>

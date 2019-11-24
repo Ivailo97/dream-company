@@ -6,6 +6,7 @@
 <header>
     <nav th:replace="/fragments/navbar"></nav>
 </header>
+
 <main class="mt-3">
 
     <div class="row d-flex justify-content-around">
@@ -46,7 +47,11 @@
     </div>
 
 </main>
-<footer th:replace="/fragments/footer"></footer>
+
+<div class="fixed-bottom">
+    <footer th:replace="/fragments/footer"></footer>
+</div>
+
 <script>
 
     $(document).ready(function () {
@@ -70,10 +75,10 @@
             } else if (tableSelector.val() === "projects-list") {
                 url = url + "projects";
                 tabHeading.html('All Projects')
-            }else if (tableSelector.val() === "tasks-list"){
+            } else if (tableSelector.val() === "tasks-list") {
                 url = url + "tasks";
                 tabHeading.html('All Tasks')
-            }else if (tableSelector.val() === "offices-list"){
+            } else if (tableSelector.val() === "offices-list") {
                 url = url + "offices";
                 tabHeading.html('All Offices')
             }

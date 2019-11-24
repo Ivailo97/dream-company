@@ -14,14 +14,14 @@ table {
     word-wrap: break-word;
 }
 
-#choose-employee{
+#choose-employee {
     background-image: url("/img/Wood-Background-Repeat.jpg");
     background-repeat: repeat;
     background-size: 30%;
     background-color: rgba(255, 255, 255, 0.3);
 }
 
-#tasks{
+#tasks {
     background-image: url('/img/task-details-background.jpg');
     background-size: 200px;
     background-repeat: repeat;
