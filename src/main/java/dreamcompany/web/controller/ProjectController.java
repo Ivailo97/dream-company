@@ -171,7 +171,7 @@ public class ProjectController extends BaseController {
     @ResponseBody
     public List<ProjectFetchViewModel> fetch() {
 
-        return projectService.findAll().stream()
+        return projectService.findAllNotCompleted().stream()
                 .map(p -> modelMapper.map(p, ProjectFetchViewModel.class))
                 .collect(Collectors.toList());
     }

@@ -47,8 +47,10 @@ public class HomeController extends BaseController {
 
         modelAndView.addObject("user", loggedUserName);
         modelAndView.addObject("isLeaderWithAssignedProject", isLeaderWithAssignedProject);
+
         HttpSession session = request.getSession();
         String imageUrl = userService.findByUsername(loggedUserName).getImageUrl();
+
         session.setAttribute("userImageUrl", imageUrl == null ? "/img/default-avatar.png" : imageUrl);
         modelAndView.addObject("statuses", Status.values());
 

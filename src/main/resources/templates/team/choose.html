@@ -22,7 +22,7 @@
 
             <th:block th:each="team : ${teams}">
 
-                <div class="choose_team_card">
+                <div th:onclick="'window.location.href = \'' + @{'/teams/details/' + ${team.id}} + '\''" class="choose_team_card">
                     <div class="choose_team_imgBx">
                         <img th:src="${team.logoUrl}" alt="images">
                     </div>

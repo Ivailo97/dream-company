@@ -13,6 +13,8 @@ public interface ProjectRepository extends JpaRepository<Project, String> {
 
     List<Project> findAllByStatus(Status status);
 
+    List<Project> findAllByStatusNotIn(Status... statuses);
+
     Optional<Project> findByName(String name);
 
     boolean existsByName(String name);

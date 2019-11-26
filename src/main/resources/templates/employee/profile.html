@@ -13,7 +13,8 @@
 
         <header>
 
-            <img th:src="${(model.imageUrl != null && !#strings.isEmpty(model.imageUrl)) ? model.imageUrl : '/img/default-avatar.png'}" style="width: 210px;height: 210px" th:alt="${model.firstName}"/>
+            <img th:src="${(model.imageUrl != null && !#strings.isEmpty(model.imageUrl)) ? model.imageUrl : '/img/default-avatar.png'}"
+                 style="width: 210px;height: 210px" th:alt="${model.firstName}"/>
 
             <h1 th:text="${model.firstName + ' ' + model.lastName}"></h1>
 
@@ -26,9 +27,7 @@
             <p th:text="${model.email}"></p>
             <p>I have <span th:text="${model.credits}"></span> credits.
                 <br/>My current salary is <span th:text="${model.salary}"></span>$</p>
-            <div class="button-holder d-flex justify-content-center">
-                <a th:href="@{/users/edit}" class="btn btn-dark">Edit Profile</a>
-            </div>
+
 
         </div>
 
@@ -56,8 +55,6 @@
 
     </aside>
 </div>
-
-
 
 
 <div class="fixed-bottom">

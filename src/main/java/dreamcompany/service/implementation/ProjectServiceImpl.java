@@ -97,14 +97,12 @@ public class ProjectServiceImpl implements ProjectService {
         Project project = projectRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid project id"));
 
-
         Team team = project.getTeam();
 
-        project.setTeam(null);
-        team.setProject(null);
-
-        teamRepository.save(team);
-        projectRepository.save(project);
+        if (team != null){
+            team.setProject(null);
+            teamRepository.save(team);
+        }
 
         ProjectServiceModel projectServiceModel = modelMapper.map(project, ProjectServiceModel.class);
 
@@ -116,6 +114,13 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public List<ProjectServiceModel> findAll() {
         return projectRepository.findAll().stream()
+                .map(x -> modelMapper.map(x, ProjectServiceModel.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ProjectServiceModel> findAllNotCompleted() {
+        return projectRepository.findAllByStatusNotIn(Status.FINISHED).stream()
                 .map(x -> modelMapper.map(x, ProjectServiceModel.class))
                 .collect(Collectors.toList());
     }

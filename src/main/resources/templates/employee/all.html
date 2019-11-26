@@ -33,10 +33,10 @@
             <!--/*@thymesVar id="users" type="java.util.List"*/-->
             <th:block th:each="user, iter : ${users}">
 
-                <tr>
-
+                <tr th:onclick="'window.location.href = \'' + @{'/users/profile/' + ${user.username}} + '\''">
                     <td th:text="${iter.index + 1}"></td>
-                    <td th:text="${user.username}"></td>
+                    <td th:text="${user.username}">
+                    </td>
                     <td th:text="${user.email}"></td>
                     <td th:text="${#strings.listJoin(user.authorities, ' ')}"></td>
                     <td>
@@ -115,7 +115,6 @@
     });
 
 </script>
-
 
 </body>
 </html>

@@ -62,7 +62,7 @@ public class UserController extends BaseController {
     @PreAuthorize("isAnonymous()")
     public ModelAndView registerConfirm(@Valid @ModelAttribute(name = "model") UserRegisterBindingModel user, BindingResult bindingResult) throws RoleNotFoundException {
 
-        registerValidator.validate(user,bindingResult);
+        registerValidator.validate(user, bindingResult);
 
         if (bindingResult.hasErrors()) {
             return view("register");
@@ -114,14 +114,13 @@ public class UserController extends BaseController {
         return redirect("/users/all");
     }
 
-    @GetMapping("/profile")
+    @GetMapping("/profile/{username}")
     @PreAuthorize("isAuthenticated()")
-    public ModelAndView profile(Principal principal, ModelAndView modelAndView) {
+    public ModelAndView profile(@PathVariable String username, ModelAndView modelAndView) {
 
-        UserServiceModel userServiceModel = userService.findByUsername(principal.getName());
+        UserServiceModel userServiceModel = userService.findByUsername(username);
         UserProfileViewModel userProfileViewModel = modelMapper.map(userServiceModel, UserProfileViewModel.class);
         modelAndView.addObject("model", userProfileViewModel);
-
         return view("/employee/profile", modelAndView);
     }
 
@@ -140,7 +139,7 @@ public class UserController extends BaseController {
     @PreAuthorize("isAuthenticated()")
     public ModelAndView editConfirm(@Valid @ModelAttribute(name = "editModel") UserEditBindingModel model, BindingResult bindingResult) throws IOException {
 
-        editValidator.validate(model,bindingResult);
+        editValidator.validate(model, bindingResult);
 
         if (bindingResult.hasErrors()) {
             return view("employee/edit");
@@ -222,9 +221,9 @@ public class UserController extends BaseController {
 
     @PostMapping("/promote/{id}")
     @PreAuthorize("hasRole('ROLE_ROOT')")
-    public ModelAndView promotionConfirm(@PathVariable String id,Principal principal) {
+    public ModelAndView promotionConfirm(@PathVariable String id, Principal principal) {
 
-        userService.promote(id,principal.getName());
+        userService.promote(id, principal.getName());
         return redirect("/users/promote");
     }
 
@@ -244,9 +243,9 @@ public class UserController extends BaseController {
 
     @PostMapping("/demote/{id}")
     @PreAuthorize("hasRole('ROLE_ROOT')")
-    public ModelAndView demotionConfirm(@PathVariable String id,Principal principal) {
+    public ModelAndView demotionConfirm(@PathVariable String id, Principal principal) {
 
-        userService.demote(id,principal.getName());
+        userService.demote(id, principal.getName());
         return redirect("/users/demote");
     }
 

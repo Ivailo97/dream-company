@@ -105,7 +105,8 @@
                         </a>
                         <div class="dropdown-menu dropdown-menu-lg-right dropdown-secondary"
                              aria-labelledby="navbarDropdownMenuLink-55">
-                            <a class="dropdown-item" th:href="@{/users/profile}">Profile</a>
+                            <a class="dropdown-item" th:href="@{'/users/profile/' + ${#authentication.getPrincipal().getUsername()}}">Profile</a>
+                            <a class="dropdown-item" th:href="@{/users/edit}">Edit</a>
                             <th:block sec:authorize="!hasRole('ROLE_ROOT')">
                                 <a class="dropdown-item" th:href="@{/users/my-tasks}">My tasks</a>
                             </th:block>

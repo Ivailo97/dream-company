@@ -14,6 +14,8 @@ public interface ProjectService {
 
     List<ProjectServiceModel> findAll();
 
+    List<ProjectServiceModel> findAllNotCompleted();
+
     List<ProjectServiceModel> findAllByStatus(String status);
 
     ProjectServiceModel findById(String id);
