@@ -26,13 +26,13 @@ public class FriendRequestApiController extends BaseController {
     }
 
     @PostMapping("/accept")
-    public ResponseEntity<Void> accept(@RequestBody String id){
+    public ResponseEntity<Void> accept(@RequestBody String id) {
         friendRequestService.accept(id);
         return new ResponseEntity<>(null, HttpStatus.ACCEPTED);
     }
 
     @PostMapping("/decline")
-    public ResponseEntity<Void> decline(@RequestBody String id){
+    public ResponseEntity<Void> decline(@RequestBody String id) {
         friendRequestService.decline(id);
         return new ResponseEntity<>(null, HttpStatus.ACCEPTED);
     }

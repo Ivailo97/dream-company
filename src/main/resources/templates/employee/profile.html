@@ -31,8 +31,9 @@
                 </span>$</p>
 
             <div class="row">
+                <div class="col-md-3"></div>
                 <th:block th:if="${canSendFriendRequest}">
-                    <button class="btn-light" id="send">
+                    <button class="btn-light ml-5" id="send">
                         Add friend
                     </button>
 
@@ -41,7 +42,7 @@
                 </th:block>
 
                 <th:block th:if="${canRemoveFriend}">
-                    <button class="btn-light" id="remove-friend">
+                    <button class="btn-light ml-5" id="remove-friend">
                         Remove friend
                     </button>
 
@@ -80,8 +81,7 @@
 
 <div class="container">
 
-        <h2 class="text-white text-center">Friends:</h2>
-
+    <h2 class="text-white text-center">Friends: <span th:text="${viewModel.friends.size()}"></span> </h2>
 
     <div class="row">
         <th:block th:each="friend : ${viewModel.friends}">

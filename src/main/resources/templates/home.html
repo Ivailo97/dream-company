@@ -120,7 +120,7 @@
                     th:text="${request.mutualFriends} + ' mutual friends'"></span></p>
             <div id="button-block">
                 <div class="confirm" th:id="${'confirm' + iter.index}">Confirm</div>
-                <div class="delete" th:id="${'delete' + iter.index}">Decline</div>
+                <div class="delete" th:id="${'decline' + iter.index}">Decline</div>
                 <input type="hidden" th:id="${iter.index}" th:value="${request.id}">
             </div>
         </div>
@@ -141,11 +141,11 @@
 
         let requestId = $('#' + i.toString()).val();
 
-        let buttonSelector = '#confirm' + i;
+        let confirmButtonSelector = '#confirm' + i;
 
-        let element =  $(buttonSelector);
+        let confirmButton = $(confirmButtonSelector);
 
-        element.on("click",  function confirmRequest() {
+        confirmButton.on("click", function () {
 
             fetch('/api/requests/accept', {
                 method: 'post',
@@ -159,9 +159,24 @@
                     window.location = '/home';
                 });
         });
+
+        let declineButtonSelector = '#decline' + i;
+        let declineButton = $(declineButtonSelector);
+
+        declineButton.on("click", function () {
+
+            fetch('/api/requests/decline', {
+                method: 'post',
+                body: requestId,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(data => {
+                console.log(data);
+                window.location = '/home';
+            });
+        })
     }
-
-
 </script>
 
 </body>

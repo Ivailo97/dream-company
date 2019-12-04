@@ -2,6 +2,8 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="/fragments/head"></head>
+
+
 <body>
 
 <header>
@@ -17,7 +19,7 @@
         <div class="form-group" th:classappend="${#fields.hasErrors('username')}? 'text-danger'">
             <label for="username" class="font-weight-bold">Username</label>
             <input type="text" class="form-control" id="username" placeholder="Username..." th:field="*{username}">
-            <small th:each="error : ${#fields.errors('username')}" th:utext="${error}  + '&lt;br /&gt;'" ></small>
+            <small th:each="error : ${#fields.errors('username')}" th:utext="${error}  + '&lt;br /&gt;'"></small>
         </div>
         <div class="form-group" th:classappend="${#fields.hasErrors('password')}? 'text-danger'">
             <label for="password" class="font-weight-bold">Password</label>
