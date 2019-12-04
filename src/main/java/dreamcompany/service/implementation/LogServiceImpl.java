@@ -8,9 +8,9 @@ import dreamcompany.error.notexist.UserNotFoundException;
 import dreamcompany.repository.LogRepository;
 import dreamcompany.repository.UserRepository;
 import dreamcompany.service.interfaces.LogService;
-import dreamcompany.service.interfaces.LogValidationService;
+import dreamcompany.service.interfaces.validation.LogValidationService;
+import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -19,20 +19,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class LogServiceImpl implements LogService {
 
     private final LogRepository logRepository;
     private final UserRepository userRepository;
     private final LogValidationService logValidationService;
     private final ModelMapper modelMapper;
-
-    @Autowired
-    public LogServiceImpl(LogRepository logRepository, UserRepository userRepository, LogValidationService logValidationService, ModelMapper modelMapper) {
-        this.logRepository = logRepository;
-        this.userRepository = userRepository;
-        this.logValidationService = logValidationService;
-        this.modelMapper = modelMapper;
-    }
 
     @Override
     public String create(LogServiceModel logServiceModel) {

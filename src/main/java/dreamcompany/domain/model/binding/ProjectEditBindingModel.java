@@ -1,7 +1,12 @@
 package dreamcompany.domain.model.binding;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.math.BigDecimal;
 
+@Getter
+@Setter
 public class ProjectEditBindingModel {
 
     private String id;
@@ -11,36 +16,4 @@ public class ProjectEditBindingModel {
     private String description;
 
     private BigDecimal reward;
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public BigDecimal getReward() {
-        return reward;
-    }
-
-    public void setReward(BigDecimal reward) {
-        this.reward = reward;
-    }
 }

@@ -1,101 +1,42 @@
 package dreamcompany.domain.entity;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Set;
 
+@Getter
+@Setter
 @Entity
 @Table(name = "teams")
 public class Team extends BaseEntity {
 
+    @Column(name = "name", nullable = false)
     private String name;
 
+    @Column(name = "profit", nullable = false)
     private BigDecimal profit;
 
+    @Column(name = "logo_url", nullable = false)
     private String logoUrl;
 
+    @Column(name = "logo_id", nullable = false)
     private String logoId;
-
-    private Office office;
-
-    private Project project;
-
-    private Position teamLeaderPreviousPosition;
-
-    private Set<User> employees;
-
-    @Column(name = "name", nullable = false)
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Column(name = "profit", nullable = false)
-    public BigDecimal getProfit() {
-        return profit;
-    }
-
-    public void setProfit(BigDecimal profit) {
-        this.profit = profit;
-    }
 
     @ManyToOne
     @JoinColumn(name = "office_id", referencedColumnName = "id")
-    public Office getOffice() {
-        return office;
-    }
+    private Office office;
 
     @OneToOne
     @JoinColumn(name = "project_id")
-    public Project getProject() {
-        return project;
-    }
-
-    public void setProject(Project project) {
-        this.project = project;
-    }
-
-    public void setOffice(Office office) {
-        this.office = office;
-    }
-
-    @OneToMany(mappedBy = "team")
-    public Set<User> getEmployees() {
-        return employees;
-    }
-
-    public void setEmployees(Set<User> employees) {
-        this.employees = employees;
-    }
+    private Project project;
 
     @Column(name = "prev_position_of_team_lead", nullable = false)
     @Enumerated(EnumType.STRING)
-    public Position getTeamLeaderPreviousPosition() {
-        return teamLeaderPreviousPosition;
-    }
+    private Position teamLeaderPreviousPosition;
 
-    public void setTeamLeaderPreviousPosition(Position teamLeaderPreviousPosition) {
-        this.teamLeaderPreviousPosition = teamLeaderPreviousPosition;
-    }
-
-    @Column(name = "logo_url", nullable = false)
-    public String getLogoUrl() {
-        return logoUrl;
-    }
-
-    public void setLogoUrl(String logoUrl) {
-        this.logoUrl = logoUrl;
-    }
-
-    @Column(name = "logo_id", nullable = false)
-    public String getLogoId() {
-        return logoId;
-    }
-
-    public void setLogoId(String logoId) {
-        this.logoId = logoId;
-    }
+    @OneToMany(mappedBy = "team")
+    private Set<User> employees;
 }

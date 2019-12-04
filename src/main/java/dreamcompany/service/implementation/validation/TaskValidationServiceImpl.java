@@ -1,7 +1,7 @@
-package dreamcompany.service.implementation;
+package dreamcompany.service.implementation.validation;
 
 import dreamcompany.domain.model.service.TaskServiceModel;
-import dreamcompany.service.interfaces.TaskValidationService;
+import dreamcompany.service.interfaces.validation.TaskValidationService;
 import org.springframework.stereotype.Service;
 
 import static dreamcompany.validation.task.TaskConstants.*;

@@ -7,21 +7,21 @@ import java.util.List;
 
 public interface TeamService {
 
-    TeamServiceModel create(TeamServiceModel teamServiceModel);
+    TeamServiceModel create(TeamServiceModel teamServiceModel,String moderatorUsername);
 
-    TeamServiceModel edit(String id, TeamServiceModel teamServiceModel) throws IOException;
+    TeamServiceModel edit(String id, TeamServiceModel teamServiceModel,String moderatorUsername) throws IOException;
 
-    TeamServiceModel delete(String id) throws IOException;
+    TeamServiceModel delete(String id,String moderatorUsername) throws IOException;
 
     TeamServiceModel findById(String id);
 
     List<TeamServiceModel> findAll();
 
-    void assignProject(String projectId, String teamId);
+    void assignProject(String projectId, String teamId,String managerUsername);
 
     List<TeamServiceModel> findAllWithoutProject();
 
-    void addEmployeeToTeam(String teamId, String userId);
+    void addEmployeeToTeam(String teamId, String userId,String moderatorUsername);
 
-    void removeEmployeeFromTeam(String teamId, String userId);
+    void removeEmployeeFromTeam(String teamId, String userId,String moderatorUsername);
 }

@@ -1,7 +1,7 @@
-package dreamcompany.service.implementation;
+package dreamcompany.service.implementation.validation;
 
 import dreamcompany.domain.model.service.OfficeServiceModel;
-import dreamcompany.service.interfaces.OfficeValidationService;
+import dreamcompany.service.interfaces.validation.OfficeValidationService;
 import org.springframework.stereotype.Service;
 
 import static dreamcompany.validation.office.OfficeConstants.*;

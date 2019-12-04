@@ -6,13 +6,14 @@
     width:640px;
     height: 110px;
     padding:10px;
-    background:#000;
+    background:#545b62;
     color:#fff;
     text-align:center;
     box-shadow:0 10px 30px rgba(0,0,0,1);
-    border-radius:5px;
+    border-radius:20px;
     overflow:hidden;
 }
+
 .radio-box:before {
     content:"";
     position:absolute;
@@ -39,17 +40,17 @@
 .radio-box label span{
     position:relative;
     display:inline-block;
-    margin:20px 10px;
+    margin:15px 10px;
     padding:5px;
     width:130px;
-    background:#000;
+    background:#6c757d;
     border:1px solid #444;
     color:#444;
-    border-radius:4px;
+    border-radius:20px;
 }
 .radio-box label input:checked ~ span {
     color:#fff;
-    border:1px solid #008eff;
+    border:1px solid #1effc3;
 }
 .radio-box label input:checked ~ span:before {
     content:"";
@@ -58,7 +59,7 @@
     position:absolute;
     top:0;
     left:0;
-    background:#008eff;
+    background:#949fb0;
     z-index:-1;
     filter:blur(10px);
 }
@@ -69,11 +70,11 @@
     position:absolute;
     top:0;
     left:0;
-    background:#008eff;
+    background:#9fcdff;
     z-index:-1;
     filter:blur(15px);
 }
 .radio-box label input:checked ~ span.yes {
-    color:#62ff00;
-    border-color:#62ff00;
+    color:#fdfdfe;
+    border-color:#fdfdfe;
 }

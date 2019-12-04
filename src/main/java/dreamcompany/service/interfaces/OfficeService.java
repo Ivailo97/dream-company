@@ -11,7 +11,7 @@ public interface OfficeService {
 
     OfficeServiceModel edit(String id, OfficeServiceModel officeServiceModel);
 
-    OfficeServiceModel delete(String id) throws IOException;
+    OfficeServiceModel delete(String id,String moderatorUsername) throws IOException;
 
     List<OfficeServiceModel> findAll();
 

@@ -8,10 +8,10 @@ import dreamcompany.error.duplicates.OfficeAddressAlreadyExists;
 import dreamcompany.error.invalidservicemodels.InvalidOfficeServiceModelException;
 import dreamcompany.repository.OfficeRepository;
 import dreamcompany.service.interfaces.OfficeService;
-import dreamcompany.service.interfaces.OfficeValidationService;
+import dreamcompany.service.interfaces.validation.OfficeValidationService;
 import dreamcompany.service.interfaces.TeamService;
+import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 import static dreamcompany.GlobalConstraints.*;
 
 @Service
+@AllArgsConstructor
 public class OfficeServiceImpl implements OfficeService {
 
     private final OfficeRepository officeRepository;
@@ -30,14 +31,6 @@ public class OfficeServiceImpl implements OfficeService {
     private final TeamService teamService;
 
     private final ModelMapper modelMapper;
-
-    @Autowired
-    public OfficeServiceImpl(OfficeRepository officeRepository, OfficeValidationService officeValidationService, TeamService teamService, ModelMapper modelMapper) {
-        this.officeRepository = officeRepository;
-        this.officeValidationService = officeValidationService;
-        this.teamService = teamService;
-        this.modelMapper = modelMapper;
-    }
 
     @Override
     public OfficeServiceModel create(OfficeServiceModel officeServiceModel) {
@@ -86,7 +79,7 @@ public class OfficeServiceImpl implements OfficeService {
     }
 
     @Override
-    public OfficeServiceModel delete(String id) {
+    public OfficeServiceModel delete(String id,String moderatorUsername) {
 
         Office office = officeRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid office id"));
@@ -94,7 +87,7 @@ public class OfficeServiceImpl implements OfficeService {
         office.getTeams().stream()
                 .map(BaseEntity::getId).forEach(t -> {
             try {
-                teamService.delete(t);
+                teamService.delete(t,moderatorUsername);
             } catch (IOException e) {
                 e.printStackTrace();
             }

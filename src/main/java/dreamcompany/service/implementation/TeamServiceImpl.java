@@ -2,30 +2,42 @@ package dreamcompany.service.implementation;
 
 import dreamcompany.GlobalConstraints;
 import dreamcompany.domain.entity.*;
+import dreamcompany.domain.model.service.LogServiceModel;
 import dreamcompany.domain.model.service.TeamServiceModel;
 import dreamcompany.domain.model.service.UserServiceModel;
 import dreamcompany.error.duplicates.TeamNameAlreadyExistException;
 import dreamcompany.error.invalidservicemodels.InvalidTeamServiceModelException;
+import dreamcompany.error.notexist.OfficeNotFoundException;
+import dreamcompany.error.notexist.ProjectNotFoundException;
+import dreamcompany.error.notexist.TeamNotFoundException;
+import dreamcompany.error.notexist.UserNotFoundException;
 import dreamcompany.repository.*;
 import dreamcompany.service.interfaces.CloudinaryService;
+import dreamcompany.service.interfaces.LogService;
 import dreamcompany.service.interfaces.TeamService;
-import dreamcompany.service.interfaces.TeamValidationService;
+import dreamcompany.service.interfaces.validation.TeamValidationService;
+import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import static dreamcompany.GlobalConstraints.*;
 
 @Service
+@AllArgsConstructor
 public class TeamServiceImpl implements TeamService {
 
     private final TeamRepository teamRepository;
+
+    private final AtomicInteger payTaxesInvocationCount;
 
     private final TeamValidationService teamValidationService;
 
@@ -41,23 +53,12 @@ public class TeamServiceImpl implements TeamService {
 
     private final UserRepository userRepository;
 
+    private final LogService logService;
+
     private final ModelMapper modelMapper;
 
-    @Autowired
-    public TeamServiceImpl(TeamRepository teamRepository, TeamValidationService teamValidationService, CloudinaryService cloudinaryService, RoleRepository roleRepository, OfficeRepository officeRepository, ProjectRepository projectRepository, TaskRepository taskRepository, UserRepository userRepository, ModelMapper modelMapper) {
-        this.teamRepository = teamRepository;
-        this.teamValidationService = teamValidationService;
-        this.cloudinaryService = cloudinaryService;
-        this.roleRepository = roleRepository;
-        this.officeRepository = officeRepository;
-        this.projectRepository = projectRepository;
-        this.taskRepository = taskRepository;
-        this.userRepository = userRepository;
-        this.modelMapper = modelMapper;
-    }
-
     @Override
-    public TeamServiceModel create(TeamServiceModel teamServiceModel) {
+    public TeamServiceModel create(TeamServiceModel teamServiceModel, String moderatorUsername) {
 
         throwIfInvalidServiceModel(teamServiceModel);
 
@@ -67,7 +68,7 @@ public class TeamServiceImpl implements TeamService {
 
         // set office
         Office office = officeRepository.findById(teamServiceModel.getOffice().getId())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid office id"));
+                .orElseThrow(() -> new OfficeNotFoundException(OFFICE_NOT_FOUND_MESSAGE));
 
         team.setOffice(office);
 
@@ -89,7 +90,7 @@ public class TeamServiceImpl implements TeamService {
 
         teamServiceModel.getEmployees().forEach(e -> {
             User employee = userRepository.findById(e.getId())
-                    .orElseThrow(() -> new IllegalArgumentException("Invalid user id"));
+                    .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND_MESSAGE));
 
             employee.setTeam(finalTeam[0]);
             userRepository.save(employee);
@@ -102,12 +103,22 @@ public class TeamServiceImpl implements TeamService {
 
         userRepository.save(first);
 
+        //log action
+        String employeesJoinedString = team.getEmployees()
+                .stream()
+                .map(e -> String.format("%s %s", e.getFirstName(), e.getLastName()))
+                .collect(Collectors.joining(", "));
+
+        String logMessage = String.format(CREATED_TEAM_SUCCESSFULLY, team.getName(), employeesJoinedString);
+
+        logAction(moderatorUsername, logMessage);
+
         return modelMapper.map(team, TeamServiceModel.class);
     }
 
     private void throwIfInvalidServiceModel(TeamServiceModel teamServiceModel) {
 
-        if (!teamValidationService.isValid(teamServiceModel)){
+        if (!teamValidationService.isValid(teamServiceModel)) {
             throw new InvalidTeamServiceModelException(INVALID_TEAM_SERVICE_MODEL_MESSAGE);
         }
     }
@@ -122,13 +133,12 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public TeamServiceModel edit(String id, TeamServiceModel edited) throws IOException {
+    public TeamServiceModel edit(String id, TeamServiceModel edited, String moderatorUsername) throws IOException {
 
         throwIfInvalidEditedTeamServiceModel(edited);
 
         Team team = teamRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid team id"));
-
+                .orElseThrow(() -> new TeamNotFoundException(TEAM_NOT_FOUND_MESSAGE));
 
         if (!edited.getName().equals(team.getName())) {
             throwIfDuplicate(edited);
@@ -136,22 +146,25 @@ public class TeamServiceImpl implements TeamService {
 
         boolean logoIsUpdated = updateLogo(team, edited);
 
-        team.setName(edited.getName());
-
-        // set new office
         Office office = officeRepository.findById(edited.getOffice().getId())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid office id"));
+                .orElseThrow(() -> new OfficeNotFoundException(OFFICE_NOT_FOUND_MESSAGE));
+
+        String logMessage = buildUpdatedEntityLogMessage(team, edited, logoIsUpdated);
+
+        team.setName(edited.getName());
 
         team.setOffice(office);
 
         team = teamRepository.save(team);
+
+        logAction(moderatorUsername, logMessage);
 
         return modelMapper.map(team, TeamServiceModel.class);
     }
 
     private void throwIfInvalidEditedTeamServiceModel(TeamServiceModel edited) {
 
-        if (edited.getName() == null || edited.getOffice() == null){
+        if (edited == null || edited.getName() == null || edited.getOffice() == null) {
             throw new InvalidTeamServiceModelException(INVALID_TEAM_SERVICE_MODEL_MESSAGE);
         }
     }
@@ -174,10 +187,10 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public TeamServiceModel delete(String id) throws IOException {
+    public TeamServiceModel delete(String id, String moderatorUsername) throws IOException {
 
-        Team team = this.teamRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid team id"));
+        Team team = teamRepository.findById(id)
+                .orElseThrow(() -> new TeamNotFoundException(TEAM_NOT_FOUND_MESSAGE));
 
         // setting previous position of the team leader
         User teamLeader = team.getEmployees().stream().filter(e -> e.getPosition() == Position.TEAM_LEADER)
@@ -215,14 +228,18 @@ public class TeamServiceImpl implements TeamService {
 
         cloudinaryService.deleteImage(team.getLogoId());
         teamRepository.delete(team);
+
+        String logMessage = String.format(DELETED_TEAM_SUCCESSFULLY, team.getName());
+        logAction(moderatorUsername, logMessage);
+
         return teamServiceModel;
     }
 
     @Override
     public TeamServiceModel findById(String id) {
 
-        Team team = this.teamRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid team id"));
+        Team team = teamRepository.findById(id)
+                .orElseThrow(() -> new TeamNotFoundException(TEAM_NOT_FOUND_MESSAGE));
 
         return modelMapper.map(team, TeamServiceModel.class);
     }
@@ -235,21 +252,25 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public void assignProject(String projectId, String teamId) {
+    public void assignProject(String projectId, String teamId, String managerUsername) {
 
         Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid project id"));
+                .orElseThrow(() -> new ProjectNotFoundException(PROJECT_NOT_FOUND_MESSAGE));
 
         project.setStatus(Status.IN_PROGRESS);
 
         projectRepository.save(project);
 
         Team team = teamRepository.findById(teamId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid team id"));
+                .orElseThrow(() -> new TeamNotFoundException(TEAM_NOT_FOUND_MESSAGE));
 
         team.setProject(project);
 
         teamRepository.save(team);
+
+        String logMessage = String.format(ASSIGNED_PROJECT_SUCCESSFULLY, project.getName(), team.getName());
+
+        logAction(managerUsername, logMessage);
     }
 
     @Override
@@ -262,42 +283,88 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public void addEmployeeToTeam(String teamId, String userId) {
+    public void addEmployeeToTeam(String teamId, String userId, String moderatorUsername) {
 
         Team team = teamRepository.findById(teamId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid team id"));
+                .orElseThrow(() -> new TeamNotFoundException(TEAM_NOT_FOUND_MESSAGE));
 
         User employee = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid user id"));
+                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND_MESSAGE));
 
         employee.setTeam(team);
 
         userRepository.save(employee);
+
+        String logMessage = String.format(ADDED_EMPLOYEE_TO_TEAM_SUCCESSFULLY,
+                String.format("%s %s", employee.getFirstName(), employee.getLastName()), team.getName());
+        logAction(moderatorUsername, logMessage);
     }
 
     @Override
-    public void removeEmployeeFromTeam(String teamId, String userId) {
+    public void removeEmployeeFromTeam(String teamId, String userId, String moderatorUsername) {
 
         Team team = teamRepository.findById(teamId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid team id"));
+                .orElseThrow(() -> new TeamNotFoundException(TEAM_NOT_FOUND_MESSAGE));
 
-        if (team.getEmployees().size() > 2) {
+        if (team.getEmployees().size() > EMPLOYEES_MIN_COUNT) {
 
             User employee = userRepository.findById(userId)
-                    .orElseThrow(() -> new IllegalArgumentException("Invalid user id"));
-
-            if (employee.getPosition() == Position.TEAM_LEADER) {
-                employee.setPosition(team.getTeamLeaderPreviousPosition());
-                employee.setSalary(team.getTeamLeaderPreviousPosition().getSalary());
-                User nextLeader = team.getEmployees().toArray(User[]::new)[0];
-                nextLeader.setPosition(Position.TEAM_LEADER);
-                nextLeader.setSalary(Position.TEAM_LEADER.getSalary());
-                userRepository.save(nextLeader);
-            }
+                    .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND_MESSAGE));
 
             employee.setTeam(null);
 
-            userRepository.save(employee);
+            if (employee.getPosition() == Position.TEAM_LEADER) {
+
+                employee.setPosition(team.getTeamLeaderPreviousPosition());
+                employee.setSalary(team.getTeamLeaderPreviousPosition().getSalary());
+
+                userRepository.save(employee);
+
+                User nextLeader = team.getEmployees().toArray(User[]::new)[0];
+                nextLeader.setPosition(Position.TEAM_LEADER);
+                nextLeader.setSalary(Position.TEAM_LEADER.getSalary());
+
+                userRepository.save(nextLeader);
+            }
+
+            String logMessage = String.format(REMOVED_EMPLOYEE_FROM_TEAM_SUCCESSFULLY,
+                    String.format("%s %s", employee.getFirstName(), employee.getLastName()), team.getName());
+
+            logAction(moderatorUsername, logMessage);
         }
+    }
+
+    private String buildUpdatedEntityLogMessage(Team team, TeamServiceModel edited, boolean logoIsUpdated) {
+
+        StringBuilder message = new StringBuilder();
+
+        message.append(String.format(UPDATED_TEAM_SUCCESSFULLY, team.getName()))
+                .append(System.lineSeparator());
+
+        if (!team.getName().equals(edited.getName())) {
+            message.append(String.format(UPDATED_TEAM_NAME, edited.getName()))
+                    .append(System.lineSeparator());
+        }
+
+        if (!team.getOffice().getId().equals(edited.getOffice().getId())) {
+            message.append(UPDATED_TEAM_OFFICE)
+                    .append(System.lineSeparator());
+        }
+
+        if (logoIsUpdated) {
+            message.append(UPDATED_TEAM_LOGO)
+                    .append(System.lineSeparator());
+        }
+
+        return message.toString();
+    }
+
+    private void logAction(String username, String description) {
+
+        LogServiceModel logServiceModel = new LogServiceModel();
+        logServiceModel.setUsername(username);
+        logServiceModel.setCreatedOn(LocalDateTime.now());
+        logServiceModel.setDescription(description);
+        logService.create(logServiceModel);
     }
 }

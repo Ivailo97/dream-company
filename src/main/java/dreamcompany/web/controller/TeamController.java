@@ -4,14 +4,13 @@ import dreamcompany.domain.model.binding.TeamCreateBindingModel;
 import dreamcompany.domain.model.binding.TeamEditBindingModel;
 import dreamcompany.domain.model.service.TeamServiceModel;
 import dreamcompany.domain.model.view.*;
-import dreamcompany.service.interfaces.CloudinaryService;
 import dreamcompany.service.interfaces.TeamService;
 import dreamcompany.service.interfaces.UserService;
 import dreamcompany.util.MappingConverter;
+import dreamcompany.util.ScheduledTask;
 import dreamcompany.validation.team.binding.TeamCreateValidator;
 import dreamcompany.validation.team.binding.TeamEditValidator;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -20,9 +19,11 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
 import java.io.IOException;
+import java.security.Principal;
 import java.util.*;
 
 @Controller
+@AllArgsConstructor
 @RequestMapping("/teams")
 @PreAuthorize("isAuthenticated()")
 public class TeamController extends BaseController {
@@ -35,50 +36,31 @@ public class TeamController extends BaseController {
 
     private final TeamEditValidator editValidator;
 
-    private final CloudinaryService cloudinaryService;
-
-    private final ModelMapper modelMapper;
+    private final ScheduledTask scheduledTask;
 
     private final MappingConverter mappingConverter;
-
-    @Autowired
-    public TeamController(TeamService teamService, UserService userService, TeamCreateValidator createValidator, TeamEditValidator editValidator, CloudinaryService cloudinaryService, ModelMapper modelMapper, MappingConverter mappingConverter) {
-        this.teamService = teamService;
-        this.userService = userService;
-        this.createValidator = createValidator;
-        this.editValidator = editValidator;
-        this.cloudinaryService = cloudinaryService;
-        this.modelMapper = modelMapper;
-        this.mappingConverter = mappingConverter;
-    }
 
     @PostMapping("/create")
     @PreAuthorize("hasRole('ROLE_MODERATOR')")
     public ModelAndView createConfirm(@Valid @ModelAttribute(name = "model") TeamCreateBindingModel model,
-                                      BindingResult bindingResult) throws IOException {
-
-        createValidator.validate(model,bindingResult);
-
+                                      Principal principal,
+                                      BindingResult bindingResult) {
+        createValidator.validate(model, bindingResult);
         if (bindingResult.hasErrors()) {
             return view("/validation/invalid-team-form");
         }
 
-        TeamServiceModel teamServiceModel = mappingConverter.convertToTeamServiceModel(model);
-
-        String[] uploadInfo = cloudinaryService.uploadImage(model.getLogo());
-        teamServiceModel.setLogoUrl(uploadInfo[0]);
-        teamServiceModel.setLogoId(uploadInfo[1]);
-
-        teamService.create(teamServiceModel);
+        TeamServiceModel teamServiceModel = mappingConverter.convert(model,TeamServiceModel.class);
+        teamService.create(teamServiceModel,principal.getName());
+        scheduledTask.payTaxesEveryTenMinutes();
         return redirect("/home");
     }
 
     @GetMapping("/edit/{id}")
     @PreAuthorize("hasRole('ROLE_MODERATOR')")
     public ModelAndView edit(@PathVariable String id, ModelAndView modelAndView) {
-
         TeamServiceModel teamServiceModel = teamService.findById(id);
-        TeamEditBindingModel teamEditBindingModel = modelMapper.map(teamServiceModel, TeamEditBindingModel.class);
+        TeamEditBindingModel teamEditBindingModel = mappingConverter.map(teamServiceModel, TeamEditBindingModel.class);
         teamEditBindingModel.setOffice(teamServiceModel.getOffice().getId());
         modelAndView.addObject("model", teamEditBindingModel);
         return view("/team/edit", modelAndView);
@@ -88,31 +70,23 @@ public class TeamController extends BaseController {
     @PreAuthorize("hasRole('ROLE_MODERATOR')")
     public ModelAndView editConfirm(@PathVariable String id,
                                     @Valid @ModelAttribute(name = "model") TeamEditBindingModel model,
+                                    Principal principal,
                                     BindingResult bindingResult) throws IOException {
-
-        editValidator.validate(model,bindingResult);
-
+        editValidator.validate(model, bindingResult);
         if (bindingResult.hasErrors()) {
             return view("/team/edit");
         }
 
-        TeamServiceModel teamServiceModel = mappingConverter.convertToTeamServiceModel(model);
-
-        if (!model.getLogo().isEmpty()) {
-            String[] uploadInfo = cloudinaryService.uploadImage(model.getLogo());
-            teamServiceModel.setLogoUrl(uploadInfo[0]);
-            teamServiceModel.setLogoId(uploadInfo[1]);
-        }
-
-        teamService.edit(id, teamServiceModel);
+        TeamServiceModel teamServiceModel = mappingConverter.convert(model,TeamServiceModel.class);
+        teamService.edit(id, teamServiceModel,principal.getName());
         return redirect("/show");
     }
 
     @GetMapping("/add-employee/{id}")
     @PreAuthorize("hasRole('ROLE_MODERATOR')")
     public ModelAndView addEmployee(@PathVariable String id, ModelAndView modelAndView) {
-
-        List<UserAddRemoveFromTeamViewModel> viewModels = mappingConverter.convertToUserAddRemoveFromTeamViewModels(userService.findAllWithoutTeam());
+        List<UserAddRemoveFromTeamViewModel> viewModels = mappingConverter
+                .convertCollection(userService.findAllWithoutTeam(),UserAddRemoveFromTeamViewModel.class);
         modelAndView.addObject("teamId", id);
         modelAndView.addObject("models", viewModels);
         return view("team/add-employee", modelAndView);
@@ -120,17 +94,16 @@ public class TeamController extends BaseController {
 
     @PostMapping("/add-employee/{teamId}/{userId}")
     @PreAuthorize("hasRole('ROLE_MODERATOR')")
-    public ModelAndView addEmployeeConfirm(@PathVariable String teamId, @PathVariable String userId) {
-
-        teamService.addEmployeeToTeam(teamId, userId);
+    public ModelAndView addEmployeeConfirm(@PathVariable String teamId, @PathVariable String userId,Principal principal) {
+        teamService.addEmployeeToTeam(teamId, userId,principal.getName());
         return redirect("/show");
     }
 
     @GetMapping("/remove-employee/{id}")
     @PreAuthorize("hasRole('ROLE_MODERATOR')")
     public ModelAndView removeEmployee(@PathVariable String id, ModelAndView modelAndView) {
-
-        List<UserAddRemoveFromTeamViewModel> viewModels = mappingConverter.convertToUserAddRemoveFromTeamViewModels(userService.findAllInTeam(id));
+        List<UserAddRemoveFromTeamViewModel> viewModels = mappingConverter
+                .convertCollection(userService.findAllInTeam(id),UserAddRemoveFromTeamViewModel.class);
         modelAndView.addObject("teamId", id);
         modelAndView.addObject("models", viewModels);
         return view("team/remove-employee", modelAndView);
@@ -138,45 +111,42 @@ public class TeamController extends BaseController {
 
     @PostMapping("/remove-employee/{teamId}/{userId}")
     @PreAuthorize("hasRole('ROLE_MODERATOR')")
-    public ModelAndView removeEmployeeConfirm(@PathVariable String teamId, @PathVariable String userId) {
-
-        teamService.removeEmployeeFromTeam(teamId, userId);
+    public ModelAndView removeEmployeeConfirm(@PathVariable String teamId, @PathVariable String userId,Principal principal) {
+        teamService.removeEmployeeFromTeam(teamId, userId,principal.getName());
         return redirect("/show");
     }
 
     @GetMapping("/details/{id}")
     @PreAuthorize("hasRole('ROLE_MODERATOR')")
     public ModelAndView details(@PathVariable String id, ModelAndView modelAndView) {
-
         TeamServiceModel teamServiceModel = teamService.findById(id);
-        TeamDetailsViewModel viewModel = mappingConverter.convertToTeamDetailsViewModel(teamServiceModel);
+        TeamDetailsViewModel viewModel = mappingConverter.convert(teamServiceModel,TeamDetailsViewModel.class);
         modelAndView.addObject("model", viewModel);
         return view("/team/details", modelAndView);
     }
 
     @GetMapping("/delete/{id}")
     @PreAuthorize("hasRole('ROLE_MODERATOR')")
-    public ModelAndView delete(@PathVariable String id, ModelAndView modelAndView) {
-
+    public ModelAndView delete(@PathVariable String id, ModelAndView modelAndView){
         TeamServiceModel teamServiceModel = teamService.findById(id);
-        TeamDeleteViewModel teamDeleteViewModel = mappingConverter.convertToTeamDeleteViewModel(teamServiceModel);
+        TeamDeleteViewModel teamDeleteViewModel = mappingConverter
+                .convert(teamServiceModel,TeamDeleteViewModel.class);
         modelAndView.addObject("model", teamDeleteViewModel);
         return view("/team/delete", modelAndView);
     }
 
     @PostMapping("/delete/{id}")
     @PreAuthorize("hasRole('ROLE_MODERATOR')")
-    public ModelAndView deleteConfirm(@PathVariable String id) throws IOException {
-
-        teamService.delete(id);
+    public ModelAndView deleteConfirm(@PathVariable String id,Principal principal) throws IOException {
+        teamService.delete(id,principal.getName());
         return redirect("/show");
     }
 
     @GetMapping("/assign-project/{id}")
     @PreAuthorize("hasRole('ROLE_ROOT')")
     public ModelAndView assignProject(@PathVariable String id, ModelAndView modelAndView) {
-
-        List<TeamAllViewModel> viewModels = mappingConverter.convertToTeamAllViewModels(teamService.findAllWithoutProject());
+        List<TeamAllViewModel> viewModels = mappingConverter
+                .convertCollection(teamService.findAllWithoutProject(),TeamAllViewModel.class);
         modelAndView.addObject("chosenProjectId", id);
         modelAndView.addObject("teams", viewModels);
         return view("/team/choose", modelAndView);
@@ -184,9 +154,9 @@ public class TeamController extends BaseController {
 
     @PostMapping("/assign-project/{projectId}/{teamId}")
     @PreAuthorize("hasRole('ROLE_ROOT')")
-    public ModelAndView assignProjectConfirm(@PathVariable String projectId, @PathVariable String teamId) {
-
-        teamService.assignProject(projectId, teamId);
+    public ModelAndView assignProjectConfirm(@PathVariable String projectId,
+                                             @PathVariable String teamId, Principal principal) {
+        teamService.assignProject(projectId, teamId,principal.getName());
         return redirect("/projects/manage");
     }
 }

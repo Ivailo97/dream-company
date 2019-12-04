@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html id="project-details-html" lang="en" xmlns:th="http://www.thymeleaf.org"
+<html id="project-details-html" lang="en"
+      xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="/fragments/head"></head>
 <body id="project-details-body">
@@ -9,7 +10,7 @@
 </header>
 
 <main>
-    <div class="jumbotron text-center" th:object="${model}">
+    <div class="container-fluid text-center mt-3" th:object="${model}">
 
         <div class="row">
             <div class="col-md-12">
@@ -44,7 +45,7 @@
 
                         <label>
                             <input type="radio" th:id="${status}" name="selection" th:value="${status}">
-                            <span class="yes" th:for="${status}" th:text="${status}"></span>
+                            <span class="yes" th:for="${status}" th:text="${#strings.replace(status,'_',' ')}"></span>
                         </label>
 
                     </th:block>
@@ -61,12 +62,15 @@
 
             </section>
 
+            <div>
+
+                <h1 class="text-white no-data-messages mt-3 mr-5"></h1>
+
+            </div>
+
         </div>
 
-        <div class="no-data-messages">
 
-
-        </div>
 
     </div>
 
@@ -122,7 +126,7 @@
                 $('.no-data-messages').empty();
 
                 if (json.length === 0) {
-                    $('.no-data-messages').append(`<h1 class="font-weight-bold">There are no ${status} tasks.</h1>`)
+                    $('.no-data-messages').append(`<h1 class="font-weight-bold">No tasks with such status.</h1>`)
                 } else {
                     for (let i = 0; i < json.length; i++) {
                         $('#tasks-data').append(formatTask(json[i]));

@@ -1,26 +1,17 @@
 package dreamcompany.domain.model.view;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.Set;
 
+@Getter
+@Setter
 public class TeamDetailsViewModel {
+
+    private String name;
 
     private Set<UserInTeamDetailsViewModel> employees;
 
     private String officeAddress;
-
-    public String getOfficeAddress() {
-        return officeAddress;
-    }
-
-    public void setOfficeAddress(String officeAddress) {
-        this.officeAddress = officeAddress;
-    }
-
-    public Set<UserInTeamDetailsViewModel> getEmployees() {
-        return employees;
-    }
-
-    public void setEmployees(Set<UserInTeamDetailsViewModel> employees) {
-        this.employees = employees;
-    }
 }

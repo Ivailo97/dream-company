@@ -10,7 +10,7 @@
 
 <section id="team" class="pb-5">
     <div class="container">
-        <h5 class="section-title h1">THE TEAM</h5>
+        <h5 class="section-title h1" th:text="${'NAME: ' + model.name}">THE TEAM</h5>
         <div class="row">
 
             <th:block th:each="employee : ${model.employees}">
@@ -23,16 +23,17 @@
                                     <div class="card-body text-center">
                                         <p>
                                             <img class="img-fluid" alt="Team Cards Flipper" th:src="${(employee.imageUrl != null && !#strings.isEmpty(employee.imageUrl)) ? employee.imageUrl : '/img/default-avatar.png'}" /></p>
-                                        <h4 class="card-title" th:text="${employee.position}"></h4>
-                                        <p class="card-text" th:text="${employee.fullName}"></p>
+                                        <h4 class="card-title" th:text="${employee.fullName}"></h4>
                                     </div>
                                 </div>
                             </div>
                             <div class="backside">
                                 <div class="card">
                                     <div class="card-body text-center mt-4">
-                                        <h4 class="card-title" th:text="${employee.position}"></h4>
-                                        <p class="card-text">This employee is in the company since <span th:text="${employee.hiredOn}"></span></p>
+                                        <h4 class="card-title" th:text="${#strings.replace(employee.position,'_',' ')}"></h4>
+                                        <p class="card-text mt-5">This employee is in the company since
+                                        </p>
+                                        <span class="text-white" th:text="${#temporals.format(employee.hiredOn, 'dd-MM-yyyy HH:mm')}"></span>
                                     </div>
                                 </div>
                             </div>

@@ -10,7 +10,6 @@ import java.util.List;
 
 public interface UserService extends UserDetailsService {
 
-    //returns log description
     UserServiceModel register(UserServiceModel userServiceModel) throws RoleNotFoundException;
 
     UserServiceModel edit(UserServiceModel userServiceModel, String oldPassword) throws IOException;
@@ -31,7 +30,6 @@ public interface UserService extends UserDetailsService {
 
     List<UserServiceModel> findAllForDemotion();
 
-    //testing something
     boolean isLeaderWithAssignedProject(String username);
 
     void assignTask(String userId, String taskId);
@@ -43,4 +41,10 @@ public interface UserService extends UserDetailsService {
     void promote(String userId,String rootUsername);
 
     void demote(String userId,String rootUsername);
+
+
+    //surprise unit testing incoming:))))))
+    boolean canRemoveFriend(String username,String friendUsername);
+
+    void removeFriend(String name, String friendUsername);
 }

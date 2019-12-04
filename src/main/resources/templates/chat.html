@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+    <title>Dream Company</title>
+    <link rel="stylesheet" href="/css/chat.css"/>
+    <link rel="stylesheet" href="/css/bootstrap.min.css"/>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<header>
+    <nav th:replace="/fragments/navbar"></nav>
+</header>
+
+<input type="hidden" id="name" th:value="${#authentication.principal.getUsername()}"/>
+<input type="hidden" id="imageUrl" th:value="${#session.getAttribute('imgUrl')}"/>
+
+<div id="dialogue-page">
+    <div class="dialogue-container">
+        <div class="dialogue-header">
+            <h2 class="text-white">Chat room</h2>
+        </div>
+        <ul id="messageList">
+            <th:block th:each="model : ${chatMessages}">
+                <li class="message-data m-2">
+                    <img th:src="${model.imageUrl}" alt="sender avatar">
+                    <span class="text-white" th:text="${model.sender}"></span>
+                    <p th:text="${model.content}"></p>
+                    <small class="message-date" th:text="${#temporals.format(model.createdOn, 'HH:mm')}"></small>
+                </li>
+            </th:block>
+        </ul>
+        <form id="dialogueForm" name="dialogueForm" nameForm="dialogueForm">
+            <div class="form-group row">
+                <div class="input-group clearfix">
+                    <input type="text" id="chatMessage" placeholder="Enter a message...." autocomplete="off"
+                           class="form-control col-md-7 ml-3"/>
+
+                    <button type="submit" class="glyphicon glyphicon-share-alt col-md-2">Send</button>
+
+                    <th:block sec:authorize="hasRole('ROLE_ADMIN')">
+                        <a id="clear" class="btn btn-danger col-md-2">Clear history</a>
+                    </th:block>
+
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="fixed-bottom">
+    <footer th:replace="/fragments/footer"></footer>
+</div>
+
+<script src="js/sockjs.min.js"></script>
+<script src="js/stomp.min.js"></script>
+<script src="js/script.js"></script>
+</body>
+</html>

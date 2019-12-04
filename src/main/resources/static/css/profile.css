@@ -3,9 +3,9 @@
 #profile-body {
     box-sizing: border-box;
     font-family: Roboto, Helvetica, Arial, serif;
-    background: url('/img/profile.jpg');
-    background-size: cover;
-    background-color: rgba(255, 255, 255, 0.3) !important;
+    background-image: url('/img/choose-team-background.jpg');
+    background-size: 200px;
+    background-repeat: repeat;
 }
 
 aside header img {
@@ -57,7 +57,7 @@ aside header h1 {
     font-size: 25px;
     line-height: 25px;
     display: inline-block;
-    padding: 10px;
+    padding: 25px;
     transition: all ease 0.250s;
     border-top: 1px solid #fff;
     border-bottom: 1px solid #fff;

@@ -4,6 +4,7 @@ import dreamcompany.domain.entity.Role;
 import dreamcompany.domain.model.service.RoleServiceModel;
 import dreamcompany.repository.RoleRepository;
 import dreamcompany.service.interfaces.RoleService;
+import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,17 +14,12 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class RoleServiceImpl implements RoleService {
 
     private final RoleRepository roleRepository;
 
     private final ModelMapper modelMapper;
-
-    @Autowired
-    public RoleServiceImpl(RoleRepository roleRepository, ModelMapper modelMapper) {
-        this.roleRepository = roleRepository;
-        this.modelMapper = modelMapper;
-    }
 
     @Override
     public void seedRoles() {

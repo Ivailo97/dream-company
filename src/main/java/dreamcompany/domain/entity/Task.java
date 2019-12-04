@@ -1,78 +1,35 @@
 package dreamcompany.domain.entity;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+@Getter
+@Setter
 @Entity
 @Table(name = "tasks")
 public class Task extends Assignment {
 
-    private LocalDateTime createdOn;
-
-    private Position requiredPosition;
-
-    private Integer credits;
-
-    private Project project;
-
-    private long minutesNeeded;
-
-    private User employee;
-
-    public void setMinutesNeeded(long minutesNeeded) {
-        this.minutesNeeded = minutesNeeded;
-    }
-
-    public void setCreatedOn(LocalDateTime createdOn) {
-        this.createdOn = createdOn;
-    }
-
-    public void setRequiredPosition(Position requiredPosition) {
-        this.requiredPosition = requiredPosition;
-    }
-
-    public void setCredits(Integer credits) {
-        this.credits = credits;
-    }
-
-    public void setProject(Project project) {
-        this.project = project;
-    }
-
-    public void setEmployee(User employee) {
-        this.employee = employee;
-    }
-
-    @Column(name = "minutes_to_accomplish", nullable = false)
-    public long getMinutesNeeded() {
-        return minutesNeeded;
-    }
-
     @Column(name = "created_on", nullable = false)
-    public LocalDateTime getCreatedOn() {
-        return createdOn;
-    }
+    private LocalDateTime createdOn;
 
     @Column(name = "required_position", nullable = false)
     @Enumerated(EnumType.STRING)
-    public Position getRequiredPosition() {
-        return requiredPosition;
-    }
+    private Position requiredPosition;
 
     @Column(name = "credits", nullable = false)
-    public Integer getCredits() {
-        return credits;
-    }
+    private Integer credits;
 
     @ManyToOne
     @JoinColumn(name = "project_id", referencedColumnName = "id")
-    public Project getProject() {
-        return project;
-    }
+    private Project project;
+
+    @Column(name = "minutes_to_accomplish", nullable = false)
+    private long minutesNeeded;
 
     @ManyToOne
     @JoinColumn(name = "employee_id", referencedColumnName = "id")
-    public User getEmployee() {
-        return employee;
-    }
+    private User employee;
 }

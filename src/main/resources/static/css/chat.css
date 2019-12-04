@@ -1,0 +1,218 @@
+{
+    -webkit-box-sizing: border-box
+;
+    -moz-box-sizing: border-box
+;
+    box-sizing: border-box
+;
+}
+
+html, body {
+    height: 100%;
+    overflow: hidden;
+}
+
+body {
+    background-color: rgba(255, 255, 255, 0.3) !important;
+    background-blend-mode: lighten;
+    background-size: 200px;
+    background-repeat: repeat;
+    height: 100%;
+    background-image: url('/img/choose-team-background.jpg');
+}
+
+.clearfix:after {
+    display: block;
+    content: "";
+    clear: both;
+}
+
+#messageList  img {
+    border: 2px solid white;
+    width: 80px;
+    height: 80px;
+    margin-top: 25px;
+    margin-right: 10px;
+    border-radius: 50%;
+}
+
+input {
+    padding-left: 10px;
+    outline: none;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+h1 {
+    font-size: 1.7em;
+}
+
+a {
+    color: #128ff2;
+}
+
+button {
+    box-shadow: none;
+    border: 1px solid transparent;
+    font-size: 14px;
+    outline: none;
+    line-height: 100%;
+    white-space: nowrap;
+    vertical-align: middle;
+    padding: 0.6rem 1rem;
+    border-radius: 2px;
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+    min-height: 38px;
+}
+
+button.default {
+    background-color: #e8e8e8;
+    color: #333;
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.12);
+}
+
+button.primary {
+    background-color: #128ff2;
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.12);
+    color: #fff;
+}
+
+button.accent {
+    background-color: #ff4743;
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.12);
+    color: #fff;
+}
+
+#dialogue-page {
+    position: relative;
+    height: 100%;
+}
+
+.dialogue-container {
+    background-color: #5a6268;
+    max-width: 700px;
+    box-shadow: 0 1px 11px rgba(0, 0, 0, 0.27);
+    margin: 30px auto 10px;
+    height: calc(100% - 60px);
+    max-height: 600px;
+    position: relative;
+}
+
+#dialogue-page ul {
+    list-style-type: none;
+    background-color: #4e555b;
+    margin: 0;
+    overflow: auto;
+    overflow-y: scroll;
+    padding: 0 20px 0 20px;
+    height: calc(100% - 150px);
+}
+
+#dialogue-page #dialogueForm {
+    padding: 20px;
+}
+
+#dialogue-page ul li {
+    line-height: 1.5rem;
+    padding: 10px 20px;
+    margin: 0;
+    border-radius: 50px;
+    border: 2px solid #ccc;
+    background-color: #a5b2cb;
+}
+
+#dialogue-page ul li p {
+    margin-left: 10px;
+    overflow-wrap: break-word;
+}
+
+#dialogue-page .event-data {
+    width: 100%;
+    text-align: center;
+    clear: both;
+
+}
+.message-date{
+    margin-left: 550px;
+    font-weight: 200;
+    overflow-wrap: break-word;
+}
+
+#dialogue-page .event-data p {
+    color: #000000;
+    font-size: 15px;
+    padding: 0;
+    left: 10px;
+    word-wrap: break-word;
+}
+
+#dialogue-page .message-data {
+    position: relative;
+}
+
+#dialogue-page .message-data i {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    overflow: hidden;
+    left: 10px;
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 18px;
+    line-height: 42px;
+    color: #fff;
+    text-align: center;
+    border-radius: 50%;
+    font-style: normal;
+    text-transform: uppercase;
+}
+
+#dialogue-page .message-data span {
+    display: inline;
+    color: #333;
+    font-weight: 300;
+}
+
+#dialogue-page .message-data p {
+    font-size: large;
+    margin-left: 90px;
+    color: #43464b;
+}
+
+#dialogueForm .input-group input {
+    border: 0;
+    padding: 10px;
+    background: whitesmoke;
+    float: left;
+    width: calc(100% - 85px);
+}
+
+#dialogueForm .input-group button {
+    float: left;
+    width: 80px;
+    height: 38px;
+    margin-left: 5px;
+}
+
+.dialogue-header {
+    text-align: center;
+    padding: 15px;
+    border-bottom: 1px solid #ececec;
+}
+
+.dialogue-header h2 {
+    margin: 0;
+    font-weight: 500;
+}
+
+@media screen and (max-width: 730px) {
+    .dialogue-container {
+        margin-left: 10px;
+        margin-right: 10px;
+        margin-top: 10px;
+    }
+}

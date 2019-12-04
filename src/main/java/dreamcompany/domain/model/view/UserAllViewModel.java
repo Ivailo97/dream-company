@@ -1,8 +1,12 @@
 package dreamcompany.domain.model.view;
 
-import java.util.HashSet;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.Set;
 
+@Getter
+@Setter
 public class UserAllViewModel {
 
     private String id;
@@ -12,39 +16,4 @@ public class UserAllViewModel {
     private String email;
 
     private Set<String> authorities;
-
-    public UserAllViewModel() {
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public Set<String> getAuthorities() {
-        return authorities;
-    }
-
-    public void setAuthorities(Set<String> authorities) {
-        this.authorities = authorities;
-    }
 }

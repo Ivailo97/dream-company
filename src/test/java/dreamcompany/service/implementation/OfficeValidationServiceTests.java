@@ -1,8 +1,8 @@
 package dreamcompany.service.implementation;
 
 import dreamcompany.domain.model.service.OfficeServiceModel;
-import dreamcompany.service.implementation.OfficeValidationServiceImpl;
-import dreamcompany.service.interfaces.OfficeValidationService;
+import dreamcompany.service.implementation.validation.OfficeValidationServiceImpl;
+import dreamcompany.service.interfaces.validation.OfficeValidationService;
 import org.junit.Before;
 import org.junit.Test;
 

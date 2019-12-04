@@ -11,9 +11,9 @@ import dreamcompany.error.invalidservicemodels.InvalidTaskServiceModelException;
 import dreamcompany.repository.ProjectRepository;
 import dreamcompany.repository.TaskRepository;
 import dreamcompany.service.interfaces.TaskService;
-import dreamcompany.service.interfaces.TaskValidationService;
+import dreamcompany.service.interfaces.validation.TaskValidationService;
+import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import static dreamcompany.GlobalConstraints.*;
@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class TaskServiceImpl implements TaskService {
 
     private final TaskRepository taskRepository;
@@ -32,14 +33,6 @@ public class TaskServiceImpl implements TaskService {
     private final ProjectRepository projectRepository;
 
     private final ModelMapper modelMapper;
-
-    @Autowired
-    public TaskServiceImpl(TaskRepository taskRepository, TaskValidationService validationService, ProjectRepository projectRepository, ModelMapper modelMapper) {
-        this.taskRepository = taskRepository;
-        this.validationService = validationService;
-        this.projectRepository = projectRepository;
-        this.modelMapper = modelMapper;
-    }
 
     @Override
     public TaskServiceModel create(TaskServiceModel taskServiceModel) {

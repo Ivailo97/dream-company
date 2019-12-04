@@ -18,7 +18,9 @@
         <tr>
             <th th:text="${iter.index + 1}"></th>
             <td th:text="${model.name}"></td>
-            <td th:text="${model.status}"></td>
+            <td th:text="${#strings.replace(model.status,'_',' ')}">
+
+            </td>
             <td th:text="${#temporals.format(model.createdOn, 'yyyy-MM-dd HH:mm')}"></td>
             <td class="row">
                 <a th:href="@{/tasks/details/{id}(id=${model.id})}" class="btn btn-info">Details</a>

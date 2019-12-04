@@ -12,9 +12,9 @@ import dreamcompany.repository.ProjectRepository;
 import dreamcompany.repository.TaskRepository;
 import dreamcompany.repository.TeamRepository;
 import dreamcompany.service.interfaces.ProjectService;
-import dreamcompany.service.interfaces.ProjectValidationService;
+import dreamcompany.service.interfaces.validation.ProjectValidationService;
+import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import static dreamcompany.GlobalConstraints.*;
@@ -24,6 +24,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class ProjectServiceImpl implements ProjectService {
 
     private final ProjectRepository projectRepository;
@@ -35,15 +36,6 @@ public class ProjectServiceImpl implements ProjectService {
     private final TaskRepository taskRepository;
 
     private final ModelMapper modelMapper;
-
-    @Autowired
-    public ProjectServiceImpl(ProjectRepository projectRepository, ProjectValidationService validationService, TeamRepository teamRepository, TaskRepository taskRepository, ModelMapper modelMapper) {
-        this.projectRepository = projectRepository;
-        this.validationService = validationService;
-        this.teamRepository = teamRepository;
-        this.taskRepository = taskRepository;
-        this.modelMapper = modelMapper;
-    }
 
     @Override
     public ProjectServiceModel create(ProjectServiceModel projectServiceModel) {

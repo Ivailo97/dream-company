@@ -1,0 +1,88 @@
+
+#fb {
+    display: inline-block;
+    width: 500px;
+    border: 1px solid gray;
+    border-radius: 5px;
+    position: relative;
+    height: 175px;
+    background-color: #6c757d;
+}
+
+#fb p {
+    font-family: sans-serif;
+    margin: 0 0 0 10px;
+    line-height: 30px;
+}
+
+#fb-top span {
+    color: #4267B2;
+    float: right;
+    margin-right: 10px;
+}
+
+#fb-top {
+    background-color: #454d55;
+    height: 30px;
+    width: 500px;
+    border-radius: 5px 5px 0 0;
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    border: 1px solid gray;
+}
+
+#fb img {
+    position: absolute;
+    left: 10px;
+    top: 52.5px;
+}
+
+#info {
+    position: absolute;
+    left: 120px;
+    top: 75px;
+}
+
+#info {
+    color: #a2aec7;
+    line-height: 25px;
+    font-size: 18px;
+}
+
+#info span {
+    color: #a2aec7;
+    font-size: 14px;
+}
+
+#button-block {
+    position: absolute;
+    right: 10px;
+    top: 85px;
+}
+
+#button-block div {
+    display: inline-block;
+}
+
+.confirm, .delete {
+    background-color: #4267B2;
+    color: white;
+    padding: 7px;
+    border-radius: 2px;
+    margin-right: 10px;
+    font-family: sans-serif;
+}
+
+.delete {
+    color: white;
+    background-color: #b21f2d;
+    border: 1px solid #999;
+    padding: 6px;
+    margin-right: 0;
+}
+
+#button-block div:hover {
+    opacity: .8;
+    cursor: pointer;
+}

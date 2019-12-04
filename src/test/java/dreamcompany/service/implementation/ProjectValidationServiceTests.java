@@ -1,8 +1,8 @@
 package dreamcompany.service.implementation;
 
 import dreamcompany.domain.model.service.ProjectServiceModel;
-import dreamcompany.service.implementation.ProjectValidationServiceImpl;
-import dreamcompany.service.interfaces.ProjectValidationService;
+import dreamcompany.service.implementation.validation.ProjectValidationServiceImpl;
+import dreamcompany.service.interfaces.validation.ProjectValidationService;
 import org.junit.Before;
 import org.junit.Test;
 

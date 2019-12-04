@@ -2,6 +2,7 @@ package dreamcompany.service.implementation;
 
 import com.cloudinary.Cloudinary;
 import dreamcompany.service.interfaces.CloudinaryService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,29 +14,41 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
+@AllArgsConstructor
 public class CloudinaryServiceImpl implements CloudinaryService {
 
     private final Cloudinary cloudinary;
 
-    @Autowired
-    public CloudinaryServiceImpl(Cloudinary cloudinary) {
-        this.cloudinary = cloudinary;
-    }
-
     @Override
-    public String[] uploadImage(MultipartFile multipartFile) throws IOException {
+    public String[] uploadImage(MultipartFile multipartFile) {
 
-        File file = File.createTempFile("temp-file", multipartFile.getOriginalFilename());
+        File file = null;
 
-        multipartFile.transferTo(file);
+        try {
+            file = File.createTempFile("temp-file", multipartFile.getOriginalFilename());
 
-        Map uploadedData = cloudinary.uploader().upload(file, new HashMap());
+            multipartFile.transferTo(file);
+        } catch (Exception ignored) {
+        }
+
+        Map uploadedData = null;
+
+        try {
+            uploadedData = cloudinary.uploader().upload(file, new HashMap());
+        } catch (Exception ignored) {
+        }
+
 
         return new String[]{uploadedData.get("url").toString(), uploadedData.get("public_id").toString()};
     }
 
     @Override
-    public void deleteImage(String imageId) throws IOException {
-        cloudinary.uploader().destroy(imageId, new HashMap());
+    public void deleteImage(String imageId) {
+
+        try {
+            cloudinary.uploader().destroy(imageId, new HashMap());
+        } catch (Exception ignored) {
+
+        }
     }
 }

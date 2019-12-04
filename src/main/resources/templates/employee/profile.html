@@ -2,6 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="/fragments/head"></head>
+
 <body id="profile-body">
 
 <header>
@@ -13,23 +14,43 @@
 
         <header>
 
-            <img th:src="${(model.imageUrl != null && !#strings.isEmpty(model.imageUrl)) ? model.imageUrl : '/img/default-avatar.png'}"
-                 style="width: 210px;height: 210px" th:alt="${model.firstName}"/>
+            <img th:src="${(viewModel.imageUrl != null && !#strings.isEmpty(viewModel.imageUrl)) ? viewModel.imageUrl : '/img/default-avatar.png'}"
+                 style="width: 210px;height: 210px" th:alt="${viewModel.firstName}"/>
 
-            <h1 th:text="${model.firstName + ' ' + model.lastName}"></h1>
+            <h1 th:text="${viewModel.firstName + ' ' + viewModel.lastName}"></h1>
 
-            <h2 th:text="${model.position}"></h2>
+            <h2 th:text="${#strings.replace(viewModel.position,'_',' ')}"></h2>
 
         </header>
 
         <div class="profile-bio">
 
-            <p th:text="${model.email}"></p>
-            <p>I have <span th:text="${model.credits}"></span> credits.
-                <br/>My current salary is <span th:text="${model.salary}"></span>$</p>
+            <p th:text="${viewModel.email}"></p>
+            <p>I have <span th:text="${viewModel.credits}"></span> credits.
+                <br/>My current salary is <span th:text="${viewModel.salary}">
+                </span>$</p>
 
+            <div class="row">
+                <th:block th:if="${canSendFriendRequest}">
+                    <button class="btn-light" id="send">
+                        Add friend
+                    </button>
+
+                    <input id="friendId" type="hidden" th:value="${viewModel.id}">
+                    <input id="senderUsername" type="hidden" th:value="${#authentication.getName()}">
+                </th:block>
+
+                <th:block th:if="${canRemoveFriend}">
+                    <button class="btn-light" id="remove-friend">
+                        Remove friend
+                    </button>
+
+                    <input id="friendUsername" type="hidden" th:value="${viewModel.username}">
+                </th:block>
+            </div>
 
         </div>
+
 
         <ul class="profile-social-links">
 
@@ -57,8 +78,37 @@
 </div>
 
 
+<div class="container">
+
+        <h2 class="text-white text-center">Friends:</h2>
+
+
+    <div class="row">
+        <th:block th:each="friend : ${viewModel.friends}">
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3"
+                 th:onclick="'window.location.href = \'' + @{'/users/profile/' + ${friend.username}} + '\''">
+                <div class="our-team">
+                    <div class="picture">
+                        <img class="img-fluid"
+                             th:src="${friend.imageUrl == null ? '/img/default-avatar.png' : friend.imageUrl}">
+                    </div>
+                    <div class="team-content">
+                        <h3 class="name" th:text="${friend.fullName}"></h3>
+                    </div>
+
+                    <ul class="social">
+                        <li><h4 class="position" th:text="${#strings.replace(friend.position,'_',' ')}"></h4></li>
+                    </ul>
+                </div>
+            </div>
+        </th:block>
+    </div>
+</div>
+
 <div class="fixed-bottom">
     <footer th:replace="/fragments/footer"></footer>
 </div>
+<script src="/js/friends.js">
+</script>
 </body>
 </html>

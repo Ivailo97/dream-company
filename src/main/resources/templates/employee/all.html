@@ -38,7 +38,7 @@
                     <td th:text="${user.username}">
                     </td>
                     <td th:text="${user.email}"></td>
-                    <td th:text="${#strings.listJoin(user.authorities, ' ')}"></td>
+                    <td th:text="${#strings.listJoin(user.authorities, ', ').replace('ROLE_',' ')}"></td>
                     <td>
 
                         <div class="row">

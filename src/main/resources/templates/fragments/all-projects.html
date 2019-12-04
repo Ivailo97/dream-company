@@ -18,7 +18,7 @@
         <tr>
             <th th:text="${iter.index + 1}"></th>
             <td th:text="${model.name}"></td>
-            <td th:text="${model.status}"></td>
+            <td th:text="${#strings.replace(model.status,'_',' ')}"></td>
             <td>
                 <a th:href="@{/projects/details/{id}(id=${model.id})}" class="btn btn-info">Details</a>
                 <a th:href="@{/projects/delete/{id}(id=${model.id})}" class="btn btn-danger">Delete</a>

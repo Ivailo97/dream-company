@@ -15,9 +15,9 @@ import dreamcompany.service.interfaces.LogService;
 import dreamcompany.service.interfaces.RoleService;
 import dreamcompany.service.interfaces.UserService;
 import dreamcompany.util.MyThread;
-import dreamcompany.service.interfaces.UserValidationService;
+import dreamcompany.service.interfaces.validation.UserValidationService;
+import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -37,6 +37,7 @@ import java.util.stream.Collectors;
 import static dreamcompany.GlobalConstraints.*;
 
 @Service
+@AllArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private static final String USER_CHANGE_ROLE = "user";
@@ -58,18 +59,6 @@ public class UserServiceImpl implements UserService {
     private final BCryptPasswordEncoder encoder;
 
     private final UserValidationService userValidationService;
-
-    @Autowired
-    public UserServiceImpl(UserRepository userRepository, TaskRepository taskRepository, CloudinaryService cloudinaryService, LogService logService, RoleService roleService, ModelMapper modelMapper, BCryptPasswordEncoder encoder, UserValidationService userValidationService) {
-        this.userRepository = userRepository;
-        this.taskRepository = taskRepository;
-        this.logService = logService;
-        this.roleService = roleService;
-        this.cloudinaryService = cloudinaryService;
-        this.modelMapper = modelMapper;
-        this.encoder = encoder;
-        this.userValidationService = userValidationService;
-    }
 
     @Override
     public UserServiceModel register(UserServiceModel userServiceModel) throws RoleNotFoundException {
@@ -98,9 +87,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserServiceModel findByUsername(String username) {
-        return userRepository.findByUsername(username)
-                .map(u -> modelMapper.map(u, UserServiceModel.class))
-                .orElseThrow(() -> new UsernameNotFoundException(USERNAME_NOT_FOUND));
+
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(USERNAME_NOT_FOUND));
+
+        return modelMapper.map(user, UserServiceModel.class);
     }
 
     @Override
@@ -156,7 +146,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserServiceModel> findAllInTeam(String teamId) {
-
         return userRepository.findAllByTeamId(teamId)
                 .stream()
                 .map(u -> modelMapper.map(u, UserServiceModel.class))
@@ -165,7 +154,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserServiceModel> findAllInTeamWithPosition(String teamId, Position position) {
-
         return userRepository.findAllByTeamIdAndPosition(teamId, position)
                 .stream().map(u -> modelMapper.map(u, UserServiceModel.class))
                 .collect(Collectors.toList());
@@ -254,7 +242,6 @@ public class UserServiceImpl implements UserService {
         String logMessage;
 
         switch (role) {
-
             case USER_CHANGE_ROLE:
                 userServiceModel.getAuthorities().add(roleService.findByAuthority(ROLE_USER));
                 logMessage = String.format(CHANGED_ROLE_SUCCESSFULLY, username, ROLE_USER);
@@ -275,7 +262,7 @@ public class UserServiceImpl implements UserService {
                 break;
         }
 
-        User updated = modelMapper.map(userServiceModel,User.class);
+        User updated = modelMapper.map(userServiceModel, User.class);
 
         userRepository.save(updated);
 
@@ -320,6 +307,45 @@ public class UserServiceImpl implements UserService {
         String logMessage = String.format(DEMOTED_SUCCESSFULLY, user.getUsername(), nextPosition.name());
 
         logAction(rootUsername, logMessage);
+    }
+
+    @Override
+    public boolean canRemoveFriend(String username, String friendUsername) {
+
+        User loggedUser = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException((USERNAME_NOT_FOUND)));
+
+        User friend = userRepository.findByUsername(friendUsername)
+                .orElseThrow(() -> new UsernameNotFoundException((USERNAME_NOT_FOUND)));
+
+        return !username.equals(friendUsername)
+                && loggedUser.getFriends().stream()
+                .anyMatch(f -> f.getUsername().equals(friend.getUsername()));
+    }
+
+    @Override
+    public void removeFriend(String name, String friendUsername) {
+
+        if (name.equals(friendUsername)) {
+            return;
+        }
+
+        User user = userRepository.findByUsername(name)
+                .orElseThrow(() -> new UsernameNotFoundException((USERNAME_NOT_FOUND)));
+
+        User friend = userRepository.findByUsername(friendUsername)
+                .orElseThrow(() -> new UsernameNotFoundException((USERNAME_NOT_FOUND)));
+
+
+        if (user.getFriends().stream().noneMatch(f -> f.getUsername().equals(friend.getUsername()))) {
+            return;
+        }
+
+        user.getFriends().remove(friend);
+        friend.getFriends().remove(user);
+
+        userRepository.save(user);
+        userRepository.save(friend);
     }
 
     @Override
