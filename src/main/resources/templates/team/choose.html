@@ -18,7 +18,7 @@
 
     <div class="team_wrapper">
 
-        <div class="choose_team_box">
+        <div class="choose_team_box mb-5">
 
             <th:block th:each="team : ${teams}">
 
@@ -31,7 +31,7 @@
                         </h2>
                         <form th:method="post"
                               th:action="@{'/teams/assign-project/' + ${chosenProjectId} + '/' + ${team.id}}">
-                            <button class="btn btn-info">Assign</button>
+                            <button class="btn btn-outline-dark">Assign</button>
                         </form>
                     </div>
                 </div>

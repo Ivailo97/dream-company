@@ -1,7 +1,12 @@
 @import url('https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900');
 
 #manage {
-    background: #060c21;
+    background-repeat: repeat;
+    background-color: rgba(255, 255, 255, 0.3);
+    background-blend-mode: lighten;
+    background-size: 200px;
+    background-image: url('/img/choose-team-background.jpg');
+    overflow: hidden;
 }
 
 .container {
@@ -16,7 +21,7 @@
 .container .box {
     position: relative;
     height: 400px;
-    background: #060d21;
+    background: #454d55;
     display: flex;
     justify-content: center;
     align-items: center;

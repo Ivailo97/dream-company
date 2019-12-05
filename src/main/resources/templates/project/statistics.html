@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="/fragments/head"></head>
+
+<script src="/js/angular.min.js"></script>
+<script src="/js/projectController.js"></script>
+
+<body id="home">
+
+<header>
+    <nav th:replace="/fragments/navbar"></nav>
+</header>
+
+<div class="text-center mt-5 container-fluid">
+
+    <div data-ng-app="DreamCompany" data-ng-controller="projectCtrl">
+        <div class="row">
+            <div class="col-md-12 mt-5">
+                <div class="radio-box">
+                    <p>Projects</p>
+                    <label>
+                        <input data-ng-click="fetchProjects($event)" type="radio" id="allRadio" name="selection"
+                               value="all">
+                        <span class="yes">All</span>
+                    </label>
+
+                    <th:block th:each="status : ${statuses}">
+
+                        <label>
+                            <input data-ng-click="fetchProjects($event)" type="radio" th:id="${status}" name="selection"
+                                   th:value="${status}">
+                            <span class="yes" th:for="${status}" th:text="${#strings.replace(status,'_',' ')}"></span>
+                        </label>
+
+                    </th:block>
+
+                </div>
+
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div id="projects-data" class="projects-container ml-5">
+                    <div id="columns" class="row">
+
+                        <div class="project-row row d-flex justify-content-around">
+
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <h1 id="no-data" class="font-weight-bold text-white mt-4 ml-3">
+
+
+                        </h1>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="fixed-bottom">
+    <footer th:replace="/fragments/footer"></footer>
+</div>
+</body>
+</html>

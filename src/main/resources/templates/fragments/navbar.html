@@ -31,7 +31,8 @@
         <nav class="navbar navbar-expand-md bg-dark navbar-dark sticky-top">
             <a class="navbar-brand" th:href="@{/home}">
                 <!-- Logo Image -->
-                <img src="/img/company-logo.png" style="border-radius: 50%;width: 40px; height: 40px;" alt="" class="d-inline-block align-middle mr-2">
+                <img src="/img/company-logo.png" style="border-radius: 50%;width: 40px; height: 40px;" alt=""
+                     class="d-inline-block align-middle mr-2">
                 <!-- Logo Text -->
                 <span class="text-uppercase font-weight-bold">Dream Company</span>
             </a>
@@ -58,6 +59,7 @@
                             </a>
                             <div class="dropdown-menu" aria-labelledby="rootDropdown">
                                 <a class="dropdown-item" th:href="@{/projects/manage}">Manage Projects</a>
+                                <a class="dropdown-item" th:href="@{/projects/statistics}">Project Statistics</a>
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item" th:href="@{/users/promote}">Promote</a>
                                 <a class="dropdown-item" th:href="@{/users/demote}">Demote</a>
@@ -74,11 +76,16 @@
                                     Team Leader
                                 </a>
                                 <div class="dropdown-menu" aria-labelledby="teamLeaderDropdown">
-                                    <a class="dropdown-item" th:href="@{/teams/details/{id}(id=${#session.getAttribute('teamId')})}">My Team</a>
+                                    <a class="dropdown-item"
+                                       th:href="@{/teams/details/{id}(id=${#session.getAttribute('teamId')})}">My
+                                        Team</a>
 
                                     <th:block th:if="${#session.getAttribute('isLeaderWithAssignedProject')}">
+                                        <a class="dropdown-item" th:href="@{/projects/assigned}">Team Project</a>
                                         <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item" th:href="@{/projects/project-tasks/{id}(id=${#session.getAttribute('projectId')})}">Manage Tasks</a>
+                                        <a class="dropdown-item"
+                                           th:href="@{/projects/project-tasks/{id}(id=${#session.getAttribute('projectId')})}">Manage
+                                            Tasks</a>
                                     </th:block>
                                 </div>
                             </div>
@@ -118,7 +125,8 @@
                     <li class="nav-item avatar dropdown">
                         <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink-55" data-toggle="dropdown"
                            aria-haspopup="true" aria-expanded="false">
-                            <img th:src="${session.userImageUrl}" style="width: 28px; height: 28px; border: solid 1px white"
+                            <img th:src="${session.userImageUrl}"
+                                 style="width: 28px; height: 28px; border: solid 1px white"
                                  class="rounded-circle z-depth-0"
                                  alt="avatar image">
                         </a>

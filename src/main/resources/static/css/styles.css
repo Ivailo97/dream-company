@@ -3,6 +3,7 @@ body {
     background-color: rgba(255, 255, 255, 0.3);
     background-blend-mode: lighten;
     background-size: 100%;
+    overflow-x: hidden;
 }
 
 table {
@@ -30,6 +31,14 @@ table {
 #choose {
     background-image: url('/img/choose-team-background.jpg');
     background-size: 200px;
+    overflow: hidden;
+    background-repeat: repeat;
+}
+
+#assigned-project {
+    background-image: url('/img/choose-team-background.jpg');
+    background-size: 200px;
+    overflow: hidden;
     background-repeat: repeat;
 }
 
@@ -49,6 +58,15 @@ table {
     background-image: url('/img/tables-background.jpg');
     background-size: 300px;
     background-repeat: repeat;
+
+}
+.push{
+    height: 80px;
+}
+
+.wrapper{
+    min-height: 100%;
+    margin-bottom: -50px;
 }
 
 .table {

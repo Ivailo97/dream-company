@@ -4,9 +4,11 @@ import dreamcompany.domain.entity.Status;
 import dreamcompany.domain.model.binding.ProjectCreateBindingModel;
 import dreamcompany.domain.model.binding.ProjectEditBindingModel;
 import dreamcompany.domain.model.service.ProjectServiceModel;
+import dreamcompany.domain.model.service.UserServiceModel;
 import dreamcompany.domain.model.view.*;
 import dreamcompany.service.interfaces.ProjectService;
 import dreamcompany.service.interfaces.TaskService;
+import dreamcompany.service.interfaces.UserService;
 import dreamcompany.util.MappingConverter;
 import dreamcompany.validation.project.binding.ProjectCreateValidator;
 import dreamcompany.validation.project.binding.ProjectEditValidator;
@@ -17,7 +19,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -31,6 +36,8 @@ public class ProjectController extends BaseController {
     private final ProjectCreateValidator createValidator;
 
     private final ProjectEditValidator editValidator;
+
+    private final UserService userService;
 
     private final TaskService taskService;
 
@@ -50,10 +57,17 @@ public class ProjectController extends BaseController {
         return redirect("/home");
     }
 
+    @GetMapping("/statistics")
+    @PreAuthorize("hasRole('ROLE_ROOT')")
+    public ModelAndView projectStatistics(ModelAndView modelAndView) {
+        modelAndView.addObject("statuses", Status.values());
+        return view("/project/statistics", modelAndView);
+    }
+
     @GetMapping("/details/{id}")
     @PreAuthorize("hasRole('ROLE_MODERATOR')")
     public ModelAndView details(@PathVariable String id, ModelAndView modelAndView) {
-        ProjectDetailsViewModel viewModel = mappingConverter.convert(projectService.findById(id),ProjectDetailsViewModel.class);
+        ProjectDetailsViewModel viewModel = mappingConverter.convert(projectService.findById(id), ProjectDetailsViewModel.class);
         modelAndView.addObject("statuses", Status.values());
         modelAndView.addObject("model", viewModel);
         return view("/project/details", modelAndView);
@@ -85,7 +99,7 @@ public class ProjectController extends BaseController {
     @PreAuthorize("hasRole('ROLE_MODERATOR')")
     public ModelAndView delete(@PathVariable String id, ModelAndView modelAndView) {
         ProjectDeleteViewModel projectDeleteViewModel = mappingConverter
-                .convert(projectService.findById(id),ProjectDeleteViewModel.class);
+                .convert(projectService.findById(id), ProjectDeleteViewModel.class);
         modelAndView.addObject("model", projectDeleteViewModel);
         return view("/project/delete", modelAndView);
     }
@@ -97,11 +111,31 @@ public class ProjectController extends BaseController {
         return redirect("/show");
     }
 
+    @GetMapping("/assigned")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ModelAndView assignedProject(ModelAndView modelAndView, Principal principal) {
+
+        UserServiceModel loggedUser = userService.findByUsername(principal.getName());
+
+        boolean isLeaderWithAssignedProject = userService.isLeaderWithAssignedProject(loggedUser.getUsername());
+
+        if (isLeaderWithAssignedProject) {
+            ProjectServiceModel projectServiceModel = loggedUser.getTeam().getProject();
+            ProjectHomeViewModel viewModel = mappingConverter.map(projectServiceModel, ProjectHomeViewModel.class);
+            modelAndView.addObject("project", viewModel);
+            modelAndView.addObject("hasTasks", !projectServiceModel.getTasks().isEmpty());
+            boolean projectIsCompleted = projectService.projectIsCompleted(projectServiceModel.getId());
+            modelAndView.addObject("projectIsCompleted", projectIsCompleted);
+        }
+
+        return view("/project/assigned", modelAndView);
+    }
+
     @GetMapping("/manage")
     @PreAuthorize("hasRole('ROLE_ROOT')")
     public ModelAndView manage(ModelAndView modelAndView) {
         List<ProjectAllViewModel> models = mappingConverter
-                .convertCollection(projectService.findAllByStatus(Status.PENDING.name()),ProjectAllViewModel.class);
+                .convertCollection(projectService.findAllByStatus(Status.PENDING.name()), ProjectAllViewModel.class);
         modelAndView.addObject("models", models);
         return view("/project/manage", modelAndView);
     }
@@ -109,7 +143,7 @@ public class ProjectController extends BaseController {
     @GetMapping("/project-tasks/{id}")
     public ModelAndView projectTasks(@PathVariable String id, ModelAndView modelAndView) {
         List<TaskAssignViewModel> viewModels = mappingConverter
-                .convertCollection(taskService.findAllNonAssignedByProjectId(id),TaskAssignViewModel.class);
+                .convertCollection(taskService.findAllNonAssignedByProjectId(id), TaskAssignViewModel.class);
         modelAndView.addObject("tasks", viewModels);
         return view("/project/tasks", modelAndView);
     }
@@ -125,13 +159,13 @@ public class ProjectController extends BaseController {
     @PreAuthorize("hasRole('ROLE_MODERATOR')")
     @ResponseBody
     public List<ProjectFetchViewModel> fetch() {
-        return mappingConverter.convertCollection(projectService.findAllNotCompleted(),ProjectFetchViewModel.class);
+        return mappingConverter.convertCollection(projectService.findAllNotCompleted(), ProjectFetchViewModel.class);
     }
 
     @GetMapping("/fetch/{status}")
     @PreAuthorize("hasRole('ROLE_ROOT')")
     @ResponseBody
     public List<ProjectFetchViewModel> fetchByStatus(@PathVariable String status) {
-        return mappingConverter.convertCollection(projectService.findAllByStatus(status),ProjectFetchViewModel.class);
+        return mappingConverter.convertCollection(projectService.findAllByStatus(status), ProjectFetchViewModel.class);
     }
 }
