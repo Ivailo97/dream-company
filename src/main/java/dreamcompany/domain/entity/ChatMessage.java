@@ -6,7 +6,7 @@ import lombok.Setter;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import java.time.LocalDateTime;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -27,5 +27,5 @@ public class ChatMessage extends BaseEntity {
     private String imageUrl;
 
     @Column(name = "created_on")
-    private LocalDateTime createdOn;
+    private Date createdOn;
 }

@@ -6,11 +6,10 @@ import dreamcompany.repository.ChatMessageRepository;
 import dreamcompany.service.interfaces.ChatMessageService;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,7 +23,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
 
     @Override
     public ChatMessageServiceModel createChatMessage(ChatMessageServiceModel chatMessage) {
-        chatMessage.setCreatedOn(LocalDateTime.now());
+        chatMessage.setCreatedOn(new Date());
         ChatMessage message = modelMapper.map(chatMessage, ChatMessage.class);
         messageRepository.save(message);
         return modelMapper.map(message, ChatMessageServiceModel.class);

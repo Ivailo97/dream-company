@@ -29,7 +29,8 @@
                     <img th:src="${model.imageUrl}" alt="sender avatar">
                     <span class="text-white" th:text="${model.sender}"></span>
                     <p th:text="${model.content}"></p>
-                    <small class="message-date" th:text="${#temporals.format(model.createdOn, 'HH:mm')}"></small>
+                  <!--<small class="message-date" th:text="${#temporals.format(model.createdOn, 'HH:mm')}"></small> -->
+                    <small class="message-date" th:text="${#dates.format(model.createdOn, 'HH:mm')}"></small>
                 </li>
             </th:block>
         </ul>
@@ -37,12 +38,12 @@
             <div class="form-group row">
                 <div class="input-group clearfix">
                     <input type="text" id="chatMessage" placeholder="Enter a message...." autocomplete="off"
-                           class="form-control col-md-7 ml-3"/>
+                           class="form-control col-7 ml-3"/>
 
-                    <button type="submit" class="glyphicon glyphicon-share-alt col-md-2">Send</button>
+                    <button type="submit" class="btn btn-outline-light col-2">Send</button>
 
                     <th:block sec:authorize="hasRole('ROLE_ADMIN')">
-                        <a id="clear" class="btn btn-danger col-md-2">Clear history</a>
+                        <a id="clear" class="btn btn-outline-danger col-2 ml-1">Clear history</a>
                     </th:block>
 
                 </div>

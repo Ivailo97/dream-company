@@ -68,6 +68,7 @@ function sendMessage(event) {
             sender: name,
             content: document.querySelector('#chatMessage').value,
             imageUrl: document.getElementById('imageUrl').value,
+            createdOn: Date.now(),
             type: 'CHAT'
         };
 
@@ -115,8 +116,13 @@ function onMessageReceived(payload) {
     let textElement = document.createElement('p');
     let messageText = document.createTextNode(message.content);
     textElement.appendChild(messageText);
-
     messageElement.appendChild(textElement);
+
+    let smallElement = document.createElement("small");
+    smallElement.classList.add("message-date");
+    let now = new Date();
+    smallElement.innerText =  now.getHours() + ':' + now.getMinutes();
+    messageElement.appendChild(smallElement);
 
 
     document.querySelector('#messageList').appendChild(messageElement);
