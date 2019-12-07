@@ -13,6 +13,7 @@ import dreamcompany.error.duplicates.UsernameAlreadyExistException;
 import dreamcompany.error.invalidservicemodels.InvalidUserServiceModelException;
 import dreamcompany.repository.UserRepository;
 import dreamcompany.service.implementation.validation.UserValidationServiceImpl;
+import dreamcompany.service.interfaces.ChatMessageService;
 import dreamcompany.service.interfaces.CloudinaryService;
 import dreamcompany.service.interfaces.LogService;
 import dreamcompany.service.interfaces.RoleService;
@@ -91,6 +92,9 @@ public class UserServiceRegisterAndEditTests {
 
     @Mock
     private CloudinaryService cloudinaryService;
+
+    @Mock
+    private ChatMessageService chatMessageService;
 
     @Before
     public void init() throws RoleNotFoundException {

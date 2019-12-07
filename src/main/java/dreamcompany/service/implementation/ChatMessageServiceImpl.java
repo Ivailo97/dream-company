@@ -30,6 +30,13 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     }
 
     @Override
+    public void updateImageUrl(String oldUrl, String newUrl) {
+        List<ChatMessage> messages = messageRepository.findAllByImageUrl(oldUrl);
+        messages.forEach(m -> m.setImageUrl(newUrl));
+        messageRepository.saveAll(messages);
+    }
+
+    @Override
     public List<ChatMessageServiceModel> findAll() {
         return messageRepository.findAll().stream()
                 .sorted(Comparator.comparing(ChatMessage::getCreatedOn))

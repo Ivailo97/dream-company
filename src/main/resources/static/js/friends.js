@@ -1,9 +1,29 @@
+$('#accept').click(function () {
+
+    let requestId = $('#accept-id').val();
+
+    alert('Request accepted');
+
+    fetch('/api/requests/accept', {
+        method: 'post',
+        body: requestId,
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+        .then(data => {
+            console.log(data);
+            window.location = '/home';
+        });
+
+    return false;
+});
+
+
 $('#send').click(function () {
 
     let receiverId = $('#friendId').val();
     let senderUsername = $('#senderUsername').val();
-
-    alert('Request send');
 
     fetch('/api/requests/send', {
         method: 'post',
@@ -17,7 +37,8 @@ $('#send').click(function () {
     })
         .then(data => {
             console.log(data);
-            window.location = '/home';
+            $('#myModal').modal('toggle');
+            $('#send').hide();
         });
 
     return false;
@@ -32,6 +53,29 @@ $('#remove-friend').click(function () {
     fetch('/users/remove-friend', {
         method: 'post',
         body: friendUsername,
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+        .then(data => {
+            console.log(data);
+            window.location = '/home';
+        });
+
+    return false;
+});
+
+$('#accept-request').click(function () {
+
+    let requestId = $('#requestId').val();
+
+    console.log(requestId);
+
+    alert('Request accepted');
+
+    fetch('/api/requests/accept', {
+        method: 'post',
+        body: requestId,
         headers: {
             'Content-Type': 'application/json'
         }

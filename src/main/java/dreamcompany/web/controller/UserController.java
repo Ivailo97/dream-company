@@ -104,8 +104,13 @@ public class UserController extends BaseController {
         UserServiceModel userServiceModel = userService.findByUsername(username);
         UserProfileViewModel userProfileViewModel = converter.convert(userServiceModel, UserProfileViewModel.class);
         modelAndView.addObject("viewModel", userProfileViewModel);
-        modelAndView.addObject("canRemoveFriend",userService.canRemoveFriend(principal.getName(),username));
+        modelAndView.addObject("canRemoveFriend", userService.canRemoveFriend(principal.getName(), username));
         modelAndView.addObject("canSendFriendRequest", friendRequestService.canSendFriendRequest(username, principal.getName()));
+        boolean canAccept = userService.canAcceptRequest(username, principal.getName());
+        modelAndView.addObject("canAcceptRequest", canAccept);
+        if (canAccept){
+            modelAndView.addObject("requestId",friendRequestService.findAllBySenderAndReceiver(username,principal.getName()).get(0).getId());
+        }
         return view("/employee/profile", modelAndView);
     }
 
@@ -203,8 +208,8 @@ public class UserController extends BaseController {
 
     @PostMapping("/remove-friend")
     @ResponseBody
-    public ResponseEntity<Void> removeFriend(@RequestBody String friendUsername,Principal principal){
-        userService.removeFriend(principal.getName(),friendUsername);
+    public ResponseEntity<Void> removeFriend(@RequestBody String friendUsername, Principal principal) {
+        userService.removeFriend(principal.getName(), friendUsername);
         return new ResponseEntity<>(null, HttpStatus.GONE);
     }
 

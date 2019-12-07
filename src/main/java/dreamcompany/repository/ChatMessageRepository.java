@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface ChatMessageRepository extends JpaRepository<ChatMessage,String> {
 
+    List<ChatMessage> findAllByImageUrl(String imageUrl);
 }

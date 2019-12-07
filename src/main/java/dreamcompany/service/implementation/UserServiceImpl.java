@@ -10,10 +10,7 @@ import dreamcompany.error.invalidservicemodels.InvalidUserServiceModelException;
 import dreamcompany.error.notexist.TaskNotFoundException;
 import dreamcompany.error.notexist.UserNotFoundException;
 import dreamcompany.repository.TaskRepository;
-import dreamcompany.service.interfaces.CloudinaryService;
-import dreamcompany.service.interfaces.LogService;
-import dreamcompany.service.interfaces.RoleService;
-import dreamcompany.service.interfaces.UserService;
+import dreamcompany.service.interfaces.*;
 import dreamcompany.util.MyThread;
 import dreamcompany.service.interfaces.validation.UserValidationService;
 import lombok.AllArgsConstructor;
@@ -59,6 +56,8 @@ public class UserServiceImpl implements UserService {
     private final BCryptPasswordEncoder encoder;
 
     private final UserValidationService userValidationService;
+
+    private final ChatMessageService chatMessageService;
 
     @Override
     public UserServiceModel register(UserServiceModel userServiceModel) throws RoleNotFoundException {
@@ -349,6 +348,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public boolean canAcceptRequest(String friendName, String loggedUserUsername) {
+
+        User receiver = userRepository.findByUsername(friendName)
+                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND_MESSAGE));
+
+        User sender = userRepository.findByUsername(loggedUserUsername)
+                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND_MESSAGE));
+
+        boolean senderHasAlreadyRequestFromReceiver = sender.getFriendRequests().stream()
+                .anyMatch(r -> r.getSender().getUsername().equals(receiver.getUsername()));
+
+        return !friendName.equals(loggedUserUsername) && senderHasAlreadyRequestFromReceiver && sender.getFriendRequests() != null && sender.getFriendRequests().size() > 0 ;
+    }
+
+    @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
         return userRepository.findByUsername(s)
                 .orElseThrow(() -> new UsernameNotFoundException((USERNAME_NOT_FOUND)));
@@ -430,12 +444,13 @@ public class UserServiceImpl implements UserService {
         return message.toString();
     }
 
-    private boolean updateImage(User user, UserServiceModel edited) throws IOException {
+    private boolean updateImage(User user, UserServiceModel edited){
 
         if (edited.getImageUrl() != null) {
 
             if (user.getImageUrl() != null) {
                 cloudinaryService.deleteImage(user.getImageId());
+                chatMessageService.updateImageUrl(user.getImageUrl(),edited.getImageUrl());
             }
 
             user.setImageUrl(edited.getImageUrl());

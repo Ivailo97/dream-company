@@ -74,7 +74,7 @@ public class User extends BaseEntity implements UserDetails {
     )
     private Set<User> friends;
 
-    @OneToMany(mappedBy = "sender")
+    @OneToMany(mappedBy = "receiver")
     private Set<FriendRequest> friendRequests;
 
     @Override

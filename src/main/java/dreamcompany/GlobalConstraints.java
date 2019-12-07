@@ -40,6 +40,7 @@ public final class GlobalConstraints {
     public static final String INVALID_TASK_SERVICE_MODEL_MESSAGE = "Invalid task data entered!";
     public static final String INVALID_OFFICE_SERVICE_MODEL_MESSAGE = "Invalid office data entered!";
     public static final String INVALID_REQUEST_MESSAGE = "Already friends!";
+    public static final String INVALID_REQUEST_USER_HAS_ALREADY_SEND = "User has already send you a request!";
     public static final String USERNAME_NOT_FOUND = "Username not found!";
 
     //LocalDateTime format pattern

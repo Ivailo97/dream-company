@@ -10,11 +10,16 @@
 </header>
 
 <div id="container">
+
+    <th:block th:include="~{/fragments/modals/request-send}"/>
+
+
+
     <aside class="profile-card mt-3">
 
         <header>
 
-            <img th:src="${(viewModel.imageUrl != null && !#strings.isEmpty(viewModel.imageUrl)) ? viewModel.imageUrl : '/img/default-avatar.png'}"
+            <img th:src="${(viewModel.imageUrl != null) ? viewModel.imageUrl : '/img/default-avatar.png'}"
                  style="width: 210px;height: 210px" th:alt="${viewModel.firstName}"/>
 
             <h1 th:text="${viewModel.firstName + ' ' + viewModel.lastName}"></h1>
@@ -33,7 +38,7 @@
             <div class="row">
                 <div class="col-md-3"></div>
                 <th:block th:if="${canSendFriendRequest}">
-                    <button class="btn btn-outline-success ml-4" id="send">
+                    <button  class="btn btn-outline-success ml-4"  id="send">
                         Add friend
                     </button>
 
@@ -47,6 +52,14 @@
                     </button>
 
                     <input id="friendUsername" type="hidden" th:value="${viewModel.username}">
+                </th:block>
+
+                <th:block th:if="${canAcceptRequest}">
+                    <button class="btn btn-outline-success ml-4" id="accept">
+                        Accept request
+                    </button>
+
+                    <input id="accept-id" type="hidden" th:value="${requestId}">
                 </th:block>
             </div>
 
@@ -108,7 +121,10 @@
 <div class="fixed-bottom">
     <footer th:replace="/fragments/footer"></footer>
 </div>
+
+
+
+</body>
 <script src="/js/friends.js">
 </script>
-</body>
 </html>

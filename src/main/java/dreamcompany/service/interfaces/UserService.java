@@ -47,4 +47,6 @@ public interface UserService extends UserDetailsService {
     boolean canRemoveFriend(String username,String friendUsername);
 
     void removeFriend(String name, String friendUsername);
+
+    boolean canAcceptRequest(String friendName, String loggedUserUsername);
 }

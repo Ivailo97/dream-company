@@ -1,7 +1,8 @@
 package dreamcompany.config;
 
-import dreamcompany.web.interceptors.CheckLeaderInterceptor;
+import dreamcompany.web.interceptors.LeaderInterceptor;
 import dreamcompany.web.interceptors.FaviconInterceptor;
+import dreamcompany.web.interceptors.ManagerInterceptor;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -15,12 +16,14 @@ public class ApplicationWebConfiguration implements WebMvcConfigurer {
 
     private final FaviconInterceptor faviconInterceptor;
 
-    private final CheckLeaderInterceptor checkLeaderInterceptor;
+    private final LeaderInterceptor leaderInterceptor;
 
+    private final ManagerInterceptor managerInterceptor;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(faviconInterceptor);
-        registry.addInterceptor(checkLeaderInterceptor);
+        registry.addInterceptor(leaderInterceptor);
+        registry.addInterceptor(managerInterceptor);
     }
 }
