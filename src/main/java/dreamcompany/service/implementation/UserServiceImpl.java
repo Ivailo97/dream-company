@@ -314,12 +314,9 @@ public class UserServiceImpl implements UserService {
         User loggedUser = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException((USERNAME_NOT_FOUND)));
 
-        User friend = userRepository.findByUsername(friendUsername)
-                .orElseThrow(() -> new UsernameNotFoundException((USERNAME_NOT_FOUND)));
-
         return !username.equals(friendUsername)
                 && loggedUser.getFriends().stream()
-                .anyMatch(f -> f.getUsername().equals(friend.getUsername()));
+                .anyMatch(f -> f.getUsername().equals(friendUsername));
     }
 
     @Override
