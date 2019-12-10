@@ -42,11 +42,9 @@ public interface UserService extends UserDetailsService {
 
     void demote(String userId,String rootUsername);
 
-
-    //surprise unit testing incoming:))))))
     boolean canRemoveFriend(String username,String friendUsername);
 
     void removeFriend(String name, String friendUsername);
 
-    boolean canAcceptRequest(String friendName, String loggedUserUsername);
+    boolean canAcceptRequest(String senderName, String loggedUserUsername);
 }

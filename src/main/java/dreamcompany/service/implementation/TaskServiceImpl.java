@@ -8,6 +8,7 @@ import dreamcompany.domain.entity.Task;
 import dreamcompany.domain.model.service.TaskServiceModel;
 import dreamcompany.error.duplicates.TaskNameAlreadyExistException;
 import dreamcompany.error.invalidservicemodels.InvalidTaskServiceModelException;
+import dreamcompany.error.notexist.ProjectNotFoundException;
 import dreamcompany.repository.ProjectRepository;
 import dreamcompany.repository.TaskRepository;
 import dreamcompany.service.interfaces.TaskService;
@@ -44,7 +45,7 @@ public class TaskServiceImpl implements TaskService {
         Task task = modelMapper.map(taskServiceModel, Task.class);
 
         Project project = projectRepository.findById(taskServiceModel.getProject())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid project Id"));
+                .orElseThrow(() -> new ProjectNotFoundException(PROJECT_NOT_FOUND_MESSAGE));
 
         task.setProject(project);
 

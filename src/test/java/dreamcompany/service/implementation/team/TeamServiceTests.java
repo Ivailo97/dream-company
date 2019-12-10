@@ -1,4 +1,4 @@
-package dreamcompany.service.implementation;
+package dreamcompany.service.implementation.team;
 
 import dreamcompany.domain.entity.*;
 import dreamcompany.domain.model.service.*;
@@ -9,6 +9,8 @@ import dreamcompany.error.notexist.ProjectNotFoundException;
 import dreamcompany.error.notexist.TeamNotFoundException;
 import dreamcompany.error.notexist.UserNotFoundException;
 import dreamcompany.repository.*;
+import dreamcompany.service.implementation.LogServiceImpl;
+import dreamcompany.service.implementation.TeamServiceImpl;
 import dreamcompany.service.interfaces.CloudinaryService;
 import dreamcompany.service.interfaces.validation.TeamValidationService;
 import org.junit.Before;
@@ -37,7 +39,6 @@ public class TeamServiceTests {
     final String UPDATED_TEAM_OFFICE = "Updated office";
     final String UPDATED_TEAM_LOGO = "Updated team logo";
 
-    final String DELETED_TEAM_SUCCESSFULLY = "Deleted team with name: Softuni successfully";
     final String ASSIGNED_PROJECT_SUCCESSFULLY = "Assigned project with name: XXX to team with name: YYY successfully";
     final String ADDED_EMPLOYEE_TO_TEAM_SUCCESSFULLY = "Added employee with name: Margarin Lee to team with name: CSKA successfully";
     final String REMOVED_EMPLOYEE_FROM_TEAM_SUCCESSFULLY = "Removed employee with name: John Doe from team with name: CSKA successfully";

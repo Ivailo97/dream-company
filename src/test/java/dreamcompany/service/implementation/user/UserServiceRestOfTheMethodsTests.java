@@ -1,4 +1,4 @@
-package dreamcompany.service.implementation;
+package dreamcompany.service.implementation.user;
 
 import dreamcompany.domain.entity.*;
 import dreamcompany.domain.model.service.*;
@@ -6,6 +6,8 @@ import dreamcompany.error.notexist.TaskNotFoundException;
 import dreamcompany.error.notexist.UserNotFoundException;
 import dreamcompany.repository.TaskRepository;
 import dreamcompany.repository.UserRepository;
+import dreamcompany.service.implementation.RoleServiceImpl;
+import dreamcompany.service.implementation.UserServiceImpl;
 import dreamcompany.service.interfaces.LogService;
 import org.junit.Before;
 import org.junit.Test;

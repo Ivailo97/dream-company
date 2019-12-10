@@ -1,4 +1,4 @@
-package dreamcompany.service.implementation;
+package dreamcompany.service.implementation.user;
 
 import dreamcompany.GlobalConstraints;
 import dreamcompany.domain.entity.Position;
@@ -12,6 +12,7 @@ import dreamcompany.error.duplicates.EmailAlreadyExistException;
 import dreamcompany.error.duplicates.UsernameAlreadyExistException;
 import dreamcompany.error.invalidservicemodels.InvalidUserServiceModelException;
 import dreamcompany.repository.UserRepository;
+import dreamcompany.service.implementation.UserServiceImpl;
 import dreamcompany.service.implementation.validation.UserValidationServiceImpl;
 import dreamcompany.service.interfaces.ChatMessageService;
 import dreamcompany.service.interfaces.CloudinaryService;

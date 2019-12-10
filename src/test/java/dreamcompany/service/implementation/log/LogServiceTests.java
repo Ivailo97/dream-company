@@ -1,4 +1,4 @@
-package dreamcompany.service.implementation;
+package dreamcompany.service.implementation.log;
 
 import dreamcompany.domain.entity.Log;
 import dreamcompany.domain.entity.User;
@@ -6,6 +6,7 @@ import dreamcompany.domain.model.service.LogServiceModel;
 import dreamcompany.error.notexist.UserNotFoundException;
 import dreamcompany.repository.LogRepository;
 import dreamcompany.repository.UserRepository;
+import dreamcompany.service.implementation.LogServiceImpl;
 import dreamcompany.service.implementation.validation.LogValidationServiceImpl;
 import dreamcompany.service.interfaces.validation.LogValidationService;
 import org.junit.Before;

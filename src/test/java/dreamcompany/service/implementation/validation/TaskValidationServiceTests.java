@@ -1,4 +1,4 @@
-package dreamcompany.service.implementation;
+package dreamcompany.service.implementation.validation;
 
 import dreamcompany.domain.entity.Position;
 import dreamcompany.domain.model.service.TaskServiceModel;

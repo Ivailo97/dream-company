@@ -3,6 +3,7 @@ package dreamcompany.service.implementation;
 import dreamcompany.GlobalConstraints;
 import dreamcompany.domain.entity.*;
 import dreamcompany.domain.model.service.LogServiceModel;
+import dreamcompany.error.InvalidOperationException;
 import dreamcompany.error.duplicates.EmailAlreadyExistException;
 import dreamcompany.error.duplicates.UsernameAlreadyExistException;
 import dreamcompany.error.WrongOldPasswordException;
@@ -323,7 +324,7 @@ public class UserServiceImpl implements UserService {
     public void removeFriend(String name, String friendUsername) {
 
         if (name.equals(friendUsername)) {
-            return;
+            throw new InvalidOperationException(CANT_REMOVE_YOURSELF_FROM_FRIEND_LIST_MESSAGE);
         }
 
         User user = userRepository.findByUsername(name)
@@ -334,7 +335,7 @@ public class UserServiceImpl implements UserService {
 
 
         if (user.getFriends().stream().noneMatch(f -> f.getUsername().equals(friend.getUsername()))) {
-            return;
+            throw new InvalidOperationException(CANT_REMOVE_NOT_EXISTING_FRIEND_MESSAGE);
         }
 
         user.getFriends().remove(friend);
@@ -345,18 +346,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean canAcceptRequest(String friendName, String loggedUserUsername) {
+    public boolean canAcceptRequest(String senderName, String loggedUserUsername) {
 
-        User receiver = userRepository.findByUsername(friendName)
+        User sender = userRepository.findByUsername(senderName)
                 .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND_MESSAGE));
 
-        User sender = userRepository.findByUsername(loggedUserUsername)
+        User receiver = userRepository.findByUsername(loggedUserUsername)
                 .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND_MESSAGE));
 
-        boolean senderHasAlreadyRequestFromReceiver = sender.getFriendRequests().stream()
-                .anyMatch(r -> r.getSender().getUsername().equals(receiver.getUsername()));
+        boolean receiverHasAlreadyRequestFromSender = receiver.getFriendRequests().stream()
+                .anyMatch(r -> r.getSender().getUsername().equals(sender.getUsername()));
 
-        return !friendName.equals(loggedUserUsername) && senderHasAlreadyRequestFromReceiver && sender.getFriendRequests() != null && sender.getFriendRequests().size() > 0 ;
+        return !senderName.equals(loggedUserUsername)
+                && receiverHasAlreadyRequestFromSender
+                && receiver.getFriendRequests() != null
+                && receiver.getFriendRequests().size() > 0;
     }
 
     @Override
@@ -379,13 +383,13 @@ public class UserServiceImpl implements UserService {
             userServiceModel.getAuthorities().add(roleService.findByAuthority(ROLE_ROOT));
             userServiceModel.getAuthorities().add(roleService.findByAuthority(ROLE_ADMIN));
             userServiceModel.getAuthorities().add(roleService.findByAuthority(ROLE_MODERATOR));
-            userServiceModel.getAuthorities().add(roleService.findByAuthority(ROLE_USER));
         } else {
             userServiceModel.setPosition(Position.INTERN);
             userServiceModel.setSalary(Position.INTERN.getSalary());
             userServiceModel.setCredits(STARTING_CREDITS);
-            userServiceModel.getAuthorities().add(roleService.findByAuthority(ROLE_USER));
         }
+
+        userServiceModel.getAuthorities().add(roleService.findByAuthority(ROLE_USER));
     }
 
     private void actualTaskComplete(User user, Task task) {
@@ -441,13 +445,13 @@ public class UserServiceImpl implements UserService {
         return message.toString();
     }
 
-    private boolean updateImage(User user, UserServiceModel edited){
+    private boolean updateImage(User user, UserServiceModel edited) {
 
         if (edited.getImageUrl() != null) {
 
             if (user.getImageUrl() != null) {
                 cloudinaryService.deleteImage(user.getImageId());
-                chatMessageService.updateImageUrl(user.getImageUrl(),edited.getImageUrl());
+                chatMessageService.updateImageUrl(user.getImageUrl(), edited.getImageUrl());
             }
 
             user.setImageUrl(edited.getImageUrl());

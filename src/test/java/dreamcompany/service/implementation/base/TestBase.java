@@ -10,7 +10,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
-public class TestBase {
+public abstract class TestBase {
 
     @Before
     public void setupTest() {

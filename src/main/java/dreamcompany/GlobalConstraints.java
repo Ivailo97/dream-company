@@ -32,7 +32,8 @@ public final class GlobalConstraints {
     public static final String TEAM_NOT_FOUND_MESSAGE = "Invalid team id!";
     public static final String PROJECT_NOT_FOUND_MESSAGE = "Invalid project id!";
     public static final String FRIEND_REQUEST_NOT_FOUND_MESSAGE = "Invalid request id!";
-
+    public static final String CANT_REMOVE_YOURSELF_FROM_FRIEND_LIST_MESSAGE = "Cant remove yourself from your friend list!";
+    public static final String CANT_REMOVE_NOT_EXISTING_FRIEND_MESSAGE = "The user is not your friend!";
     public static final String INVALID_USER_SERVICE_MODEL_MESSAGE = "Invalid user data entered!";
     public static final String INVALID_FRIEND_REQUEST_MESSAGE = "Cant send a friend request to yourself!";
     public static final String INVALID_TEAM_SERVICE_MODEL_MESSAGE = "Invalid team data entered!";

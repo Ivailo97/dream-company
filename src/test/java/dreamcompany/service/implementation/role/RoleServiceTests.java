@@ -1,8 +1,9 @@
-package dreamcompany.service.implementation;
+package dreamcompany.service.implementation.role;
 
 import dreamcompany.domain.entity.Role;
 import dreamcompany.domain.model.service.RoleServiceModel;
 import dreamcompany.repository.RoleRepository;
+import dreamcompany.service.implementation.RoleServiceImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
