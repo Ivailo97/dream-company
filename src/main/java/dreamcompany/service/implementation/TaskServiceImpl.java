@@ -1,6 +1,6 @@
 package dreamcompany.service.implementation;
 
-import dreamcompany.GlobalConstraints;
+import dreamcompany.common.GlobalConstants;
 import dreamcompany.domain.entity.*;
 import dreamcompany.domain.model.service.TaskServiceModel;
 import dreamcompany.error.duplicates.TaskNameAlreadyExistException;
@@ -13,11 +13,10 @@ import dreamcompany.repository.TaskRepository;
 import dreamcompany.service.interfaces.TaskService;
 import dreamcompany.service.interfaces.validation.TaskValidationService;
 import lombok.AllArgsConstructor;
-import org.junit.Test;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import static dreamcompany.GlobalConstraints.*;
+import static dreamcompany.common.GlobalConstants.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -185,7 +184,7 @@ public class TaskServiceImpl implements TaskService {
     private void throwIfDuplicate(TaskServiceModel task) {
 
         if (taskRepository.existsByNameAndProjectId(task.getName(), task.getProject())) {
-            throw new TaskNameAlreadyExistException(GlobalConstraints.DUPLICATE_TASK_MESSAGE);
+            throw new TaskNameAlreadyExistException(GlobalConstants.DUPLICATE_TASK_MESSAGE);
         }
     }
 }

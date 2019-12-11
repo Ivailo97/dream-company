@@ -1,6 +1,6 @@
 package dreamcompany.service.implementation;
 
-import dreamcompany.GlobalConstraints;
+import dreamcompany.common.GlobalConstants;
 import dreamcompany.domain.entity.Project;
 import dreamcompany.domain.entity.Status;
 import dreamcompany.domain.entity.Task;
@@ -18,7 +18,7 @@ import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import static dreamcompany.GlobalConstraints.*;
+import static dreamcompany.common.GlobalConstants.*;
 
 import java.util.List;
 import java.util.Set;
@@ -27,6 +27,8 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 public class ProjectServiceImpl implements ProjectService {
+
+    private final String STATUS_ALL = "all";
 
     private final ProjectRepository projectRepository;
 
@@ -44,7 +46,7 @@ public class ProjectServiceImpl implements ProjectService {
         throwIfInvalidServiceModel(projectServiceModel);
 
         if (projectRepository.existsByName(projectServiceModel.getName())) {
-            throw new ProjectNameAlreadyExistException(GlobalConstraints.DUPLICATE_PROJECT_MESSAGE);
+            throw new ProjectNameAlreadyExistException(GlobalConstants.DUPLICATE_PROJECT_MESSAGE);
         }
 
         projectServiceModel.setStatus(Status.PENDING);
@@ -71,16 +73,14 @@ public class ProjectServiceImpl implements ProjectService {
         if (!project.getName().equals(projectServiceModel.getName())) {
 
             if (projectRepository.existsByName(projectServiceModel.getName())) {
-                throw new ProjectNameAlreadyExistException(GlobalConstraints.DUPLICATE_PROJECT_MESSAGE);
+                throw new ProjectNameAlreadyExistException(GlobalConstants.DUPLICATE_PROJECT_MESSAGE);
             }
         }
 
         project.setName(projectServiceModel.getName());
         project.setDescription(projectServiceModel.getDescription());
         project.setReward(projectServiceModel.getReward());
-
         project = projectRepository.save(project);
-
         return modelMapper.map(project, ProjectServiceModel.class);
     }
 
@@ -88,11 +88,11 @@ public class ProjectServiceImpl implements ProjectService {
     public ProjectServiceModel delete(String id) {
 
         Project project = projectRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid project id"));
+                .orElseThrow(() -> new ProjectNotFoundException(PROJECT_NOT_FOUND_MESSAGE));
 
         Team team = project.getTeam();
 
-        if (team != null){
+        if (team != null) {
             team.setProject(null);
             teamRepository.save(team);
         }
@@ -119,15 +119,17 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public List<ProjectServiceModel> findAllByStatus(String status) {
+    public List<ProjectServiceModel> findAllByStatus(String statusName) {
 
-        if (status.equals("all")) {
+        if (statusName.equals(STATUS_ALL)) {
             return projectRepository.findAll().stream()
                     .map(p -> modelMapper.map(p, ProjectServiceModel.class))
                     .collect(Collectors.toList());
         }
 
-        return projectRepository.findAllByStatus(Status.valueOf(status.toUpperCase()))
+        Status status = Status.valueOf(statusName.toUpperCase());
+
+        return projectRepository.findAllByStatus(status)
                 .stream()
                 .map(p -> modelMapper.map(p, ProjectServiceModel.class))
                 .collect(Collectors.toList());
@@ -136,9 +138,8 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public ProjectServiceModel findById(String id) {
 
-        Project project = projectRepository
-                .findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid project id"));
+        Project project = projectRepository.findById(id)
+                .orElseThrow(() -> new ProjectNotFoundException(PROJECT_NOT_FOUND_MESSAGE));
 
         return modelMapper.map(project, ProjectServiceModel.class);
     }
@@ -146,13 +147,13 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public boolean projectIsCompleted(String id) {
 
-        Set<Task> allTasks = projectRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid project id"))
+        Set<Task> projectTasks = projectRepository.findById(id)
+                .orElseThrow(() -> new ProjectNotFoundException(PROJECT_NOT_FOUND_MESSAGE))
                 .getTasks();
 
         long completedTasks = taskRepository.countAllByStatusAndProjectId(Status.FINISHED, id);
 
-        return allTasks != null && allTasks.size() == completedTasks;
+        return projectTasks != null && projectTasks.size() == completedTasks;
     }
 
     @Override
@@ -161,7 +162,7 @@ public class ProjectServiceImpl implements ProjectService {
         if (projectIsCompleted(id)) {
 
             Project project = projectRepository.findById(id)
-                    .orElseThrow(() -> new IllegalArgumentException("Invalid project id"));
+                    .orElseThrow(() -> new ProjectNotFoundException(PROJECT_NOT_FOUND_MESSAGE));
 
             project.setStatus(Status.FINISHED);
 

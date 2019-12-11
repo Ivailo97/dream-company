@@ -1,6 +1,6 @@
 package dreamcompany.service.implementation.user;
 
-import dreamcompany.GlobalConstraints;
+import dreamcompany.common.GlobalConstants;
 import dreamcompany.domain.entity.Position;
 import dreamcompany.domain.entity.Role;
 import dreamcompany.domain.entity.User;
@@ -202,7 +202,7 @@ public class UserServiceRegisterAndEditTests {
         int actualRolesCount = savedInDb[0].getAuthorities().size();
         Position actualPosition = savedInDb[0].getPosition();
         int expectedRolesCount = 4;
-        int expectedCredits = GlobalConstraints.MAX_CREDITS;
+        int expectedCredits = GlobalConstants.MAX_CREDITS;
         int actualCredits = savedInDb[0].getCredits();
 
         assertEquals(expectedRolesCount, actualRolesCount);
@@ -237,7 +237,7 @@ public class UserServiceRegisterAndEditTests {
         int actualRolesCount = savedInDb[0].getAuthorities().size();
         Position actualPosition = savedInDb[0].getPosition();
         int expectedRolesCount = 1;
-        int expectedCredits = GlobalConstraints.STARTING_CREDITS;
+        int expectedCredits = GlobalConstants.STARTING_CREDITS;
         int actualCredits = savedInDb[0].getCredits();
 
         assertEquals(expectedRolesCount, actualRolesCount);

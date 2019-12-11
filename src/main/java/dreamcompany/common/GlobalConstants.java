@@ -1,6 +1,6 @@
-package dreamcompany;
+package dreamcompany.common;
 
-public final class GlobalConstraints {
+public final class GlobalConstants {
 
     public static final Integer MAX_CREDITS = 100;
     public static final Integer STARTING_CREDITS = 0;

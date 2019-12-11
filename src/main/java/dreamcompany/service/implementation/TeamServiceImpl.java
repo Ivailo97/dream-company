@@ -1,6 +1,6 @@
 package dreamcompany.service.implementation;
 
-import dreamcompany.GlobalConstraints;
+import dreamcompany.common.GlobalConstants;
 import dreamcompany.domain.entity.*;
 import dreamcompany.domain.model.service.LogServiceModel;
 import dreamcompany.domain.model.service.TeamServiceModel;
@@ -18,7 +18,6 @@ import dreamcompany.service.interfaces.TeamService;
 import dreamcompany.service.interfaces.validation.TeamValidationService;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -29,7 +28,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-import static dreamcompany.GlobalConstraints.*;
+import static dreamcompany.common.GlobalConstants.*;
 
 @Service
 @AllArgsConstructor
@@ -128,7 +127,7 @@ public class TeamServiceImpl implements TeamService {
         Team teamInDb = teamRepository.findByName(teamServiceModel.getName()).orElse(null);
 
         if (teamInDb != null) {
-            throw new TeamNameAlreadyExistException(GlobalConstraints.DUPLICATE_TEAM_MESSAGE);
+            throw new TeamNameAlreadyExistException(GlobalConstants.DUPLICATE_TEAM_MESSAGE);
         }
     }
 
@@ -187,7 +186,7 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public TeamServiceModel delete(String id, String moderatorUsername) throws IOException {
+    public TeamServiceModel delete(String id, String moderatorUsername) {
 
         Team team = teamRepository.findById(id)
                 .orElseThrow(() -> new TeamNotFoundException(TEAM_NOT_FOUND_MESSAGE));

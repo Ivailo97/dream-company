@@ -1,11 +1,11 @@
 package dreamcompany.service.implementation;
 
-import dreamcompany.GlobalConstraints;
 import dreamcompany.domain.entity.BaseEntity;
 import dreamcompany.domain.entity.Office;
 import dreamcompany.domain.model.service.OfficeServiceModel;
 import dreamcompany.error.duplicates.OfficeAddressAlreadyExists;
 import dreamcompany.error.invalidservicemodels.InvalidOfficeServiceModelException;
+import dreamcompany.error.notexist.OfficeNotFoundException;
 import dreamcompany.repository.OfficeRepository;
 import dreamcompany.service.interfaces.OfficeService;
 import dreamcompany.service.interfaces.validation.OfficeValidationService;
@@ -14,11 +14,10 @@ import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static dreamcompany.GlobalConstraints.*;
+import static dreamcompany.common.GlobalConstants.*;
 
 @Service
 @AllArgsConstructor
@@ -45,7 +44,7 @@ public class OfficeServiceImpl implements OfficeService {
 
     private void throwIfInvalidServiceModel(OfficeServiceModel officeServiceModel) {
 
-        if (!officeValidationService.isValid(officeServiceModel)){
+        if (!officeValidationService.isValid(officeServiceModel)) {
             throw new InvalidOfficeServiceModelException(INVALID_OFFICE_SERVICE_MODEL_MESSAGE);
         }
     }
@@ -56,7 +55,7 @@ public class OfficeServiceImpl implements OfficeService {
         throwIfInvalidServiceModel(edited);
 
         Office office = officeRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid office id"));
+                .orElseThrow(() -> new OfficeNotFoundException(OFFICE_NOT_FOUND_MESSAGE));
 
         if (!office.getAddress().equals(edited.getAddress())) {
             throwIfDuplicate(edited.getAddress());
@@ -74,24 +73,18 @@ public class OfficeServiceImpl implements OfficeService {
 
     private void throwIfDuplicate(String address) {
         if (officeRepository.existsByAddress(address)) {
-            throw new OfficeAddressAlreadyExists(GlobalConstraints.DUPLICATE_ADDRESS_MESSAGE);
+            throw new OfficeAddressAlreadyExists(DUPLICATE_ADDRESS_MESSAGE);
         }
     }
 
     @Override
-    public OfficeServiceModel delete(String id,String moderatorUsername) {
+    public OfficeServiceModel delete(String id, String moderatorUsername) {
 
         Office office = officeRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid office id"));
+                .orElseThrow(() -> new OfficeNotFoundException(OFFICE_NOT_FOUND_MESSAGE));
 
         office.getTeams().stream()
-                .map(BaseEntity::getId).forEach(t -> {
-            try {
-                teamService.delete(t,moderatorUsername);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
+                .map(BaseEntity::getId).forEach(t -> teamService.delete(t, moderatorUsername));
 
         officeRepository.delete(office);
 
@@ -111,6 +104,6 @@ public class OfficeServiceImpl implements OfficeService {
 
         return officeRepository.findById(id)
                 .map(x -> modelMapper.map(x, OfficeServiceModel.class))
-                .orElseThrow(() -> new IllegalArgumentException("Invalid office id!"));
+                .orElseThrow(() -> new OfficeNotFoundException(OFFICE_NOT_FOUND_MESSAGE));
     }
 }

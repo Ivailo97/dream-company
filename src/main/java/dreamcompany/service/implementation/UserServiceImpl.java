@@ -1,6 +1,6 @@
 package dreamcompany.service.implementation;
 
-import dreamcompany.GlobalConstraints;
+import dreamcompany.common.GlobalConstants;
 import dreamcompany.domain.entity.*;
 import dreamcompany.domain.model.service.LogServiceModel;
 import dreamcompany.error.InvalidOperationException;
@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import static dreamcompany.GlobalConstraints.*;
+import static dreamcompany.common.GlobalConstants.*;
 
 @Service
 @AllArgsConstructor
@@ -161,7 +161,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserServiceModel> findAllForPromotion() {
-        return userRepository.findAllByCreditsGreaterThanAndPositionNotIn(GlobalConstraints.MAX_CREDITS - 1, Position.SENIOR, Position.PROJECT_MANAGER, Position.TEAM_LEADER)
+        return userRepository.findAllByCreditsGreaterThanAndPositionNotIn(GlobalConstants.MAX_CREDITS - 1, Position.SENIOR, Position.PROJECT_MANAGER, Position.TEAM_LEADER)
                 .stream().map(u -> modelMapper.map(u, UserServiceModel.class))
                 .collect(Collectors.toList());
     }

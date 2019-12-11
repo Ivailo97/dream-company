@@ -5,7 +5,9 @@ import dreamcompany.domain.entity.Status;
 import dreamcompany.domain.model.service.ProjectServiceModel;
 import dreamcompany.error.duplicates.ProjectNameAlreadyExistException;
 import dreamcompany.error.invalidservicemodels.InvalidProjectServiceModelException;
+import dreamcompany.error.notexist.ProjectNotFoundException;
 import dreamcompany.repository.ProjectRepository;
+import dreamcompany.repository.TeamRepository;
 import dreamcompany.service.implementation.base.TestBase;
 import dreamcompany.service.interfaces.ProjectService;
 import dreamcompany.service.interfaces.validation.ProjectValidationService;
@@ -29,6 +31,9 @@ public class ProjectServiceCreateAndEditTests extends TestBase {
 
     @MockBean
     ProjectRepository projectRepository;
+
+    @MockBean
+    TeamRepository teamRepository;
 
     ProjectServiceModel project;
 
@@ -81,7 +86,7 @@ public class ProjectServiceCreateAndEditTests extends TestBase {
     }
 
     @Test
-    public void edit_shouldUpdateExistingProject_whenValidEditedModelAndExistingProject(){
+    public void edit_shouldUpdateExistingProject_whenValidEditedModelAndExistingProject() {
 
         Project projectInDb = new Project();
         projectInDb.setName("oldProjectName");
@@ -98,15 +103,47 @@ public class ProjectServiceCreateAndEditTests extends TestBase {
         when(projectRepository.save(any()))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
-        ProjectServiceModel editedAndSaved = projectService.edit("projectId",project);
+        ProjectServiceModel editedAndSaved = projectService.edit("projectId", project);
 
         verify(projectRepository).save(any());
-        assertEquals(project.getName(),editedAndSaved.getName());
-        assertEquals(project.getDescription(),editedAndSaved.getDescription());
-        assertEquals(project.getReward(),editedAndSaved.getReward());
+        assertEquals(project.getName(), editedAndSaved.getName());
+        assertEquals(project.getDescription(), editedAndSaved.getDescription());
+        assertEquals(project.getReward(), editedAndSaved.getReward());
     }
 
 
+    @Test(expected = InvalidProjectServiceModelException.class)
+    public void edit_shouldThrowException_whenInvalidModel() {
 
+        when(validationService.isValid(any()))
+                .thenReturn(false);
 
+        projectService.edit("projectId", project);
+    }
+
+    @Test(expected = ProjectNotFoundException.class)
+    public void edit_shouldThrowException_whenInvalidProjectId() {
+
+        when(projectRepository.findById(any()))
+                .thenReturn(Optional.empty());
+
+        projectService.edit("projectId", project);
+    }
+
+    @Test(expected = ProjectNameAlreadyExistException.class)
+    public void edit_shouldThrow_whenValidEditedModelWithAlreadyTakenName() {
+
+        Project projectInDb = new Project();
+        projectInDb.setName("oldProjectName");
+
+        when(projectRepository.findById(anyString()))
+                .thenReturn(Optional.of(projectInDb));
+
+        project.setName("newProjectName");
+
+        when(projectRepository.existsByName(any()))
+                .thenReturn(true);
+
+        projectService.edit("projectId", project);
+    }
 }

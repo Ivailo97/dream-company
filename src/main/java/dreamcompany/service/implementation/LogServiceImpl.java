@@ -1,6 +1,5 @@
 package dreamcompany.service.implementation;
 
-import dreamcompany.GlobalConstraints;
 import dreamcompany.domain.entity.Log;
 import dreamcompany.domain.entity.User;
 import dreamcompany.domain.model.service.LogServiceModel;
@@ -12,11 +11,6 @@ import dreamcompany.service.interfaces.validation.LogValidationService;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -57,19 +51,4 @@ public class LogServiceImpl implements LogService {
         }
     }
 
-    //TODO delete or find a use
-    private LocalDateTime formatDate(String dateTimeString) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(GlobalConstraints.DATE_PATTERN);
-
-        return LocalDateTime.parse(dateTimeString.replace("T", " ")
-                .substring(0, dateTimeString.lastIndexOf(".")), formatter);
-    }
-
-    @Override
-    public List<LogServiceModel> getLogsOrderedByDate() {
-        return logRepository.findAllOrderedByDateDesc()
-                .stream()
-                .map(l -> modelMapper.map(l, LogServiceModel.class))
-                .collect(Collectors.toList());
-    }
 }

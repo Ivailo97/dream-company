@@ -1,6 +1,6 @@
 package dreamcompany.web.controller;
 
-import dreamcompany.GlobalConstraints;
+import dreamcompany.common.GlobalConstants;
 import dreamcompany.error.BaseException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -23,9 +23,9 @@ public class GlobalExceptionHandler {
 
     private ModelAndView fillModelAndView(int statusCode, String message) {
 
-        ModelAndView modelAndView = new ModelAndView(GlobalConstraints.GLOBAL_EXCEPTION_VIEW_NAME);
-        modelAndView.addObject(GlobalConstraints.ERROR_PAGE_STATUS_CODE_ATTRIBUTE_NAME, statusCode);
-        modelAndView.addObject(GlobalConstraints.ERROR_PAGE_MESSAGE_ATTRIBUTE_NAME, message);
+        ModelAndView modelAndView = new ModelAndView(GlobalConstants.GLOBAL_EXCEPTION_VIEW_NAME);
+        modelAndView.addObject(GlobalConstants.ERROR_PAGE_STATUS_CODE_ATTRIBUTE_NAME, statusCode);
+        modelAndView.addObject(GlobalConstants.ERROR_PAGE_MESSAGE_ATTRIBUTE_NAME, message);
         return modelAndView;
     }
 }

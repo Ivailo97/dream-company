@@ -25,7 +25,6 @@ public class TaskServiceRestOfTheMethodsTests extends TestBase {
     @MockBean
     TaskRepository taskRepository;
 
-
     @Test
     public void delete_shouldDeleteTask_whenValidTaskId() {
 
@@ -85,7 +84,6 @@ public class TaskServiceRestOfTheMethodsTests extends TestBase {
 
         taskService.findById("taskId");
     }
-
 
     @Test
     public void findAll_shouldReturnAllTasksInDb_whenAny() {
