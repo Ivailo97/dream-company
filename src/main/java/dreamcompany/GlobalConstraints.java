@@ -30,6 +30,7 @@ public final class GlobalConstraints {
     public static final String TASK_NOT_FOUND_MESSAGE = "Invalid task id!";
     public static final String OFFICE_NOT_FOUND_MESSAGE = "Invalid office id!";
     public static final String TEAM_NOT_FOUND_MESSAGE = "Invalid team id!";
+    public static final String TEAM_NOT_PRESENT = "The task project is not assigned to a team!";
     public static final String PROJECT_NOT_FOUND_MESSAGE = "Invalid project id!";
     public static final String FRIEND_REQUEST_NOT_FOUND_MESSAGE = "Invalid request id!";
     public static final String CANT_REMOVE_YOURSELF_FROM_FRIEND_LIST_MESSAGE = "Cant remove yourself from your friend list!";

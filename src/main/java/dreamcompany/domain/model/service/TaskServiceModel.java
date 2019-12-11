@@ -5,7 +5,6 @@ import dreamcompany.domain.entity.Status;
 import lombok.Getter;
 import lombok.Setter;
 
-
 import java.time.LocalDateTime;
 
 @Getter
@@ -24,6 +23,7 @@ public class TaskServiceModel extends BaseServiceModel {
 
     private Integer credits;
 
+    //project id
     private String project;
 
     private long minutesNeeded;

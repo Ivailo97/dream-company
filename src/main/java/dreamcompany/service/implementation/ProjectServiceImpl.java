@@ -8,6 +8,7 @@ import dreamcompany.domain.entity.Team;
 import dreamcompany.domain.model.service.ProjectServiceModel;
 import dreamcompany.error.duplicates.ProjectNameAlreadyExistException;
 import dreamcompany.error.invalidservicemodels.InvalidProjectServiceModelException;
+import dreamcompany.error.notexist.ProjectNotFoundException;
 import dreamcompany.repository.ProjectRepository;
 import dreamcompany.repository.TaskRepository;
 import dreamcompany.repository.TeamRepository;
@@ -65,7 +66,7 @@ public class ProjectServiceImpl implements ProjectService {
         throwIfInvalidServiceModel(projectServiceModel);
 
         Project project = projectRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid project id"));
+                .orElseThrow(() -> new ProjectNotFoundException(PROJECT_NOT_FOUND_MESSAGE));
 
         if (!project.getName().equals(projectServiceModel.getName())) {
 

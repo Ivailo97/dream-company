@@ -1,19 +1,19 @@
 package dreamcompany.service.implementation;
 
 import dreamcompany.GlobalConstraints;
-import dreamcompany.domain.entity.Position;
-import dreamcompany.domain.entity.Project;
-import dreamcompany.domain.entity.Status;
-import dreamcompany.domain.entity.Task;
+import dreamcompany.domain.entity.*;
 import dreamcompany.domain.model.service.TaskServiceModel;
 import dreamcompany.error.duplicates.TaskNameAlreadyExistException;
 import dreamcompany.error.invalidservicemodels.InvalidTaskServiceModelException;
 import dreamcompany.error.notexist.ProjectNotFoundException;
+import dreamcompany.error.notexist.TaskNotFoundException;
+import dreamcompany.error.notexist.TeamNotFoundException;
 import dreamcompany.repository.ProjectRepository;
 import dreamcompany.repository.TaskRepository;
 import dreamcompany.service.interfaces.TaskService;
 import dreamcompany.service.interfaces.validation.TaskValidationService;
 import lombok.AllArgsConstructor;
+import org.junit.Test;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +26,8 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 public class TaskServiceImpl implements TaskService {
+
+    private final String STATUS_ALL = "all";
 
     private final TaskRepository taskRepository;
 
@@ -68,10 +70,10 @@ public class TaskServiceImpl implements TaskService {
         throwIfInvalidServiceModel(edited);
 
         Task task = taskRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid task id"));
+                .orElseThrow(() -> new TaskNotFoundException(TASK_NOT_FOUND_MESSAGE));
 
         Project project = projectRepository.findById(edited.getProject())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid project id"));
+                .orElseThrow(() -> new ProjectNotFoundException(PROJECT_NOT_FOUND_MESSAGE));
 
         if (!edited.getName().equals(task.getName())) {
             throwIfDuplicate(edited);
@@ -93,7 +95,7 @@ public class TaskServiceImpl implements TaskService {
     public TaskServiceModel delete(String id) {
 
         Task task = taskRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid task id"));
+                .orElseThrow(() -> new TaskNotFoundException(TASK_NOT_FOUND_MESSAGE));
 
         TaskServiceModel taskServiceModel = modelMapper.map(task, TaskServiceModel.class);
 
@@ -104,8 +106,9 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public TaskServiceModel findById(String id) {
+
         Task task = taskRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid task id"));
+                .orElseThrow(() -> new TaskNotFoundException(TASK_NOT_FOUND_MESSAGE));
 
         TaskServiceModel taskServiceModel = modelMapper.map(task, TaskServiceModel.class);
         taskServiceModel.setProject(task.getProject().getName());
@@ -123,16 +126,17 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public List<TaskServiceModel> findAllNonAssignedByProjectId(String id) {
+
         return taskRepository.findAllByEmployeeNullAndProjectId(id).stream()
                 .map(t -> modelMapper.map(t, TaskServiceModel.class))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public Position findRequiredPosition(String id) {
+    public Position findRequiredPosition(String taskId) {
 
-        Task task = taskRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid task id"));
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new TaskNotFoundException(TASK_NOT_FOUND_MESSAGE));
 
         return task.getRequiredPosition();
     }
@@ -141,7 +145,13 @@ public class TaskServiceImpl implements TaskService {
     public String findTeamId(String taskId) {
 
         Task task = taskRepository.findById(taskId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid task id"));
+                .orElseThrow(() -> new TaskNotFoundException(TASK_NOT_FOUND_MESSAGE));
+
+        Team team = task.getProject().getTeam();
+
+        if (team == null) {
+            throw new TeamNotFoundException(TEAM_NOT_PRESENT);
+        }
 
         return task.getProject().getTeam().getId();
     }
@@ -156,15 +166,17 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<TaskServiceModel> findAllByProjectIdAndStatus(String projectId, String status) {
+    public List<TaskServiceModel> findAllByProjectIdAndStatus(String projectId, String statusName) {
 
-        if (status.equals("all")) {
+        if (statusName.equals(STATUS_ALL)) {
             return taskRepository.findAllByProjectId(projectId).stream()
                     .map(t -> modelMapper.map(t, TaskServiceModel.class))
                     .collect(Collectors.toList());
         }
 
-        return taskRepository.findAllByProjectIdAndStatus(projectId, Status.valueOf(status.toUpperCase()))
+        Status status = Status.valueOf(statusName.toUpperCase());
+
+        return taskRepository.findAllByProjectIdAndStatus(projectId, status)
                 .stream()
                 .map(t -> modelMapper.map(t, TaskServiceModel.class))
                 .collect(Collectors.toList());

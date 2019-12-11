@@ -8,7 +8,6 @@ import dreamcompany.service.interfaces.ChatMessageService;
 import dreamcompany.service.interfaces.UserService;
 import dreamcompany.util.MappingConverter;
 import lombok.AllArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -70,4 +69,6 @@ public class WebSocketChatController extends BaseController {
         headerAccessor.getSessionAttributes().put("username", chatMessage.getSender());
         return chatMessage;
     }
+
+    
 }
