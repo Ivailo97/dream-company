@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface ChatMessageService {
 
-    ChatMessageServiceModel createChatMessage(ChatMessageServiceModel chatMessage);
+    ChatMessageServiceModel create(ChatMessageServiceModel chatMessage);
 
     void updateImageUrl(String oldUrl,String newUrl);
 

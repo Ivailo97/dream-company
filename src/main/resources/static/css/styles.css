@@ -42,10 +42,18 @@ table {
     background-repeat: repeat;
 }
 
+#loading {
+    background-image: url('/img/black-square-repeating-background-1525485147e0k.jpg');
+    background-size: 300px;
+    overflow: hidden;
+    background-repeat: repeat;
+}
+
 #home {
     background-image: url('/img/choose-team-background.jpg');
     background-size: 200px;
     background-repeat: repeat;
+    background-color: rgba(255, 255, 255, 0.3);
 }
 
 #task-details-body {

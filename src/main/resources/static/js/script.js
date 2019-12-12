@@ -26,7 +26,9 @@ const http = (function () {
         return fetch(url, payload)
             .then(response =>{
                 console.log(response.json());
-            } );
+            } ).then(err => {
+                console.log(err);
+            });
     };
 
     const post = (url, body) => send(url, 'POST', body);

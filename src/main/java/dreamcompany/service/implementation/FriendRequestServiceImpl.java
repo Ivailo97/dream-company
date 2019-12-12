@@ -42,7 +42,7 @@ public class FriendRequestServiceImpl implements FriendRequestService {
         User receiver = userRepository.findById(model.getReceiverId())
                 .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND_MESSAGE));
 
-        if (sender.getFriendRequests().stream().anyMatch(r -> r.getSender().getUsername().equals(receiver.getUsername()))) {
+        if (senderHasAlreadyRequestFromReceiver(sender, receiver)) {
             throw new InvalidFriendRequestException(INVALID_REQUEST_USER_HAS_ALREADY_SEND);
         }
 
@@ -93,15 +93,16 @@ public class FriendRequestServiceImpl implements FriendRequestService {
         User sender = userRepository.findByUsername(loggedUserUsername)
                 .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND_MESSAGE));
 
-        boolean senderHasAlreadyRequestFromReceiver = sender.getFriendRequests().stream()
-                .anyMatch(r -> r.getSender().getUsername().equals(receiver.getUsername()));
-
-
-        boolean alreadyFriends = receiver.getFriends().stream()
-                .anyMatch(f -> f.getUsername().equals(loggedUserUsername));
-
         return requestRepository.findAllBySenderUsernameAndReceiverUsername(loggedUserUsername, receiverUsername).size() == 0
-                && !alreadyFriends && !receiverUsername.equals(loggedUserUsername) && !senderHasAlreadyRequestFromReceiver;
+                && !senderAndReceiverAreAlreadyFriends(sender,receiver)
+                && !receiverUsername.equals(loggedUserUsername)
+                && !senderHasAlreadyRequestFromReceiver(sender, receiver);
+    }
+
+    private boolean senderHasAlreadyRequestFromReceiver(User sender, User receiver) {
+
+        return sender.getFriendRequests().stream()
+                .anyMatch(r -> r.getSender().getUsername().equals(receiver.getUsername()));
     }
 
     @Override
@@ -113,7 +114,7 @@ public class FriendRequestServiceImpl implements FriendRequestService {
 
     @Override
     public List<FriendRequestServiceModel> findAllBySenderAndReceiver(String sender, String receiver) {
-        return requestRepository.findAllBySenderUsernameAndReceiverUsername(sender,receiver)
+        return requestRepository.findAllBySenderUsernameAndReceiverUsername(sender, receiver)
                 .stream().map(r -> converter.map(r, FriendRequestServiceModel.class))
                 .collect(Collectors.toList());
     }

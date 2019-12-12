@@ -11,19 +11,18 @@
 
 <div class="text-center mt-4 container-fluid">
 
+    <th:block th:include="~{/fragments/modals/project-completed}"/>
+
     <th:block th:if="${#session.getAttribute('isLeaderWithAssignedProject')}">
 
-        <h2>Your team project</h2>
-
+        <h2 class="font-italic text-white">Your team project</h2>
 
         <div class="project-card mx-auto mb-5">
-
 
             <a th:href="@{/projects/details/{id}(id=${#session.getAttribute('projectId')})}">
                 <div class="card__image-container">
                     <img class="card__image" src="../static/img/newrobot.jpg" th:src="@{/img/newrobot.jpg}" alt="">
                 </div>
-
 
                 <svg class="card__svg" viewBox="0 0 800 500">
 
@@ -39,8 +38,9 @@
                 <h1 class="card__title" th:text="${project.name}"></h1>
 
                 <th:block th:if="${hasTasks && projectIsCompleted}">
-                    <form th:action="@{/projects/complete/{id}(id=${project.id})}" method="post">
-                        <button id="complete" class="btn btn-success">Complete The Project</button>
+                    <form>
+                        <button id="complete" class="btn btn-outline-success">Complete The Project</button>
+                        <input type="hidden" id="projectId" th:value="${project.id}">
                     </form>
                 </th:block>
 
@@ -52,13 +52,40 @@
 
         </div>
 
-        </th:block>
+    </th:block>
 </div>
 
 <div class="fixed-bottom">
     <footer th:replace="/fragments/footer"></footer>
 </div>
 
+<script>
+    $('#complete').click(function () {
 
+        let projectId = $('#projectId').val();
+
+        fetch('/projects/complete/' + projectId, {
+            method: 'post',
+            body: JSON.stringify({
+                receiverId: projectId
+            }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(data => {
+                console.log(data);
+                $('#myModal').modal('toggle');
+                $('#send').hide();
+            });
+
+        return false;
+    });
+
+    $('#close').click(function () {
+        window.location = '/home';
+    });
+
+</script>
 </body>
 </html>

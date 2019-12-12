@@ -9,6 +9,8 @@ import java.time.LocalDateTime;
 @Setter
 public class UserInTeamDetailsViewModel {
 
+    private String username;
+
     private String imageUrl;
 
     private String fullName;

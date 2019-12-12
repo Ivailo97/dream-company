@@ -1,4 +1,4 @@
-<th:block th:fragment="request-send-modal">
+<th:block th:fragment="task-completed-modal">
 
     <div class="container">
         <div class="row">
@@ -6,15 +6,17 @@
                 <div class="modal fade" id="myModal">
                     <div class="modal-dialog modal-sm">
                         <div class="modal-content">
-                            <div class="modal-header">
+                            <div class="modal-header text-center">
                                 <h5 class="modal-title">Notification</h5>
 
                             </div>
                             <div class="modal-body">
-                                Request send successfully!
+                                Task completed successfully!
+                                <h4 class="text-success">You gained some credits!</h4>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-secondary" id="close" data-dismiss="modal">Close
+                                </button>
                             </div>
                         </div>
                     </div>

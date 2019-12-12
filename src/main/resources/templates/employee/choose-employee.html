@@ -40,10 +40,26 @@
                                             <h4 class="card-title" th:text="${employee.position}"></h4>
                                             <p class="card-text">This employee is in the company since <span
                                                     th:text="${employee.hiredOn}"></span></p>
-                                            <form th:action="@{'/users/assign-task/' + ${chosenTaskId} + '/' + ${employee.id}}"
-                                                  method="post">
-                                                <button class="btn btn-info">Assign The Task</button>
-                                            </form>
+
+                                            <div class="row mt-5">
+
+                                                <div class="col-md-6">
+                                                    <form th:action="@{'/users/profile/' + ${employee.username}}"
+                                                          method="get">
+                                                        <button class="btn btn-outline-light">Profile</button>
+                                                    </form>
+                                                </div>
+
+                                                <div class="col-md-6">
+                                                    <form th:action="@{'/users/assign-task/' + ${chosenTaskId} + '/' + ${employee.id}}"
+                                                          method="post">
+                                                        <button class="btn btn-outline-light">Assign</button>
+                                                    </form>
+                                                </div>
+
+
+                                            </div>
+
                                         </div>
                                     </div>
                                 </div>

@@ -1,9 +1,9 @@
 #ten-countdown {
     /* text-align: center; */
-    border: 5px solid #004853;
+    border: 5px solid white;
     display:inline;
     padding: 5px;
-    color: #004853;
+    color: white;
     font-family: Verdana, sans-serif, Arial;
     font-size: 40px;
     font-weight: bold;

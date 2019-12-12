@@ -117,7 +117,6 @@ public class TeamController extends BaseController {
     }
 
     @GetMapping("/details/{id}")
-    @PreAuthorize("hasRole('ROLE_MODERATOR')")
     public ModelAndView details(@PathVariable String id, ModelAndView modelAndView) {
         TeamServiceModel teamServiceModel = teamService.findById(id);
         TeamDetailsViewModel viewModel = mappingConverter.convert(teamServiceModel,TeamDetailsViewModel.class);
@@ -137,7 +136,7 @@ public class TeamController extends BaseController {
 
     @PostMapping("/delete/{id}")
     @PreAuthorize("hasRole('ROLE_MODERATOR')")
-    public ModelAndView deleteConfirm(@PathVariable String id,Principal principal) throws IOException {
+    public ModelAndView deleteConfirm(@PathVariable String id,Principal principal) {
         teamService.delete(id,principal.getName());
         return redirect("/show");
     }
@@ -157,6 +156,6 @@ public class TeamController extends BaseController {
     public ModelAndView assignProjectConfirm(@PathVariable String projectId,
                                              @PathVariable String teamId, Principal principal) {
         teamService.assignProject(projectId, teamId,principal.getName());
-        return redirect("/projects/manage");
+        return redirect("/home");
     }
 }

@@ -1,10 +1,11 @@
 .progressbar {
     width: 80%;
-    margin: 25px auto;
-    border: solid 1px #000;
+
+    margin: 150px auto;
+    border: solid 2px white;
 }
 .progressbar .inner {
-    height: 15px;
+    height: 30px;
     animation: progressbar-countdown;
     /* Placeholder, this will be updated using javascript */
     animation-duration: 40s;

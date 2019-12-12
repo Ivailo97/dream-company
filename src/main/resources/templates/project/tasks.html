@@ -14,20 +14,27 @@
 
 <th:block th:if="${!#lists.isEmpty(tasks)}">
 
-    <h1 class="text-center">Choose a task</h1>
+    <h1 class="text-center mt-5">Choose a task</h1>
 
     <div class="row project-tasks-container m-5">
 
         <section id="tasks-data" class="cards-wrapper">
             <th:block th:each="task : ${tasks}">
 
-                <a class="t_card" th:href="@{/users/assign-task/{id}(id=${task.id})}" style="--bg-img: url(/img/task-img.jpg)">
+                <a class="t_card" th:href="@{/tasks/details/{id}(id=${task.id})}" style="--bg-img: url(/img/task-img.jpg)">
                     <div class="card-grid-space">
                         <div>
                             <h1 th:text="${task.name}"></h1>
                             <p th:text="'Required position: ' + ${task.requiredPosition}"></p>
                         </div>
+                        <form class="text-right" th:method="get"
+                              th:action="@{/users/assign-task/{id}(id=${task.id})}">
+                            <button class="btn btn-outline-light mr-3">Assign to employee</button>
+                        </form>
+
                     </div>
+
+
                 </a>
 
             </th:block>

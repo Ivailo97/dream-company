@@ -83,7 +83,7 @@
 
                     </th:block>
 
-                    <th:block th:if="${#session.getAttribute('isTeamLeader')}">
+                    <th:block th:if="${#session.getAttribute('isLeaderWithAssignedProject')}">
                         <li class="nav-item">
                             <div class="dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" role="button" id="teamLeaderDropdown"
@@ -91,7 +91,7 @@
                                     Team Leader
                                 </a>
                                 <div class="dropdown-menu" aria-labelledby="teamLeaderDropdown">
-                                    <th:block th:if="${#session.getAttribute('isLeaderWithAssignedProject')}">
+
                                         <a class="dropdown-item" th:href="@{/projects/assigned}">Team Project</a>
                                         <th:block th:if="${#session.getAttribute('projectHaveTasks')}">
                                             <div class="dropdown-divider"></div>
@@ -100,7 +100,6 @@
                                                 Tasks</a>
                                         </th:block>
 
-                                    </th:block>
                                 </div>
                             </div>
                         </li>

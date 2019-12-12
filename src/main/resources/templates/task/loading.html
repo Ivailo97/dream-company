@@ -11,10 +11,12 @@
     <nav th:replace="/fragments/navbar"></nav>
 </header>
 
+<th:block th:include="~{/fragments/modals/task-completed}"/>
 
-<div id='progressbar1'></div>
 
-<div id="ten-countdown"></div>
+<div style="background-color: #5a6268" id='progressbar1'></div>
+
+<div style="background-color: #5a6268" id="ten-countdown"></div>
 
 
 <div class="fixed-bottom">
@@ -60,7 +62,13 @@
 
     addEventListener('load', function () {
         createProgressbar('progressbar1', seconds, function () {
-            window.location.href = "/users/my-tasks"
+
+            $('#myModal').modal('toggle');
+
+            $('#close').click(function () {
+                window.location = '/users/my-tasks';
+            });
+
         });
     });
 

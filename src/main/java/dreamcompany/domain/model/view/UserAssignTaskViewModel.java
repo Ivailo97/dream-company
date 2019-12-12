@@ -11,6 +11,8 @@ public class UserAssignTaskViewModel {
 
     private String id;
 
+    private String username;
+
     private String imageUrl;
 
     private String position;

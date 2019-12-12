@@ -12,7 +12,6 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,7 +25,6 @@ import java.util.stream.Collectors;
 
 @Controller
 @AllArgsConstructor
-@PreAuthorize("isAuthenticated()")
 public class WebSocketChatController extends BaseController {
 
     private final UserService userService;
@@ -37,7 +35,8 @@ public class WebSocketChatController extends BaseController {
 
     @PostMapping("/createMessage")
     public void create(@RequestBody ChatMessageRestModel model){
-        messageService.createChatMessage(converter.map(model, ChatMessageServiceModel.class));
+
+        messageService.create(converter.map(model, ChatMessageServiceModel.class));
     }
 
     @PostMapping("/clearHistory")
@@ -69,6 +68,4 @@ public class WebSocketChatController extends BaseController {
         headerAccessor.getSessionAttributes().put("username", chatMessage.getSender());
         return chatMessage;
     }
-
-    
 }

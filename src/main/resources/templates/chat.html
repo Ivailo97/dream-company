@@ -29,7 +29,7 @@
                     <img th:src="${model.imageUrl}" alt="sender avatar">
                     <span class="text-white" th:text="${model.sender}"></span>
                     <p th:text="${model.content}"></p>
-                  <!--<small class="message-date" th:text="${#temporals.format(model.createdOn, 'HH:mm')}"></small> -->
+                    <!--<small class="message-date" th:text="${#temporals.format(model.createdOn, 'HH:mm')}"></small> -->
                     <small class="message-date" th:text="${#dates.format(model.createdOn, 'HH:mm')}"></small>
                 </li>
             </th:block>

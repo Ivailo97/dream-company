@@ -14,14 +14,14 @@
     <th:block th:if="${#lists.isEmpty(tasks)}">
         <div class="header">
             <h1 class="header__title">No tasks assigned</h1>
-            <h2 class="header__subtitle">You completed it all , you animal</h2>
+            <h2 class="header__subtitle">You completed it all</h2>
         </div>
     </th:block>
 
     <th:block th:if="${!#lists.isEmpty(tasks)}">
         <div class="header">
             <h1 class="header__title">Assigned Tasks</h1>
-            <h2 class="header__subtitle">Go ahead do your work</h2>
+            <h2 class="header__subtitle">Do some work</h2>
         </div>
     </th:block>
 
@@ -31,16 +31,17 @@
         <th:block th:each="task : ${tasks}">
             <div class="assigned-tasks-card [ is-collapsed ] ">
                 <div class="card__inner [ js-expander ]">
-                    <span>Task</span>
+                    <span th:text="${task.name}"></span>
                     <i class="fa fa-folder-o"></i>
                 </div>
                 <div class="card__expander text-center">
                     <i class="fa fa-close [ js-collapser ]"></i>
+                    <h3>Description:</h3>
                     <p th:text="${task.description}"></p>
                     <p th:text="${'Credits: ' +  task.credits}"></p>
 
                     <form th:action="@{/users/complete-task/{id}(id=${task.id})}" method="post">
-                        <button id="complete" class="btn btn-success">Complete The Task</button>
+                        <button id="complete" class="btn btn-outline-success">Complete The Task</button>
                     </form>
 
                 </div>

@@ -34,6 +34,10 @@
                                         <p class="card-text mt-5">This employee is in the company since
                                         </p>
                                         <span class="text-white" th:text="${#temporals.format(employee.hiredOn, 'dd-MM-yyyy HH:mm')}"></span>
+                                        <form class="mt-5" th:method="get"
+                                              th:action="@{'/users/profile/' + ${employee.username}}">
+                                            <button class="btn btn-outline-light">Profile</button>
+                                        </form>
                                     </div>
                                 </div>
                             </div>

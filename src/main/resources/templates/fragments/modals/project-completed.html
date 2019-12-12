@@ -1,4 +1,4 @@
-<th:block th:fragment="request-send-modal">
+<th:block th:fragment="project-completed-modal">
 
     <div class="container">
         <div class="row">
@@ -11,10 +11,11 @@
 
                             </div>
                             <div class="modal-body">
-                                Request send successfully!
+                                Project completed successfully!
+                                <h4 class="text-success">Your team earned <span th:text="${project.reward}"></span>$!</h4>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-secondary" id="close" data-dismiss="modal">Close</button>
                             </div>
                         </div>
                     </div>

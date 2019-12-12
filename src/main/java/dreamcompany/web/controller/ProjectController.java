@@ -13,6 +13,8 @@ import dreamcompany.util.MappingConverter;
 import dreamcompany.validation.project.binding.ProjectCreateValidator;
 import dreamcompany.validation.project.binding.ProjectEditValidator;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -150,9 +152,10 @@ public class ProjectController extends BaseController {
 
     @PostMapping("/complete/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ModelAndView completeProject(@PathVariable String id) {
+    @ResponseBody
+    public ResponseEntity<Void> completeProject(@PathVariable String id) {
         projectService.complete(id);
-        return redirect("/home");
+        return new ResponseEntity<>(null, HttpStatus.GONE);
     }
 
     @GetMapping("/fetch")

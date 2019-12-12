@@ -22,17 +22,24 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     private final ChatMessageRepository messageRepository;
 
     @Override
-    public ChatMessageServiceModel createChatMessage(ChatMessageServiceModel chatMessage) {
+    public ChatMessageServiceModel create(ChatMessageServiceModel chatMessage) {
+
         chatMessage.setCreatedOn(new Date());
+
         ChatMessage message = modelMapper.map(chatMessage, ChatMessage.class);
+
         messageRepository.save(message);
+
         return modelMapper.map(message, ChatMessageServiceModel.class);
     }
 
     @Override
     public void updateImageUrl(String oldUrl, String newUrl) {
+
         List<ChatMessage> messages = messageRepository.findAllByImageUrl(oldUrl);
+
         messages.forEach(m -> m.setImageUrl(newUrl));
+
         messageRepository.saveAll(messages);
     }
 
