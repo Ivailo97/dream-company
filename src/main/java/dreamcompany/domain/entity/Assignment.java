@@ -1,5 +1,6 @@
 package dreamcompany.domain.entity;
 
+import dreamcompany.domain.enumeration.Status;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -1,6 +1,6 @@
 package dreamcompany.repository;
 
-import dreamcompany.domain.entity.Status;
+import dreamcompany.domain.enumeration.Status;
 import dreamcompany.domain.entity.Task;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

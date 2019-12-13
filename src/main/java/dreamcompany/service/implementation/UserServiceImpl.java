@@ -2,6 +2,8 @@ package dreamcompany.service.implementation;
 
 import dreamcompany.common.GlobalConstants;
 import dreamcompany.domain.entity.*;
+import dreamcompany.domain.enumeration.Position;
+import dreamcompany.domain.enumeration.Status;
 import dreamcompany.domain.model.service.LogServiceModel;
 import dreamcompany.error.InvalidOperationException;
 import dreamcompany.error.duplicates.EmailAlreadyExistException;

@@ -1,6 +1,8 @@
 package dreamcompany.service.implementation.task;
 
 import dreamcompany.domain.entity.*;
+import dreamcompany.domain.enumeration.Position;
+import dreamcompany.domain.enumeration.Status;
 import dreamcompany.domain.model.service.TaskServiceModel;
 import dreamcompany.error.notexist.TaskNotFoundException;
 import dreamcompany.error.notexist.TeamNotFoundException;

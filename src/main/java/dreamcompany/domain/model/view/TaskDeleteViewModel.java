@@ -16,7 +16,4 @@ public class TaskDeleteViewModel {
     private String requiredPosition;
 
     private Integer credits;
-
-    //id
-    private String project;
 }

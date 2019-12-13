@@ -1,8 +1,7 @@
 package dreamcompany.service.implementation.validation;
 
-import dreamcompany.domain.entity.Position;
+import dreamcompany.domain.enumeration.Position;
 import dreamcompany.domain.model.service.TaskServiceModel;
-import dreamcompany.service.implementation.validation.TaskValidationServiceImpl;
 import dreamcompany.service.interfaces.validation.TaskValidationService;
 import org.junit.Before;
 import org.junit.Test;

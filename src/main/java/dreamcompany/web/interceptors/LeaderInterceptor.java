@@ -1,6 +1,6 @@
 package dreamcompany.web.interceptors;
 
-import dreamcompany.domain.entity.Position;
+import dreamcompany.domain.enumeration.Position;
 import dreamcompany.domain.model.service.TaskServiceModel;
 import dreamcompany.domain.model.service.UserServiceModel;
 import dreamcompany.service.interfaces.UserService;

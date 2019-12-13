@@ -1,6 +1,6 @@
 package dreamcompany.domain.model.service;
 
-import dreamcompany.domain.entity.Position;
+import dreamcompany.domain.enumeration.Position;
 import lombok.Getter;
 import lombok.Setter;
 

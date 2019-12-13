@@ -1,7 +1,7 @@
 package dreamcompany.service.implementation.project;
 
 import dreamcompany.domain.entity.Project;
-import dreamcompany.domain.entity.Status;
+import dreamcompany.domain.enumeration.Status;
 import dreamcompany.domain.entity.Task;
 import dreamcompany.domain.entity.Team;
 import dreamcompany.domain.model.service.ProjectServiceModel;

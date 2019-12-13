@@ -19,6 +19,7 @@
         font: 16px/1.3 sans-serif;
     }
 
+
     /*
     PURE RESPONSIVE CSS3 SLIDESHOW GALLERY by Roko C. buljan
     http://stackoverflow.com/a/34696029/383904
@@ -200,11 +201,13 @@
     }
 
     .CSSgal .slider h2 {
-        margin-top: 40vh;
+        margin-top: 20vh;
         font-weight: 200;
         letter-spacing: -0.06em;
         word-spacing: 0.2em;
         font-size: 3em;
+        border: 1px solid #545b62;
+        border-radius: 10px;
     }
 
     .CSSgal a {
@@ -212,6 +215,12 @@
         margin: 0 3px;
         color: rgba(0, 0, 0, 0.8);
         text-decoration: none;
+    }
+
+    .text-holder {
+        background-color: rgba(255, 255, 255, 0.4);
+        margin: 120px;
+        border-radius: 10px;
     }
 
 </style>
@@ -237,19 +246,28 @@
 
     <div class="slider">
         <div style="background-image: url('/img/h4iALm.jpg');">
-            <h2 class="font-italic">The social <b>media</b> for your company</h2>
+            <div class="text-holder">
+                <h2 class="font-italic">The social media for your company</h2>
+            </div>
         </div>
         <div style="background-image: url('/img/create-wallpaper-paper-supply-software-aliensurface-gaming-project-5507.jpg')">
-            <h2 class="font-italic">Create and manage projects easily</h2>
-
+            <div class="text-holder">
+                <h2 class="font-italic">Create and manage projects easily</h2>
+            </div>
         </div>
         <div style="background-image: url('/img/pm-header-2.jpg')">
-            <h2 class="font-italic">Create and manage project tasks</h2>
+
+            <div class="text-holder">
+                <h2 class="font-italic text-dark">Create and manage tasks</h2>
+            </div>
 
         </div>
         <div style="background-image: url('/img/ThinkstockPhotos-183169162-775683-edited-e1481750173659.jpg')">
 
-            <h2 class="font-italic">Form teams and complete projects together</h2>
+            <div class="text-holder">
+                <h2 class="font-italic text-dark">Form teams and complete projects together</h2>
+            </div>
+
 
 
         </div>

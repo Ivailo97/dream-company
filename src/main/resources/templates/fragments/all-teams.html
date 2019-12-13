@@ -15,18 +15,20 @@
     <th:block th:each="model, iter : ${models}">
         <tr>
             <th th:text="${iter.index + 1}"></th>
+
             <td>
                 <img th:src="${model.logoUrl}" width="40" height="40" alt="teamLogo">
             </td>
+
             <td th:text="${model.name}"></td>
-            <td >
+            <td>
                 <span th:text="${#numbers.formatDecimal(model.profit, 0, 'COMMA', 0, 'POINT')}"></span>
                 $
             </td>
             <td class="row">
-                <a th:href="@{/teams/details/{id}(id=${model.id})}" class="btn btn-dark">Details</a>
-                <a th:href="@{/teams/delete/{id}(id=${model.id})}" class="btn btn-dark">Delete</a>
-                <a th:href="@{/teams/edit/{id}(id=${model.id})}" class="btn btn-dark">Edit</a>
+                <a th:href="@{/teams/details/{id}(id=${model.id})}" class="btn btn-dark m-1">Details</a>
+                <a th:href="@{/teams/delete/{id}(id=${model.id})}" class="btn btn-dark m-1">Delete</a>
+                <a th:href="@{/teams/edit/{id}(id=${model.id})}" class="btn btn-dark m-1">Edit</a>
             </td>
         </tr>
     </th:block>
@@ -35,6 +37,7 @@
 
 </table>
 
+<script th:src="@{/js/pop-up.images.js}"></script>
 <script>
     $('#table').DataTable({
 

@@ -1,6 +1,6 @@
 package dreamcompany.web.controller;
 
-import dreamcompany.domain.entity.Position;
+import dreamcompany.domain.enumeration.Position;
 import dreamcompany.domain.model.binding.UserEditBindingModel;
 import dreamcompany.domain.model.binding.UserRegisterBindingModel;
 import dreamcompany.domain.model.service.UserServiceModel;
@@ -172,7 +172,7 @@ public class UserController extends BaseController {
         List<UserPositionChangeViewModel> viewModels = converter
                 .convertCollection(userService.findAllForPromotion(), UserPositionChangeViewModel.class);
         modelAndView.addObject("models", viewModels);
-        return view("/employee/candidates", modelAndView);
+        return view("/employee/for-promotion", modelAndView);
     }
 
     @PostMapping("/promote/{id}")
@@ -188,7 +188,7 @@ public class UserController extends BaseController {
         List<UserPositionChangeViewModel> viewModels = converter
                 .convertCollection(userService.findAllForDemotion(), UserPositionChangeViewModel.class);
         modelAndView.addObject("models", viewModels);
-        return view("/employee/candidates", modelAndView);
+        return view("/employee/for-demotion", modelAndView);
     }
 
     @PostMapping("/demote/{id}")

@@ -20,9 +20,12 @@
             <td th:text="${model.country}"></td>
             <td th:text="${model.town}"></td>
             <td>
-                <a th:href="@{/offices/details/{id}(id=${model.id})}" class="btn btn-dark">Details</a>
-                <a th:href="@{/offices/delete/{id}(id=${model.id})}" class="btn btn-dark">Delete</a>
-                <a th:href="@{/offices/edit/{id}(id=${model.id})}" class="btn btn-dark">Edit</a>
+                <div class="row">
+                    <a th:href="@{/offices/details/{id}(id=${model.id})}" class="btn btn-dark m-1">Details</a>
+                    <a th:href="@{/offices/delete/{id}(id=${model.id})}" class="btn btn-dark m-1">Delete</a>
+                    <a th:href="@{/offices/edit/{id}(id=${model.id})}" class="btn btn-dark m-1">Edit</a>
+                </div>
+
             </td>
         </tr>
 

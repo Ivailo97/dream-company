@@ -1,4 +1,4 @@
-package dreamcompany.domain.entity;
+package dreamcompany.domain.enumeration;
 
 import java.math.BigDecimal;
 

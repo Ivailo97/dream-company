@@ -2,19 +2,45 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="/fragments/head"></head>
-<body>
+<body class="edit">
 
 <header>
     <nav th:replace="/fragments/navbar"></nav>
 </header>
 
 <main class="mt-3">
-    <div class="jumbotron bg-secondary" th:object="${model}">
+    <div class="jumbotron" th:object="${model}">
         <div class="row">
             <div class="col col-md-12 text-center">
                 <h4 th:text="${'Address: ' + model.address}"></h4>
             </div>
         </div>
+        <div class="row">
+            <div class="col col-md-12 text-center">
+                <h4 th:text="${ 'Teams count: ' + #lists.size(model.teams)}"></h4>
+            </div>
+        </div>
+
+        <div class="team_wrapper">
+
+            <div class="choose_team_box mb-5">
+
+                <th:block th:each="team : ${model.teams}">
+
+                    <div th:onclick="'window.location.href = \'' + @{'/teams/details/' + ${team.id}} + '\''" class="choose_team_card">
+                        <div class="choose_team_imgBx">
+                            <img th:src="${team.logoUrl}" alt="images">
+                        </div>
+                        <div class="choose_team_details">
+                            <h2 th:text="${team.name}"></h2>
+                        </div>
+                    </div>
+
+                </th:block>
+
+            </div>
+        </div>
+
         <div class="row">
             <div class="col col-md-12 text-center">
                 <h4 th:text="${ 'Phone Number: ' + model.phoneNumber}"></h4>

@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="/fragments/head"></head>
-<body>
+<body class="delete-entity">
 
 <header>
     <nav th:replace="/fragments/navbar"></nav>
@@ -30,12 +30,6 @@
             </select>
         </div>
         <div class="form-group">
-            <label for="add-task-project" class="font-weight-bold">Project</label>
-            <select class="form-control" disabled id="add-task-project" th:field="*{project}">
-                <option value="default" selected="" disabled>--- Select Project ---</option>
-            </select>
-        </div>
-        <div class="form-group">
             <label for="credits" class="font-weight-bold">Credits</label>
             <input type="number" disabled class="form-control" id="credits" th:value="${model.credits}" th:field="*{credits}">
         </div>
@@ -55,10 +49,6 @@
 <script th:inline="javascript">
 
     let requiredPosition = [[${model.requiredPosition}]];
-    let assignedProject = [[${model.project}]];
-
-    console.log(assignedProject);
-
 
     fetch('/tasks/fetchPositions')
         .then((response) => response.json())
@@ -71,13 +61,5 @@
         })
         .catch((err) => console.log(err));
 
-    fetch('/projects/fetch')
-        .then((response) => response.json())
-        .then((json) => {
-            json.forEach((project) => $('#add-task-project').append(project.name === assignedProject ?
-                `<option disabled  selected="selected" value="${project.id}">${project.name}</option>`
-                : `<option  disabled value="${project.id}">${project.name}</option>`));
-        })
-        .catch((err) => console.log(err));
 </script>
 </html>

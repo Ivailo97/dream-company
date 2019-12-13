@@ -1,5 +1,6 @@
 package dreamcompany.domain.entity;
 
+import dreamcompany.domain.enumeration.Position;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

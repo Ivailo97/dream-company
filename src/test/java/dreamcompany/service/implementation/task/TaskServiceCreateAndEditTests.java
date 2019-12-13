@@ -1,8 +1,8 @@
 package dreamcompany.service.implementation.task;
 
-import dreamcompany.domain.entity.Position;
+import dreamcompany.domain.enumeration.Position;
 import dreamcompany.domain.entity.Project;
-import dreamcompany.domain.entity.Status;
+import dreamcompany.domain.enumeration.Status;
 import dreamcompany.domain.entity.Task;
 import dreamcompany.domain.model.service.TaskServiceModel;
 import dreamcompany.error.duplicates.TaskNameAlreadyExistException;

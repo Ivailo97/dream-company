@@ -1,7 +1,5 @@
 package dreamcompany.web.interceptors;
 
-import dreamcompany.domain.entity.Position;
-import dreamcompany.domain.entity.Status;
 import dreamcompany.domain.model.service.UserServiceModel;
 import dreamcompany.service.interfaces.UserService;
 import lombok.AllArgsConstructor;

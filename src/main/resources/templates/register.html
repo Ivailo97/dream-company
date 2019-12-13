@@ -3,15 +3,14 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="/fragments/head"></head>
 
-
-<body>
+<body id="register">
 
 <header>
     <nav th:replace="/fragments/navbar"></nav>
 </header>
 
 <main class="text-center">
-    <h1 class="text-center text-dark">Register</h1>
+    <h1 class="text-center text-dark mt-3">Register</h1>
     <hr class="hr-2 bg-dark w-25">
     <!--/*@thymesVar id="model" type="softuni.productshop.domain.model.binding.UserRegisterBindingModel"*/-->
     <form class="form w-25 mx-auto m-5 " th:action="@{/users/register}" th:method="post" th:object="${model}">

@@ -1,6 +1,8 @@
 package dreamcompany.service.implementation.team;
 
 import dreamcompany.domain.entity.*;
+import dreamcompany.domain.enumeration.Position;
+import dreamcompany.domain.enumeration.Status;
 import dreamcompany.domain.model.service.*;
 import dreamcompany.error.duplicates.TeamNameAlreadyExistException;
 import dreamcompany.error.invalidservicemodels.InvalidTeamServiceModelException;

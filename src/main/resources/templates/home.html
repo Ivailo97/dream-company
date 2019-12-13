@@ -119,7 +119,9 @@
     <div id="welcome-message">
         <div id="welcome-container">
             <h1>Welcome, <span th:text="${#authorization.getAuthentication().getName()}"></span></h1>
+
             <h2 class="text-white font-italic" th:text="${'Friend requests: ' + friendRequests.size()}"></h2>
+
         </div>
     </div>
 

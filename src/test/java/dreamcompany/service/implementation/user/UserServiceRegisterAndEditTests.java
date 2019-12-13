@@ -1,7 +1,7 @@
 package dreamcompany.service.implementation.user;
 
 import dreamcompany.common.GlobalConstants;
-import dreamcompany.domain.entity.Position;
+import dreamcompany.domain.enumeration.Position;
 import dreamcompany.domain.entity.Role;
 import dreamcompany.domain.entity.User;
 import dreamcompany.domain.model.service.LogServiceModel;

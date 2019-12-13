@@ -2,6 +2,8 @@ package dreamcompany.service.implementation;
 
 import dreamcompany.common.GlobalConstants;
 import dreamcompany.domain.entity.*;
+import dreamcompany.domain.enumeration.Position;
+import dreamcompany.domain.enumeration.Status;
 import dreamcompany.domain.model.service.TaskServiceModel;
 import dreamcompany.error.duplicates.TaskNameAlreadyExistException;
 import dreamcompany.error.invalidservicemodels.InvalidTaskServiceModelException;

@@ -23,9 +23,9 @@
             </td>
             <td th:text="${#temporals.format(model.createdOn, 'yyyy-MM-dd HH:mm')}"></td>
             <td class="row">
-                <a th:href="@{/tasks/details/{id}(id=${model.id})}" class="btn btn-dark">Details</a>
-                <a th:href="@{/tasks/delete/{id}(id=${model.id})}" class="btn btn-dark">Delete</a>
-                <a th:href="@{/tasks/edit/{id}(id=${model.id})}" class="btn btn-dark">Edit</a>
+                <a th:href="@{/tasks/details/{id}(id=${model.id})}" class="btn btn-dark m-1">Details</a>
+                <a th:href="@{/tasks/delete/{id}(id=${model.id})}" class="btn btn-dark m-1">Delete</a>
+                <a th:href="@{/tasks/edit/{id}(id=${model.id})}" class="btn btn-dark m-1">Edit</a>
             </td>
         </tr>
 

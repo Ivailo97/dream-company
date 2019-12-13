@@ -1,6 +1,6 @@
 package dreamcompany.service.interfaces;
 
-import dreamcompany.domain.entity.Position;
+import dreamcompany.domain.enumeration.Position;
 import dreamcompany.domain.model.service.UserServiceModel;
 import org.springframework.security.core.userdetails.UserDetailsService;
 

@@ -35,10 +35,35 @@ table {
     background-repeat: repeat;
 }
 
+.edit{
+    background-image: url('/img/1.jpg');
+    background-size: 350px;
+    background-repeat: repeat;
+}
+
+.delete-entity{
+    background-image: url('/img/1.jpg');
+    background-size: 350px;
+    background-repeat: repeat;
+}
+
 #assigned-project {
     background-image: url('/img/choose-team-background.jpg');
     background-size: 200px;
     overflow: hidden;
+    background-repeat: repeat;
+}
+
+#login{
+    background-image: url('/img/1.jpg');
+    background-size: 350px;
+    overflow: hidden;
+    background-repeat: repeat;
+}
+
+#register{
+    background-image: url('/img/1.jpg');
+    background-size: 350px;
     background-repeat: repeat;
 }
 

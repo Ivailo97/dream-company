@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="/fragments/head"></head>
+<body class="all">
+
+<header>
+    <nav th:replace="/fragments/navbar"></nav>
+</header>
+
+<main class="mt-3">
+
+    <div class="container">
+
+        <h1 class="text-center text-dark">All candidates for demotion</h1>
+        <hr class="hr-2 bg-dark mx-auto">
+
+        <table id="table" class="table table-hover mx-auto">
+
+            <thead>
+
+            <tr>
+                <th>#</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Position</th>
+                <th>Credits</th>
+                <th>Actions</th>
+            </tr>
+
+            </thead>
+
+            <tbody>
+            <th:block th:each="user, iter : ${models}">
+
+                <tr>
+
+                    <td th:text="${iter.index + 1}"></td>
+                    <td th:text="${user.firstName}"></td>
+                    <td th:text="${user.lastName}"></td>
+                    <td th:text="${user.position}"></td>
+                    <td th:text="${user.credits}"></td>
+
+                    <td>
+                        <form th:action="@{/users/demote/{id}(id=${user.id})}" th:method="post" class="mx-1">
+                            <input type="hidden" name="_csrf" value="80417983-fe8b-45c7-963e-31f6915a1560">
+                            <button class="btn btn-dark">DEMOTE</button>
+                        </form>
+                    </td>
+                </tr>
+
+            </th:block>
+
+            </tbody>
+
+        </table>
+
+        <hr class="hr-2 bg-dark">
+
+    </div>
+
+</main>
+
+<div class="fixed-bottom">
+    <footer th:replace="/fragments/footer"></footer>
+</div>
+<script>
+    $(document).ready(function () {
+        $('#table').DataTable({
+
+            language: {
+                oPaginate: {
+                    sNext: '<i class="fa fa-forward"></i>',
+                    sPrevious: '<i class="fa fa-backward"></i>',
+                    sFirst: '<i class="fa fa-step-backward"></i>',
+                    sLast: '<i class="fa fa-step-forward"></i>'
+                }
+            },
+            pagingType: 'full_numbers',
+        });
+    });
+</script>
+
+<script>
+
+</script>
+</body>
+</html>
