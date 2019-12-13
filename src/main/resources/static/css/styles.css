@@ -35,16 +35,27 @@ table {
     background-repeat: repeat;
 }
 
-.edit{
+.edit {
     background-image: url('/img/1.jpg');
     background-size: 350px;
     background-repeat: repeat;
 }
 
-.delete-entity{
+.delete-entity {
     background-image: url('/img/1.jpg');
     background-size: 350px;
     background-repeat: repeat;
+}
+
+#error-page {
+    background-image: url('/img/1.jpg');
+    background-size: 350px;
+    background-repeat: repeat;
+}
+
+#error-img {
+    border-radius: 10px;
+    width: 550px;
 }
 
 #assigned-project {
@@ -54,14 +65,37 @@ table {
     background-repeat: repeat;
 }
 
-#login{
+.numberCircle {
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: inline-block;
+    background: #fff;
+    border: 2px solid #666;
+    color: #666;
+
+    font: 40px Arial, sans-serif;
+}
+
+.content-holder{
+    background-color: rgba(255, 255, 255, 0.5);
+    max-width: 400px;
+    min-height: 50px;
+
+    margin:auto;
+    border: 4px solid #454d55;
+    border-radius: 15px;
+}
+
+
+#login {
     background-image: url('/img/1.jpg');
     background-size: 350px;
     overflow: hidden;
     background-repeat: repeat;
 }
 
-#register{
+#register {
     background-image: url('/img/1.jpg');
     background-size: 350px;
     background-repeat: repeat;
@@ -88,16 +122,17 @@ table {
 }
 
 .all {
-    background-image: url('/img/tables-background.jpg');
-    background-size: 300px;
+    background-image: url('/img/1.jpg');
+    background-size: 350px;
     background-repeat: repeat;
 
 }
-.push{
+
+.push {
     height: 80px;
 }
 
-.wrapper{
+.wrapper {
     min-height: 100%;
     margin-bottom: -50px;
 }

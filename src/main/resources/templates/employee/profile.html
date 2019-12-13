@@ -13,8 +13,6 @@
 
     <th:block th:include="~{/fragments/modals/request-send}"/>
 
-
-
     <aside class="profile-card mt-3">
 
         <header>
@@ -38,7 +36,7 @@
             <div class="row">
                 <div class="col-md-3"></div>
                 <th:block th:if="${canSendFriendRequest}">
-                    <button  class="btn btn-outline-success ml-4"  id="send">
+                    <button class="btn btn-outline-success ml-4" id="send">
                         Add friend
                     </button>
 
@@ -64,7 +62,6 @@
             </div>
 
         </div>
-
 
         <ul class="profile-social-links">
 
@@ -94,7 +91,7 @@
 
 <div class="container">
 
-    <h2 class="text-white text-center font-italic">Friends: <span th:text="${viewModel.friends.size()}"></span> </h2>
+    <h2 class="text-dark text-center font-italic content-holder mt-2">Friends: <span th:text="${viewModel.friends.size()}"></span></h2>
 
     <div class="row">
         <th:block th:each="friend : ${viewModel.friends}">
@@ -121,7 +118,6 @@
 <div class="fixed-bottom">
     <footer th:replace="/fragments/footer"></footer>
 </div>
-
 
 
 </body>

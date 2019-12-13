@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head th:replace="/fragments/head"></head>
-<body>
+<head>
+    <th:block th:include="~{fragments/head}"></th:block>
+</head>
+<body id="error-page">
 
 <header>
     <nav th:replace="/fragments/navbar"></nav>
@@ -16,7 +18,7 @@
         <h3 th:text="${message}" style="color: red"></h3>
     </div>
     <div class="text-center">
-        <img th:src="@{'https://http.cat/' + ${statusCode}}" alt="statusCode">
+        <img id="error-img" th:src="@{'https://http.cat/' + ${statusCode}}" alt="statusCode">
     </div>
 
 </main>

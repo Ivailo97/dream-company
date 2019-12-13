@@ -10,11 +10,11 @@
 
 
 <th:block th:if="${#lists.isEmpty(models)}">
-    <h1 class="text-center text-white mt-3">No projects! Create some!</h1>
+    <h1 class="text-center text-dark mt-3 content-holder">No projects! Create some!</h1>
 </th:block>
 
 <th:block th:if="${!#lists.isEmpty(models)}">
-    <h1 class="text-center text-white mt-3">Pending projects</h1>
+    <h1 class="text-center text-dark mt-3 content-holder">Pending projects</h1>
     <div class="row">
         <th:block th:each="project,iter : ${models}">
             <div class="col-md-4 mt-5">
