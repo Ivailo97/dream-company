@@ -14,7 +14,7 @@
 
         <div class="row">
             <div class="col-md-12">
-                <div class="blog-card">
+                <div class="blog-card content-holder">
                     <div class="meta">
                         <div class="photo"
                              style="background-image: url(/img/Project-Management.jpg)"></div>
@@ -25,14 +25,36 @@
                     </div>
                     <div class="description">
                         <h1 th:text="*{name}"></h1>
-                        <h2>Opening a door to the future</h2>
+                        <th:block th:if="*{team != null}">
+                            <h2>Assigned to the team below</h2>
+                        </th:block>
+
                         <p th:text="*{description}"></p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="row">
+        <th:block th:if="*{team != null}">
+            <div class="row">
+                <div class="col-6 offset-3">
+                    <div class="team_wrapper">
+                        <div class="choose_team_box mb-5">
+                            <div th:onclick="'window.location.href = \'' + @{'/teams/details/' + *{team.id}} + '\''"
+                                 class="choose_team_card">
+                                <div class="choose_team_imgBx">
+                                    <img th:src="*{team.logoUrl}" alt="images">
+                                </div>
+                                <div class="choose_team_details">
+                                    <h2 th:text="*{team.name}"></h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </th:block>
+        <div class="row mt-4">
             <div class="col-md-12 mt-5">
                 <div class="radio-box">
                     <p>Project tasks</p>
@@ -40,20 +62,15 @@
                         <input type="radio" id="allRadio" name="selection" value="all">
                         <span class="yes">All</span>
                     </label>
-
                     <th:block th:each="status : ${statuses}">
-
                         <label>
                             <input type="radio" th:id="${status}" name="selection" th:value="${status}">
                             <span class="yes" th:for="${status}" th:text="${#strings.replace(status,'_',' ')}"></span>
                         </label>
-
                     </th:block>
-
                 </div>
             </div>
         </div>
-
 
         <div class="row project-tasks-container m-5">
 
@@ -70,10 +87,7 @@
 
         </div>
 
-
-
     </div>
-
 </main>
 
 <div class="fixed-bottom">

@@ -1,13 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
-    <title>Dream Company</title>
+
+    <th:block th:include="~{fragments/head}">
+    </th:block>
     <link rel="stylesheet" href="/css/chat.css"/>
-    <link rel="shortcut icon" th:href="${favicon}">
-    <link rel="stylesheet" href="/css/bootstrap.min.css"/>
-    <script src="js/jquery.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
 </head>
 <body>
 
@@ -19,7 +16,7 @@
 <input type="hidden" id="imageUrl" th:value="${#session.getAttribute('imgUrl')}"/>
 
 <div id="dialogue-page">
-    <div class="dialogue-container">
+    <div class="dialogue-container content-holder">
         <div class="dialogue-header">
             <h2 class="text-white">Chat room</h2>
         </div>
@@ -29,8 +26,10 @@
                     <img th:src="${model.imageUrl}" alt="sender avatar">
                     <span class="text-white" th:text="${model.sender}"></span>
                     <p th:text="${model.content}"></p>
-                    <!--<small class="message-date" th:text="${#temporals.format(model.createdOn, 'HH:mm')}"></small> -->
-                    <small class="message-date" th:text="${#dates.format(model.createdOn, 'HH:mm')}"></small>
+                    <div class="text-center">
+                        <small class="message-date" th:text="${#dates.format(model.createdOn, 'HH:mm')}"></small>
+                    </div>
+
                 </li>
             </th:block>
         </ul>
@@ -43,7 +42,7 @@
                     <button type="submit" class="btn btn-outline-light col-2">Send</button>
 
                     <th:block sec:authorize="hasRole('ROLE_ADMIN')">
-                        <a id="clear" class="btn btn-outline-danger col-2 ml-1">Clear history</a>
+                        <a id="clear" class="btn btn-outline-light col-2 ml-1">Clear</a>
                     </th:block>
 
                 </div>
@@ -51,6 +50,9 @@
         </form>
     </div>
 </div>
+
+
+
 
 <div class="fixed-bottom">
     <footer th:replace="/fragments/footer"></footer>

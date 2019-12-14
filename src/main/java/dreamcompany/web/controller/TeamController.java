@@ -7,7 +7,6 @@ import dreamcompany.domain.model.view.*;
 import dreamcompany.service.interfaces.TeamService;
 import dreamcompany.service.interfaces.UserService;
 import dreamcompany.util.MappingConverter;
-import dreamcompany.util.ScheduledTask;
 import dreamcompany.validation.team.binding.TeamCreateValidator;
 import dreamcompany.validation.team.binding.TeamEditValidator;
 import lombok.AllArgsConstructor;
@@ -36,8 +35,6 @@ public class TeamController extends BaseController {
 
     private final TeamEditValidator editValidator;
 
-    private final ScheduledTask scheduledTask;
-
     private final MappingConverter mappingConverter;
 
     @PostMapping("/create")
@@ -52,7 +49,6 @@ public class TeamController extends BaseController {
 
         TeamServiceModel teamServiceModel = mappingConverter.convert(model,TeamServiceModel.class);
         teamService.create(teamServiceModel,principal.getName());
-        scheduledTask.payTaxesEveryTenMinutes();
         return redirect("/home");
     }
 

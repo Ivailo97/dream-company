@@ -27,7 +27,6 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import static dreamcompany.common.GlobalConstants.*;
@@ -37,8 +36,6 @@ import static dreamcompany.common.GlobalConstants.*;
 public class TeamServiceImpl implements TeamService {
 
     private final TeamRepository teamRepository;
-
-    private final AtomicInteger payTaxesInvocationCount;
 
     private final TeamValidationService teamValidationService;
 

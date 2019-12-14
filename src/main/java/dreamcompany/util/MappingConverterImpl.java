@@ -49,6 +49,7 @@ public class MappingConverterImpl implements MappingConverter {
                 } else {
                     result = (D) convertToTeamServiceModel((TeamCreateBindingModel) model);
                 }
+
                 break;
             case "ProjectDetailsViewModel":
                 result = (D) convertToProjectDetailsViewModel((ProjectServiceModel) model);

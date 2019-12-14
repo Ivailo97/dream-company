@@ -16,6 +16,8 @@ public class ProjectDetailsViewModel {
 
     private String description;
 
+    private TeamAllViewModel team;
+
     private BigDecimal reward;
 
     private Set<String> tasks;

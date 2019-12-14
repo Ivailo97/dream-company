@@ -70,10 +70,9 @@ table {
     width: 50px;
     height: 50px;
     display: inline-block;
-    background: #fff;
+    background-color: rgba(255, 255, 255, 0.5);
     border: 2px solid #666;
     color: #666;
-
     font: 40px Arial, sans-serif;
 }
 

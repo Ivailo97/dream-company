@@ -9,7 +9,6 @@
 
 html, body {
     height: 100%;
-    overflow: hidden;
 }
 
 body {
@@ -89,7 +88,7 @@ button.accent {
 
 #dialogue-page {
     position: relative;
-    height: 100%;
+    height: 86%;
 }
 
 .dialogue-container {
@@ -137,8 +136,7 @@ button.accent {
 
 }
 .message-date{
-    margin-left: 550px;
-    font-weight: 200;
+    font-weight: 100;
     overflow-wrap: break-word;
 }
 

@@ -1,7 +1,11 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head th:replace="/fragments/head"></head>
+<head>
+    <th:block th:include="~{fragments/head}">
+    </th:block>
+    <link rel="stylesheet" href="/css/shpere.css">
+</head>
 
 <body id="profile-body">
 
@@ -12,25 +16,23 @@
 <div id="container">
 
     <th:block th:include="~{/fragments/modals/request-send}"/>
+    <th:block th:include="~{/fragments/modals/friend-removed}"/>
 
     <aside class="profile-card mt-3">
 
         <header>
-
             <img th:src="${(viewModel.imageUrl != null) ? viewModel.imageUrl : '/img/default-avatar.png'}"
                  style="width: 210px;height: 210px" th:alt="${viewModel.firstName}"/>
 
             <h1 th:text="${viewModel.firstName + ' ' + viewModel.lastName}"></h1>
-
             <h2 th:text="${#strings.replace(viewModel.position,'_',' ')}"></h2>
-
         </header>
 
         <div class="profile-bio">
 
             <p th:text="${viewModel.email}"></p>
-            <p>I have <span th:text="${viewModel.credits}"></span> credits.
-                <br/>My current salary is <span th:text="${viewModel.salary}">
+            <p class="text-center">
+                <br/>Current salary <span th:text="${viewModel.salary}">
                 </span>$</p>
 
             <div class="row">
@@ -86,18 +88,26 @@
         </ul>
 
     </aside>
-</div>
 
+</div>
 
 <div class="container">
 
-    <h2 class="text-dark text-center font-italic content-holder mt-2">Friends: <span th:text="${viewModel.friends.size()}"></span></h2>
+    <div class="text-center content-holder mt-3">
+        <h3 class="text-center font-italic">Credits</h3>
+        <div class="sphere blue">
+            <div class="m-4 text-white" th:text="${viewModel.credits}"></div>
+        </div>
+    </div>
 
-    <div class="row">
+    <h2 class="text-dark text-center font-italic content-holder mt-2">Friends: <span
+            th:text="${viewModel.friends.size()}"></span></h2>
+
+    <div class="row mt-3">
         <th:block th:each="friend : ${viewModel.friends}">
             <div class="col-12 col-sm-6 col-md-4 col-lg-3"
                  th:onclick="'window.location.href = \'' + @{'/users/profile/' + ${friend.username}} + '\''">
-                <div class="our-team">
+                <div class="our-team content-holder">
                     <div class="picture">
                         <img class="img-fluid"
                              th:src="${friend.imageUrl == null ? '/img/default-avatar.png' : friend.imageUrl}">
@@ -115,10 +125,13 @@
     </div>
 </div>
 
+<div class="push">
+
+</div>
+
 <div class="fixed-bottom">
     <footer th:replace="/fragments/footer"></footer>
 </div>
-
 
 </body>
 <script src="/js/friends.js">

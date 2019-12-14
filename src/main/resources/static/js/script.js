@@ -2,10 +2,10 @@
 
 document.querySelector('#dialogueForm').addEventListener('submit', sendMessage, true);
 
-let clearButtonElement =document.querySelector('#clear');
+let clearButtonElement = document.querySelector('#clear');
 
-if (clearButtonElement){
-    clearButtonElement.addEventListener('click',clearHistory,true);
+if (clearButtonElement) {
+    clearButtonElement.addEventListener('click', clearHistory, true);
 }
 
 let stompClient = null;
@@ -24,9 +24,9 @@ const http = (function () {
         };
 
         return fetch(url, payload)
-            .then(response =>{
+            .then(response => {
                 console.log(response.json());
-            } ).then(err => {
+            }).then(err => {
                 console.log(err);
             });
     };
@@ -57,8 +57,8 @@ function connectionSuccess() {
     stompClient.subscribe('/topic/javainuse', onMessageReceived);
 
     stompClient.send("/app/chat.newUser", {}, JSON.stringify({
-        sender : name,
-        type : 'newUser'
+        sender: name,
+        type: 'newUser'
     }))
 }
 
@@ -76,16 +76,22 @@ function sendMessage(event) {
 
         stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(chatMessage));
 
-        http.post('/createMessage',{type:chatMessage.type, sender:chatMessage.sender,content:chatMessage.content,imageUrl:chatMessage.imageUrl}).then();
+        http.post('/createMessage', {
+            type: chatMessage.type,
+            sender: chatMessage.sender,
+            content: chatMessage.content,
+            imageUrl: chatMessage.imageUrl
+        }).then();
         document.querySelector('#chatMessage').value = '';
     }
-
 
     event.preventDefault();
 }
 
 function clearHistory() {
-    http.post('/clearHistory').then(() => {window.location = '/home'});
+    http.post('/clearHistory').then(() => {
+        window.location = '/home'
+    });
 }
 
 function onMessageReceived(payload) {
@@ -104,7 +110,7 @@ function onMessageReceived(payload) {
         messageElement.classList.add('message-data');
         let imgElement = document.createElement("img");
         let imgUrl = message.imageUrl;
-        imgElement.setAttribute("src",imgUrl);
+        imgElement.setAttribute("src", imgUrl);
         messageElement.appendChild(imgElement);
 
 
@@ -120,11 +126,16 @@ function onMessageReceived(payload) {
     textElement.appendChild(messageText);
     messageElement.appendChild(textElement);
 
+    let div = document.createElement('div');
+    div.classList.add('text-center');
     let smallElement = document.createElement("small");
     smallElement.classList.add("message-date");
     let now = new Date();
-    smallElement.innerText =  now.getHours() + ':' + now.getMinutes();
-    messageElement.appendChild(smallElement);
+    let hours = now.getHours() < 10 ? '0' + now.getHours() : now.getHours();
+    let minutes = now.getMinutes() < 10 ? '0' + now.getMinutes() : now.getMinutes();
+    smallElement.innerText = hours + ':' + minutes;
+    div.appendChild(smallElement);
+    messageElement.appendChild(div);
 
 
     document.querySelector('#messageList').appendChild(messageElement);

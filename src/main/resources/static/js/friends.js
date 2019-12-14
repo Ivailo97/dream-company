@@ -46,9 +46,7 @@ $('#send').click(function () {
 
 $('#remove-friend').click(function () {
 
-    let friendUsername= $('#friendUsername').val();
-
-    alert('Friend removed');
+    let friendUsername = $('#friendUsername').val();
 
     fetch('/users/remove-friend', {
         method: 'post',
@@ -59,8 +57,13 @@ $('#remove-friend').click(function () {
     })
         .then(data => {
             console.log(data);
-            window.location = '/home';
+            $('#removeFriendModal').modal('toggle');
+            $('#remove-friend').hide();
         });
+
+    $('#close').click(function () {
+        window.location = '/home';
+    });
 
     return false;
 });

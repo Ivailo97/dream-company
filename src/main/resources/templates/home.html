@@ -19,16 +19,15 @@
         <div id="welcome-container">
             <h1>Welcome, <span th:text="${#authorization.getAuthentication().getName()}"></span></h1>
 
-            <div class="content-holder">
-                <h2 class="text-dark font-italic m-1">Friend requests: </h2>
+            <div class="text-center content-holder">
+                <span class="numberCircle" th:text="${friendRequests.size()}"></span>
             </div>
-            <div class="row mt-2">
-                <div class="col-md-12">
-                    <div class="numberCircle content-holder" th:text="${friendRequests.size()}">
-                    </div>
-                </div>
+
+            <div class="content-holder mt-2">
+                 <h2 class="text-dark font-italic m-1"> Friend requests </h2>
             </div>
-        </div>
+
+        </h2>
     </div>
 
     <th:block th:each="request , iter : ${friendRequests}">
