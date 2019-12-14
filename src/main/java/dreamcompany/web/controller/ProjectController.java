@@ -148,9 +148,9 @@ public class ProjectController extends BaseController {
     }
 
     @PostMapping("/complete/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("@userServiceImpl.isLeaderWithAssignedProject(#principal.name)")
     @ResponseBody
-    public ResponseEntity<Void> completeProject(@PathVariable String id) {
+    public ResponseEntity<Void> completeProject(@PathVariable String id, Principal principal) {
         projectService.complete(id);
         return new ResponseEntity<>(null, HttpStatus.GONE);
     }

@@ -138,8 +138,8 @@ public class UserController extends BaseController {
     }
 
     @GetMapping("/assign-task/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ModelAndView assignTask(@PathVariable String id, ModelAndView modelAndView) {
+    @PreAuthorize("@userServiceImpl.isLeaderWithAssignedProject(#principal.name)")
+    public ModelAndView assignTask(@PathVariable String id, ModelAndView modelAndView,Principal principal) {
         modelAndView.addObject("chosenTaskId", id);
         String teamId = taskService.findTeamId(id);
         Position requiredPosition = taskService.findRequiredPosition(id);
@@ -150,7 +150,6 @@ public class UserController extends BaseController {
     }
 
     @PostMapping("/assign-task/{taskId}/{userId}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ModelAndView assignProjectConfirm(@PathVariable String taskId, @PathVariable String userId) {
         userService.assignTask(userId, taskId);
         return redirect("/home");
