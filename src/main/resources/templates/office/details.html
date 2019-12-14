@@ -26,6 +26,7 @@
             </div>
         </div>
 
+        <th:block th:if="${#lists.size(model.teams) > 0}">
             <div class="team_wrapper">
 
                 <div class="choose_team_box mb-5">
@@ -45,6 +46,8 @@
 
                 </div>
             </div>
+        </th:block>
+
 
         <div class="row mt-3">
             <div class="col col-md-12 content-holder text-center">

@@ -15,9 +15,10 @@
 
     <th:block th:if="${#session.getAttribute('isLeaderWithAssignedProject')}">
 
-        <h2 class="font-italic text-white">Your team project</h2>
 
-        <div class="project-card mx-auto mb-5">
+        <h2 class="font-italic text-white content-holder">Your team project</h2>
+
+        <div class="project-card mx-auto mb-5 mt-2 content-holder">
 
             <a th:href="@{/projects/details/{id}(id=${#session.getAttribute('projectId')})}">
                 <div class="card__image-container">

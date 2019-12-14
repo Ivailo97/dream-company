@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="/fragments/head"></head>
-<body>
+<body class="all">
 
 <header>
     <nav th:replace="/fragments/navbar"></nav>
@@ -42,7 +42,7 @@
                         <form th:action="@{'/teams/add-employee/' + ${teamId} + '/' + ${model.id}}" th:method="post"
                               class="mx-1">
                             <input type="hidden" name="_csrf" value="80417983-fe8b-45c7-963e-31f6915a1560">
-                            <button class="btn btn-success">Add to Team</button>
+                            <button class="btn btn-dark">Add to Team</button>
                         </form>
                     </td>
                 </tr>
@@ -55,17 +55,12 @@
 
         <hr class="hr-2 bg-dark">
 
-
     </div>
-
-
-
 </main>
 
 <div class="fixed-bottom">
     <footer th:replace="/fragments/footer"></footer>
 </div>
-
 
 <script>
     $(document).ready(function () {

@@ -33,6 +33,7 @@ public class LeaderInterceptor extends HandlerInterceptorAdapter {
             boolean isTeamLeaderWithAssignedProject = userService.isLeaderWithAssignedProject(user.getName());
             request.getSession().setAttribute("hasTeam", hasTeam);
 
+
             if (hasTeam) {
                 request.getSession().setAttribute("teamId", loggedUser.getTeam().getId());
             }

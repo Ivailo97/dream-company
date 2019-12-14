@@ -73,7 +73,7 @@ public class TeamServiceImpl implements TeamService {
         //set profit
         team.setProfit(BigDecimal.ZERO);
 
-        // set prev position
+        //set prev position
         List<UserServiceModel> employees = new ArrayList<>(teamServiceModel.getEmployees());
 
         User first = userRepository.findById(employees.get(0).getId()).orElse(null);

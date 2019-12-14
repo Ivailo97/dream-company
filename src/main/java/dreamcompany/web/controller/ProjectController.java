@@ -65,7 +65,6 @@ public class ProjectController extends BaseController {
     }
 
     @GetMapping("/details/{id}")
-    @PreAuthorize("hasRole('ROLE_MODERATOR')")
     public ModelAndView details(@PathVariable String id, ModelAndView modelAndView) {
         ProjectDetailsViewModel viewModel = mappingConverter.convert(projectService.findById(id), ProjectDetailsViewModel.class);
         modelAndView.addObject("statuses", Status.values());
@@ -112,7 +111,7 @@ public class ProjectController extends BaseController {
     }
 
     @GetMapping("/assigned")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("@userServiceImpl.isLeaderWithAssignedProject(#principal.name)")
     public ModelAndView assignedProject(ModelAndView modelAndView, Principal principal) {
 
         UserServiceModel loggedUser = userService.findByUsername(principal.getName());

@@ -45,20 +45,27 @@
 
         </form>
 
-        <div class="row mx-auto">
+        <div class="row">
 
-            <div class="col-md-6">
-                <form th:action="@{/teams/add-employee/{id}(id=${model.id})}" th:method="get" class="mx-1">
-                    <input type="hidden" name="_csrf" value="80417983-fe8b-45c7-963e-31f6915a1560">
-                    <button class="btn btn-success">Add employees</button>
-                </form>
-            </div>
-            <div class="col-md-6">
-                <form th:action="@{/teams/remove-employee/{id}(id=${model.id})}" th:method="get" class="mx-1">
-                    <input type="hidden" name="_csrf" value="80417983-fe8b-45c7-963e-31f6915a1560">
-                    <button class="btn btn-danger">Remove employees</button>
-                </form>
-            </div>
+            <th:block th:if="${#session.getAttribute('canAddEmployee')}">
+                <div class="col-md-6">
+                    <form th:action="@{/teams/add-employee/{id}(id=${model.id})}" th:method="get" class="mx-1">
+                        <input type="hidden" name="_csrf" value="80417983-fe8b-45c7-963e-31f6915a1560">
+                        <button class="btn btn-dark">Add employees</button>
+                    </form>
+                </div>
+            </th:block>
+
+            <th:block th:if="${#session.getAttribute('canRemoveEmployee')}">
+                <div class="col-md-6">
+                    <form th:action="@{/teams/remove-employee/{id}(id=${model.id})}" th:method="get" class="mx-1">
+                        <input type="hidden" name="_csrf" value="80417983-fe8b-45c7-963e-31f6915a1560">
+                        <button class="btn btn-dark">Remove employees</button>
+                    </form>
+                </div>
+            </th:block>
+
+
         </div>
 
     </div>

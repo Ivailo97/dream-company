@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="/fragments/head"></head>
-<body>
+<body class="all">
 
 <header>
     <nav th:replace="/fragments/navbar"></nav>
@@ -11,9 +11,7 @@
 <main class="mt-3">
 
     <th:block th:if="${#lists.size(models) <= 2}">
-
         <h1 class="text-center text-dark">Team cant afford to fire employees!</h1>
-
     </th:block>
 
     <th:block th:if="${#lists.size(models) > 2}">
@@ -43,13 +41,13 @@
                         <th th:text="${iter.index + 1}"></th>
                         <td th:text="${model.firstName}"></td>
                         <td th:text="${model.lastName}"></td>
-                        <td th:text="${model.position}"></td>
+                        <td th:text="${#strings.replace(model.position,'_',' ')}"></td>
 
                         <td>
                             <form th:action="@{'/teams/remove-employee/' + ${teamId} + '/' + ${model.id}}"
                                   th:method="post" class="mx-1">
                                 <input type="hidden" name="_csrf" value="80417983-fe8b-45c7-963e-31f6915a1560">
-                                <button class="btn btn-danger">Remove from Team</button>
+                                <button class="btn btn-outline-danger">Remove from Team</button>
                             </form>
                         </td>
                     </tr>
