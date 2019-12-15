@@ -10,13 +10,13 @@
 
 <section id="team" class="pb-5">
     <div class="container">
-        <h5 class="section-title h1" th:text="${'NAME: ' + model.name}">THE TEAM</h5>
+        <h5 class="section-title h1 content-holder" th:text="${'NAME: ' + model.name}">THE TEAM</h5>
         <div class="row">
 
             <th:block th:each="employee : ${model.employees}">
 
                 <div class="col-xs-12 col-sm-6 col-md-4">
-                    <div class="image-flip" ontouchstart="this.classList.toggle('hover');">
+                    <div class="image-flip " ontouchstart="this.classList.toggle('hover');">
                         <div class="mainflip">
                             <div class="frontside">
                                 <div class="card">
@@ -49,7 +49,7 @@
 
         </div>
 
-        <h5 class="section-title h3" th:text="'Office: ' + ${model.officeAddress}"></h5>
+        <h5 class="section-title h3 content-holder" th:text="'Office: ' + ${model.officeAddress}"></h5>
     </div>
 </section>
 

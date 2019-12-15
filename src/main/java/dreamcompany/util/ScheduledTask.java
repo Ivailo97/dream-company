@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.util.concurrent.atomic.AtomicInteger;
 
+@Component
 @EnableAsync
 @AllArgsConstructor
 public class ScheduledTask {
@@ -18,9 +19,9 @@ public class ScheduledTask {
 
     private final AtomicInteger invocationsCount;
 
-    //Every Day at 5:30 AM
+    //executed at 10:15 AM on the 15th day of every month.
     @Async
-    @Scheduled(cron = "30 5 * * *")
+    @Scheduled(cron = "0 15 10 15 * ?")
     public void payTaxesEveryTenMinutes() {
         BigDecimal tax = BigDecimal.valueOf(20);
 

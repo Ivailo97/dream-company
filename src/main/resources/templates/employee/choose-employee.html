@@ -9,14 +9,13 @@
 </header>
 
 <th:block th:if="${#lists.isEmpty(employees)}">
-        <h1 class="text-center mt-5">NO ONE MEETS THE CRITERIA IN THE TEAM</h1>
-
+        <h1 class="text-center mt-5 content-holder">NO ONE MEETS THE CRITERIA IN THE TEAM</h1>
 </th:block>
 
 <th:block th:if="${!#lists.isEmpty(employees)}">
     <section id="team" class="pb-5">
         <div class="container">
-            <h5 class="section-title h1">ALL WHO MEET THE CRITERIA IN THE TEAM</h5>
+            <h5 class="section-title h1 content-holder">ALL WHO MEET THE CRITERIA IN THE TEAM</h5>
             <div class="row">
                 <th:block th:each="employee : ${employees}">
                     <div class="col-xs-12 col-sm-6 col-md-4">

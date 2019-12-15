@@ -1,3 +1,47 @@
+<style>
+
+   .navbar{
+        display: flex;
+        margin: auto;
+        text-align: right;
+    }
+    .nav-item {
+        text-transform: uppercase;
+        cursor: pointer;
+        color: #ebebeb;
+    }
+
+    .nav-item:hover {
+        background-image: url('http://scottyzen.com/cp/button.png');
+        background-size: 100% 100%;
+        color: #27262c;
+        animation: spring 300ms ease-out;
+        text-shadow: 0 -1px 0 #ef816c;
+        font-weight: bold;
+    }
+    .nav-item:active {
+        transform: translateY(4px);
+    }
+
+    @keyframes spring {
+        15% {
+            -webkit-transform-origin: center center;
+            -webkit-transform: scale(1.2, 1.1);
+        }
+        40% {
+            -webkit-transform-origin: center center;
+            -webkit-transform: scale(0.95, 0.95);
+        }
+        75% {
+            -webkit-transform-origin: center center;
+            -webkit-transform: scale(1.05, 1);
+        }
+        100% {
+            -webkit-transform-origin: center center;
+            -webkit-transform: scale(1, 1);
+        }
+    }
+</style>
 <th:block>
     <th:block sec:authorize="isAnonymous()">
         <nav class="navbar navbar-expand-md bg-dark navbar-dark sticky-top">
@@ -52,6 +96,8 @@
                     </li>
 
                     <th:block sec:authorize="hasRole('ROLE_ROOT')">
+
+                        <li class="nav-item">
                         <div class="dropdown">
                             <a class="nav-link dropdown-toggle" href="#" role="button" id="rootDropdown"
                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -70,6 +116,8 @@
                                 <a class="dropdown-item" th:href="@{/users/demote}">Demote</a>
                             </div>
                         </div>
+
+                        </li>
 
                     </th:block>
 
