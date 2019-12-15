@@ -17,6 +17,6 @@ public class CreateTaskInterceptor extends HandlerInterceptorAdapter {
 
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView){
-        request.getSession().setAttribute("canCreateTask", projectService.findAll().size() > 0);
+        request.getSession().setAttribute("canCreateTask", projectService.findAllNotCompleted().size() > 0);
     }
 }
