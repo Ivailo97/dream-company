@@ -1,0 +1,1 @@
+web: java $JAVA_OPTS -war target/dreamcompany-0.0.1-SNAPSHOT.war --server.port=$PORT $WAR_OPTS
