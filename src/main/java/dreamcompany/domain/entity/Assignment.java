@@ -17,7 +17,7 @@ public class Assignment extends BaseEntity {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "description", nullable = false,columnDefinition = "text")
+    @Column(name = "description", nullable = false, columnDefinition = "text")
     private String description;
 
     @Column(name = "status", nullable = false)
