@@ -12,7 +12,6 @@ import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 @Component
-@EnableAutoConfiguration(exclude = {RabbitAutoConfiguration.class})
 public class WebSocketChatEventListener {
 
     @Autowired
