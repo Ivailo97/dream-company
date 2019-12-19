@@ -35,7 +35,6 @@ public class WebSocketChatController extends BaseController {
 
     @PostMapping("/createMessage")
     public void create(@RequestBody ChatMessageRestModel model){
-
         messageService.create(converter.map(model, ChatMessageServiceModel.class));
     }
 

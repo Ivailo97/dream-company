@@ -13,7 +13,6 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/websocketApp")
-                .setAllowedOrigins("dream-company.herokuapp.com")
                 .withSockJS();
     }
 
