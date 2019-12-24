@@ -24,79 +24,77 @@
             </div>
 
             <div class="content-holder mt-2">
-                 <h2 class="text-dark font-italic m-1"> Friend requests </h2>
-            </div>
-
-        </h2>
-    </div>
-
-    <th:block th:each="request , iter : ${friendRequests}">
-        <div id="fb">
-            <div id="fb-top">
-                <p class="text-white"><b>Friend Request</b></p>
-            </div>
-            <img th:src="${(request.senderImageUrl != null ? request.senderImageUrl : '/img/default-avatar.png')}"
-                 height="100" width="100" alt="Image of sender">
-            <p id="info"><b th:text="${request.senderFirstName} + ' ' + ${request.senderLastName}"></b> <br> <span
-                    th:text="${request.mutualFriends} + ' mutual friends'"></span></p>
-            <div id="button-block">
-                <div class="confirm" th:id="${'confirm' + iter.index}">Confirm</div>
-                <div class="delete" th:id="${'decline' + iter.index}">Decline</div>
-                <input type="hidden" th:id="${iter.index}" th:value="${request.id}">
+                <h2 class="text-dark font-italic m-1"> Friend requests </h2>
             </div>
         </div>
-    </th:block>
-</div>
 
-<div class="fixed-bottom">
-    <footer th:replace="/fragments/footer"></footer>
-</div>
+        <th:block th:each="request , iter : ${friendRequests}">
+            <div id="fb">
+                <div id="fb-top">
+                    <p class="text-white"><b>Friend Request</b></p>
+                </div>
+                <img th:src="${(request.senderImageUrl != null ? request.senderImageUrl : '/img/default-avatar.png')}"
+                     height="100" width="100" alt="Image of sender">
+                <p id="info"><b th:text="${request.senderFirstName} + ' ' + ${request.senderLastName}"></b> <br> <span
+                        th:text="${request.mutualFriends} + ' mutual friends'"></span></p>
+                <div id="button-block">
+                    <div class="confirm" th:id="${'confirm' + iter.index}">Confirm</div>
+                    <div class="delete" th:id="${'decline' + iter.index}">Decline</div>
+                    <input type="hidden" th:id="${iter.index}" th:value="${request.id}">
+                </div>
+            </div>
+        </th:block>
+    </div>
 
-<script th:inline="javascript">
+    <div class="fixed-bottom">
+        <footer th:replace="/fragments/footer"></footer>
+    </div>
 
-    let size = [[${friendRequests}]].length;
+    <script th:inline="javascript">
 
-    for (let i = 0; i < size; i++) {
+        let size = [[${friendRequests}]].length;
 
-        let requestId = $('#' + i.toString()).val();
+        for (let i = 0; i < size; i++) {
 
-        let confirmButtonSelector = '#confirm' + i;
+            let requestId = $('#' + i.toString()).val();
 
-        let confirmButton = $(confirmButtonSelector);
+            let confirmButtonSelector = '#confirm' + i;
 
-        confirmButton.on("click", function () {
+            let confirmButton = $(confirmButtonSelector);
 
-            fetch('/api/requests/accept', {
-                method: 'post',
-                body: requestId,
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-                .then(data => {
+            confirmButton.on("click", function () {
+
+                fetch('/api/requests/accept', {
+                    method: 'post',
+                    body: requestId,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                    .then(data => {
+                        console.log(data);
+                        window.location = '/home';
+                    });
+            });
+
+            let declineButtonSelector = '#decline' + i;
+            let declineButton = $(declineButtonSelector);
+
+            declineButton.on("click", function () {
+
+                fetch('/api/requests/decline', {
+                    method: 'post',
+                    body: requestId,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }).then(data => {
                     console.log(data);
                     window.location = '/home';
                 });
-        });
-
-        let declineButtonSelector = '#decline' + i;
-        let declineButton = $(declineButtonSelector);
-
-        declineButton.on("click", function () {
-
-            fetch('/api/requests/decline', {
-                method: 'post',
-                body: requestId,
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            }).then(data => {
-                console.log(data);
-                window.location = '/home';
-            });
-        })
-    }
-</script>
+            })
+        }
+    </script>
 
 </body>
 </html>

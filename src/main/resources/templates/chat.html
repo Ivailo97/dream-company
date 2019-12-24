@@ -9,7 +9,7 @@
 <body>
 
 <header>
-    <nav th:replace="/fragments/navbar"></nav>
+    <nav th:replace="fragments/navbar"></nav>
 </header>
 
 <input type="hidden" id="name" th:value="${#authentication.principal.getUsername()}"/>
@@ -55,7 +55,7 @@
 
 
 <div class="fixed-bottom">
-    <footer th:replace="/fragments/footer"></footer>
+    <footer th:replace="fragments/footer"></footer>
 </div>
 
 <script src="js/sockjs.min.js"></script>

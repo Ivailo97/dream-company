@@ -1,12 +1,12 @@
 <html lang="en"
       xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
-<head th:include="~{/fragments/head}"></head>
+<head th:include="~{fragments/head}"></head>
 
 <body class="all">
 
 <header>
-    <nav th:replace="/fragments/navbar"></nav>
+    <nav th:replace="fragments/navbar"></nav>
 </header>
 
 <main class="mt-3">
@@ -51,7 +51,7 @@
 </main>
 
 <div class="fixed-bottom">
-    <footer th:replace="/fragments/footer"></footer>
+    <footer th:replace="fragments/footer"></footer>
 </div>
 
 <script>

@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head th:replace="/fragments/head"></head>
+<head th:replace="fragments/head"></head>
 <body id="assigned-tasks-body">
 
 
 <header>
-    <nav th:replace="/fragments/navbar"></nav>
+    <nav th:replace="fragments/navbar"></nav>
 </header>
 
 <div class="assigned-tasks-wrapper">
@@ -55,7 +55,7 @@
 
 
 <div class="fixed-bottom">
-    <footer th:replace="/fragments/footer"></footer>
+    <footer th:replace="fragments/footer"></footer>
 </div>
 </body>
 <script th:inline="javascript">

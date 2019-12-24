@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="/fragments/head"></head>
+<head th:replace="fragments/head"></head>
 
 <body id="choose" th:object="${teams}">
 
 <header>
-    <nav th:replace="/fragments/navbar"></nav>
+    <nav th:replace="fragments/navbar"></nav>
 </header>
 
 <th:block th:if="${#lists.isEmpty(teams)}">
@@ -44,7 +44,7 @@
 </th:block>
 
 <div class="fixed-bottom">
-    <footer th:replace="/fragments/footer"></footer>
+    <footer th:replace="fragments/footer"></footer>
 </div>
 
 

@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head th:replace="/fragments/head">
+<head th:replace="fragments/head">
 
 </head>
 
 <body id="loading">
 
 <header>
-    <nav th:replace="/fragments/navbar"></nav>
+    <nav th:replace="fragments/navbar"></nav>
 </header>
 
-<th:block th:include="~{/fragments/modals/task-completed}"/>
+<th:block th:include="~{fragments/modals/task-completed}"/>
 
 
 <div style="background-color: #5a6268" id='progressbar1'></div>
@@ -20,7 +20,7 @@
 
 
 <div class="fixed-bottom">
-    <footer th:replace="/fragments/footer"></footer>
+    <footer th:replace="fragments/footer"></footer>
 </div>
 </body>
 

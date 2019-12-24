@@ -10,13 +10,13 @@
 <body id="profile-body">
 
 <header>
-    <nav th:replace="/fragments/navbar"></nav>
+    <nav th:replace="fragments/navbar"></nav>
 </header>
 
 <div id="container">
 
-    <th:block th:include="~{/fragments/modals/request-send}"/>
-    <th:block th:include="~{/fragments/modals/friend-removed}"/>
+    <th:block th:include="~{fragments/modals/request-send}"/>
+    <th:block th:include="~{fragments/modals/friend-removed}"/>
 
     <aside class="profile-card mt-3">
 
@@ -130,7 +130,7 @@
 </div>
 
 <div class="fixed-bottom">
-    <footer th:replace="/fragments/footer"></footer>
+    <footer th:replace="fragments/footer"></footer>
 </div>
 
 </body>
