@@ -111,7 +111,7 @@ public class UserController extends BaseController {
         if (canAccept){
             modelAndView.addObject("requestId",friendRequestService.findAllBySenderAndReceiver(username,principal.getName()).get(0).getId());
         }
-        return view("/employee/profile", modelAndView);
+        return view("employee/profile", modelAndView);
     }
 
     @GetMapping("/edit")
@@ -162,7 +162,7 @@ public class UserController extends BaseController {
         List<TaskAssignedViewModel> viewModels = converter
                 .convertCollection(taskService.findNotFinishedAssignedToUser(loggedUser.getId()), TaskAssignedViewModel.class);
         modelAndView.addObject("tasks", viewModels);
-        return view("/employee/assigned-tasks", modelAndView);
+        return view("employee/assigned-tasks", modelAndView);
     }
 
     @GetMapping("/promote")
@@ -171,7 +171,7 @@ public class UserController extends BaseController {
         List<UserPositionChangeViewModel> viewModels = converter
                 .convertCollection(userService.findAllForPromotion(), UserPositionChangeViewModel.class);
         modelAndView.addObject("models", viewModels);
-        return view("/employee/for-promotion", modelAndView);
+        return view("employee/for-promotion", modelAndView);
     }
 
     @PostMapping("/promote/{id}")
@@ -187,7 +187,7 @@ public class UserController extends BaseController {
         List<UserPositionChangeViewModel> viewModels = converter
                 .convertCollection(userService.findAllForDemotion(), UserPositionChangeViewModel.class);
         modelAndView.addObject("models", viewModels);
-        return view("/employee/for-demotion", modelAndView);
+        return view("employee/for-demotion", modelAndView);
     }
 
     @PostMapping("/demote/{id}")
