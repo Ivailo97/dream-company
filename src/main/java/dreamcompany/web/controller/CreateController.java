@@ -23,21 +23,21 @@ public class CreateController extends BaseController {
 
     @GetMapping("/project")
     public ModelAndView createProject(@ModelAttribute(name = "model") ProjectCreateBindingModel model) {
-        return view("/fragments/create-project");
+        return view("fragments/create-project");
     }
 
     @GetMapping("/task")
     public ModelAndView createTask(@ModelAttribute(name = "model") TaskCreateBindingModel model) {
-        return view("/fragments/create-task");
+        return view("fragments/create-task");
     }
 
     @GetMapping("/office")
     public ModelAndView createOffice(@ModelAttribute(name = "model") OfficeCreateBindingModel model) {
-        return view("/fragments/create-office");
+        return view("fragments/create-office");
     }
 
     @GetMapping("/team")
     public ModelAndView createTeam(@ModelAttribute(name = "model") TeamCreateBindingModel model) {
-        return view("/fragments/create-team");
+        return view("fragments/create-team");
     }
 }

@@ -49,7 +49,7 @@ public class ProjectController extends BaseController {
                                       BindingResult bindingResult) {
         createValidator.validate(model, bindingResult);
         if (bindingResult.hasErrors()) {
-            return view("/validation/invalid-project-form");
+            return view("validation/invalid-project-form");
         }
 
         ProjectServiceModel projectServiceModel = mappingConverter.map(model, ProjectServiceModel.class);
@@ -61,7 +61,7 @@ public class ProjectController extends BaseController {
     @PreAuthorize("hasRole('ROLE_ROOT')")
     public ModelAndView projectStatistics(ModelAndView modelAndView) {
         modelAndView.addObject("statuses", Status.values());
-        return view("/project/statistics", modelAndView);
+        return view("project/statistics", modelAndView);
     }
 
     @GetMapping("/details/{id}")
@@ -69,7 +69,7 @@ public class ProjectController extends BaseController {
         ProjectDetailsViewModel viewModel = mappingConverter.convert(projectService.findById(id), ProjectDetailsViewModel.class);
         modelAndView.addObject("statuses", Status.values());
         modelAndView.addObject("model", viewModel);
-        return view("/project/details", modelAndView);
+        return view("project/details", modelAndView);
     }
 
     @GetMapping("/edit/{id}")
@@ -77,7 +77,7 @@ public class ProjectController extends BaseController {
     public ModelAndView edit(@PathVariable String id, ModelAndView modelAndView) {
         ProjectEditBindingModel model = mappingConverter.map(projectService.findById(id), ProjectEditBindingModel.class);
         modelAndView.addObject("model", model);
-        return view("/project/edit", modelAndView);
+        return view("project/edit", modelAndView);
     }
 
     @PostMapping("/edit/{id}")
@@ -87,7 +87,7 @@ public class ProjectController extends BaseController {
                                     BindingResult bindingResult) {
         editValidator.validate(model, bindingResult);
         if (bindingResult.hasErrors()) {
-            return view("/project/edit");
+            return view("project/edit");
         }
 
         projectService.edit(id, mappingConverter.map(model, ProjectServiceModel.class));
@@ -100,7 +100,7 @@ public class ProjectController extends BaseController {
         ProjectDeleteViewModel projectDeleteViewModel = mappingConverter
                 .convert(projectService.findById(id), ProjectDeleteViewModel.class);
         modelAndView.addObject("model", projectDeleteViewModel);
-        return view("/project/delete", modelAndView);
+        return view("project/delete", modelAndView);
     }
 
     @PostMapping("/delete/{id}")
@@ -127,7 +127,7 @@ public class ProjectController extends BaseController {
             modelAndView.addObject("projectIsCompleted", projectIsCompleted);
         }
 
-        return view("/project/assigned", modelAndView);
+        return view("project/assigned", modelAndView);
     }
 
     @GetMapping("/manage")
@@ -136,7 +136,7 @@ public class ProjectController extends BaseController {
         List<ProjectAllViewModel> models = mappingConverter
                 .convertCollection(projectService.findAllByStatus(Status.PENDING.name()), ProjectAllViewModel.class);
         modelAndView.addObject("models", models);
-        return view("/project/manage", modelAndView);
+        return view("project/manage", modelAndView);
     }
 
     @GetMapping("/project-tasks/{id}")
@@ -144,7 +144,7 @@ public class ProjectController extends BaseController {
         List<TaskAssignViewModel> viewModels = mappingConverter
                 .convertCollection(taskService.findAllNonAssignedByProjectId(id), TaskAssignViewModel.class);
         modelAndView.addObject("tasks", viewModels);
-        return view("/project/tasks", modelAndView);
+        return view("project/tasks", modelAndView);
     }
 
     @PostMapping("/complete/{id}")

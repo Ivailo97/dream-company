@@ -44,7 +44,7 @@ public class TeamController extends BaseController {
                                       BindingResult bindingResult) {
         createValidator.validate(model, bindingResult);
         if (bindingResult.hasErrors()) {
-            return view("/validation/invalid-team-form");
+            return view("validation/invalid-team-form");
         }
 
         TeamServiceModel teamServiceModel = mappingConverter.convert(model,TeamServiceModel.class);
@@ -59,7 +59,7 @@ public class TeamController extends BaseController {
         TeamEditBindingModel teamEditBindingModel = mappingConverter.map(teamServiceModel, TeamEditBindingModel.class);
         teamEditBindingModel.setOffice(teamServiceModel.getOffice().getId());
         modelAndView.addObject("model", teamEditBindingModel);
-        return view("/team/edit", modelAndView);
+        return view("team/edit", modelAndView);
     }
 
     @PostMapping("/edit/{id}")
@@ -70,7 +70,7 @@ public class TeamController extends BaseController {
                                     BindingResult bindingResult) throws IOException {
         editValidator.validate(model, bindingResult);
         if (bindingResult.hasErrors()) {
-            return view("/team/edit");
+            return view("team/edit");
         }
 
         TeamServiceModel teamServiceModel = mappingConverter.convert(model,TeamServiceModel.class);
@@ -117,7 +117,7 @@ public class TeamController extends BaseController {
         TeamServiceModel teamServiceModel = teamService.findById(id);
         TeamDetailsViewModel viewModel = mappingConverter.convert(teamServiceModel,TeamDetailsViewModel.class);
         modelAndView.addObject("model", viewModel);
-        return view("/team/details", modelAndView);
+        return view("team/details", modelAndView);
     }
 
     @GetMapping("/delete/{id}")
@@ -127,7 +127,7 @@ public class TeamController extends BaseController {
         TeamDeleteViewModel teamDeleteViewModel = mappingConverter
                 .convert(teamServiceModel,TeamDeleteViewModel.class);
         modelAndView.addObject("model", teamDeleteViewModel);
-        return view("/team/delete", modelAndView);
+        return view("team/delete", modelAndView);
     }
 
     @PostMapping("/delete/{id}")
@@ -144,7 +144,7 @@ public class TeamController extends BaseController {
                 .convertCollection(teamService.findAllWithoutProject(),TeamAllViewModel.class);
         modelAndView.addObject("chosenProjectId", id);
         modelAndView.addObject("teams", viewModels);
-        return view("/team/choose", modelAndView);
+        return view("team/choose", modelAndView);
     }
 
     @PostMapping("/assign-project/{projectId}/{teamId}")

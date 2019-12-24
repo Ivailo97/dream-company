@@ -43,7 +43,7 @@ public class TaskController extends BaseController {
                                       BindingResult bindingResult) {
         createValidator.validate(model, bindingResult);
         if (bindingResult.hasErrors()) {
-            return view("/validation/invalid-task-form");
+            return view("validation/invalid-task-form");
         }
 
         TaskServiceModel taskServiceModel = mappingConverter.map(model, TaskServiceModel.class);
@@ -56,7 +56,7 @@ public class TaskController extends BaseController {
         TaskDetailsViewModel taskDetailsViewModel = mappingConverter
                 .convert(taskService.findById(id),TaskDetailsViewModel.class);
         modelAndView.addObject("model", taskDetailsViewModel);
-        return view("/task/details", modelAndView);
+        return view("task/details", modelAndView);
     }
 
     @GetMapping("/edit/{id}")
@@ -65,7 +65,7 @@ public class TaskController extends BaseController {
         TaskEditBindingModel taskEditBindingModel = mappingConverter
                 .map(taskService.findById(id), TaskEditBindingModel.class);
         modelAndView.addObject("model", taskEditBindingModel);
-        return view("/task/edit", modelAndView);
+        return view("task/edit", modelAndView);
     }
 
     @PostMapping("/edit/{id}")
@@ -75,7 +75,7 @@ public class TaskController extends BaseController {
                                     BindingResult bindingResult) {
         editValidator.validate(model, bindingResult);
         if (bindingResult.hasErrors()) {
-            return view("/task/edit");
+            return view("task/edit");
         }
 
         TaskServiceModel taskServiceModel = mappingConverter.map(model, TaskServiceModel.class);
@@ -89,7 +89,7 @@ public class TaskController extends BaseController {
         TaskDeleteViewModel taskDeleteViewModel = mappingConverter
                 .map(taskService.findById(id), TaskDeleteViewModel.class);
         modelAndView.addObject("model", taskDeleteViewModel);
-        return view("/task/delete", modelAndView);
+        return view("task/delete", modelAndView);
     }
 
     @PostMapping("/delete/{id}")

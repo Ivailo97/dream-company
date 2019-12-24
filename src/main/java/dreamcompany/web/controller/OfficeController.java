@@ -41,7 +41,7 @@ public class OfficeController extends BaseController {
                                       BindingResult bindingResult) {
         createValidator.validate(model, bindingResult);
         if (bindingResult.hasErrors()) {
-            return view("/validation/invalid-office-form");
+            return view("validation/invalid-office-form");
         }
 
         OfficeServiceModel officeServiceModel = mappingConverter.map(model, OfficeServiceModel.class);
@@ -55,7 +55,7 @@ public class OfficeController extends BaseController {
         OfficeDetailsViewModel officeDetailsViewModel = mappingConverter
                 .map(officeService.findById(id), OfficeDetailsViewModel.class);
         modelAndView.addObject("model", officeDetailsViewModel);
-        return view("/office/details", modelAndView);
+        return view("office/details", modelAndView);
     }
 
     @GetMapping("/delete/{id}")
@@ -64,7 +64,7 @@ public class OfficeController extends BaseController {
         OfficeDeleteViewModel officeDetailsViewModel = mappingConverter
                 .map(officeService.findById(id), OfficeDeleteViewModel.class);
         modelAndView.addObject("model", officeDetailsViewModel);
-        return view("/office/delete", modelAndView);
+        return view("office/delete", modelAndView);
     }
 
     @PostMapping("/delete/{id}")
@@ -80,7 +80,7 @@ public class OfficeController extends BaseController {
         OfficeEditBindingModel officeEditBindingModel = mappingConverter
                 .map(officeService.findById(id), OfficeEditBindingModel.class);
         modelAndView.addObject("model", officeEditBindingModel);
-        return view("/office/edit", modelAndView);
+        return view("office/edit", modelAndView);
     }
 
     @PostMapping("/edit/{id}")
@@ -90,7 +90,7 @@ public class OfficeController extends BaseController {
                                     BindingResult bindingResult) {
         editValidator.validate(model,bindingResult);
         if (bindingResult.hasErrors()) {
-            return view("/office/edit");
+            return view("office/edit");
         }
 
         OfficeServiceModel officeServiceModel = mappingConverter.map(model, OfficeServiceModel.class);
