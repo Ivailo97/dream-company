@@ -20,6 +20,7 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
     public void configureMessageBroker(MessageBrokerRegistry registry) {
 
         registry.setApplicationDestinationPrefixes("/app");
-        registry.enableStompBrokerRelay("/topic");
+      //  registry.enableStompBrokerRelay("/topic");
+        registry.enableSimpleBroker("/topic");
     }
 }
