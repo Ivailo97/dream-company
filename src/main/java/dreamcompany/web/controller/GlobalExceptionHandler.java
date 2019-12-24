@@ -20,7 +20,7 @@ public class GlobalExceptionHandler implements ErrorController {
 
     @RequestMapping("/error")
     public ModelAndView handleError() {
-        return new ModelAndView("/error/not-found");
+        return new ModelAndView("error/not-found");
     }
 
     @ExceptionHandler(Exception.class)
