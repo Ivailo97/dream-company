@@ -22,7 +22,7 @@ let app = angular.module('DreamCompany', [])
 
         $scope.fetchProjects = function ($event) {
             let status = $event.currentTarget.value;
-            $http.get('http://localhost:8000/projects/fetch/' + status)
+            $http.get('/projects/fetch/' + status)
                 .then(function (response) {
                     let projectContainer = document.getElementById('columns');
                     let noDataContainer = document.getElementById('no-data');

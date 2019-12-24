@@ -133,7 +133,7 @@
 
         let projectId = [[${model.id}]];
 
-        fetch('http://localhost:8000/tasks/fetch/' + projectId + '/' + status)
+        fetch('/tasks/fetch/' + projectId + '/' + status)
             .then((response) => response.json())
             .then((json) => {
                 $('#tasks-data').empty();
