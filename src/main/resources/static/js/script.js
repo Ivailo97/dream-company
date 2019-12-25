@@ -55,6 +55,9 @@ function connect(event) {
 
 function connectionSuccess() {
     stompClient.subscribe('/topic/javainuse', onMessageReceived);
+    stompClient.subscribe("/user/queue/private", function (message) {
+        Materialize.toast(message.body,6000);
+    });
 
     stompClient.send("/app/chat.newUser", {}, JSON.stringify({
         sender: name,
