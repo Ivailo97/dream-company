@@ -453,8 +453,9 @@ public class UserServiceImpl implements UserService {
 
             if (user.getImageUrl() != null) {
                 cloudinaryService.deleteImage(user.getImageId());
-                chatMessageService.updateImageUrl(user.getImageUrl(), edited.getImageUrl());
             }
+
+            chatMessageService.updateImageUrl(edited.getUsername(), edited.getImageUrl());
 
             user.setImageUrl(edited.getImageUrl());
             user.setImageId(edited.getImageId());

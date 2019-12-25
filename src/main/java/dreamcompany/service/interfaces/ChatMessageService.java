@@ -8,7 +8,7 @@ public interface ChatMessageService {
 
     ChatMessageServiceModel create(ChatMessageServiceModel chatMessage);
 
-    void updateImageUrl(String oldUrl,String newUrl);
+    void updateImageUrl(String sender,String newUrl);
 
     List<ChatMessageServiceModel> findAll();
 

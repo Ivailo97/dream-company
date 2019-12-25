@@ -49,7 +49,7 @@ public class ChatMessageServiceTests extends TestBase {
 
         List<ChatMessage> messagesInDb = List.of(new ChatMessage(), new ChatMessage());
 
-        when(chatMessageRepository.findAllByImageUrl(any()))
+        when(chatMessageRepository.findAllBySender(any()))
                 .thenReturn(messagesInDb);
 
         chatMessageService.updateImageUrl("old", "new");

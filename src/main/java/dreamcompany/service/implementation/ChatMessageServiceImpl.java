@@ -34,9 +34,9 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     }
 
     @Override
-    public void updateImageUrl(String oldUrl, String newUrl) {
+    public void updateImageUrl(String sender, String newUrl) {
 
-        List<ChatMessage> messages = messageRepository.findAllByImageUrl(oldUrl);
+        List<ChatMessage> messages = messageRepository.findAllBySender(sender);
 
         messages.forEach(m -> m.setImageUrl(newUrl));
 
