@@ -20,8 +20,8 @@ public final class UserConstants {
     public final static String OLD_PASSWORD_IS_MANDATORY = "Enter old password!";
     public final static String PASSWORD_IS_MANDATORY = "Enter a password!";
     public final static String CONFIRM_PASSWORD_IS_MANDATORY = "Confirm your password!";
-    public final static String FIRST_NAME_IS_INVALID = "First name must start with a letter and must be between 3 and 10 characters long!";
-    public final static String LAST_NAME_IS_INVALID = "Last name must start with a letter and must be between 5 and 11 characters long!";
+    public final static String FIRST_NAME_IS_INVALID = "First name must start with capital letter and must be between 3 and 10 characters long!";
+    public final static String LAST_NAME_IS_INVALID = "Last name must start with capital letter and must be between 5 and 11 characters long!";
     public final static String WRONG_OLD_PASSWORD = "Wrong old password!";
 
     //user fields constraints

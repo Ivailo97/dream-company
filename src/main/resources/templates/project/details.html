@@ -101,7 +101,7 @@
         let date = formatDate(task);
 
         return `<div class="card-grid-space">`
-            + `<a class="t_card" href="http://localhost:8000/tasks/details/${task.id}" style="--bg-img: url(/img/task-img.jpg)">`
+            + `<a class="t_card" href="/tasks/details/${task.id}" style="--bg-img: url(/img/task-img.jpg)">`
             + `<div>`
             + `<h1>${task.name}</h1>`
             + `<div class="date">${date}</div>`
